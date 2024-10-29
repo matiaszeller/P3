@@ -1,0 +1,70 @@
+/* Root VBox Styling */
+.root {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #FFFFFF, #EAF2EF);
+    -fx-alignment: center;
+}
+
+/* Welcome Text */
+.welcomeText {
+    -fx-text-fill: #333333;
+    -fx-font-size: 40px;
+    -fx-font-family: 'Lato Bold';
+    -fx-alignment: center;
+}
+
+/* Subtitle Text */
+.subtitle {
+    -fx-text-fill: #888888;
+    -fx-font-size: 18px;
+    -fx-font-family: 'Lato Italic';
+    -fx-alignment: center;
+}
+
+/* Error Text */
+.errorText {
+    -fx-text-fill: #BC2626;
+    -fx-font-size: 20px;
+    -fx-font-family: 'Lato Italic';
+    -fx-alignment: center;
+}
+
+/* Username TextField */
+.usernameField {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-prompt-text-fill: #bbbbbb;
+    -fx-font-size: 14px;
+    -fx-font-family: 'Lato Italic';
+    -fx-padding: 0 10px;
+    -fx-alignment: center;
+}
+
+.usernameField:focused {
+    -fx-border-color: #20C997;
+    -fx-background-color: #F9F9F9;
+}
+
+/* Confirm Button Style */
+.loginButton {
+    -fx-background-color: #20C997;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Lato Bold';
+    -fx-cursor: hand;
+    -fx-pref-width: 200px;
+    -fx-pref-height: 50px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-transition: all 0.2s ease-in-out;
+    -fx-alignment: center;
+}
+
+.loginButton:hover {
+    -fx-background-color: #33d6ad;
+}
+
+.loginButton:pressed {
+    -fx-background-color: #009973;
+}
