@@ -26,7 +26,6 @@
                     fx:id="welcomeText"
                     layoutX="810.0"
                     layoutY="100.0"
-                    prefWidth="300.0"
                     text="Velkommen"
                     styleClass="welcomeText" />
 
@@ -35,7 +34,6 @@
                     fx:id="subtitle"
                     layoutX="810.0"
                     layoutY="180.0"
-                    prefWidth="300.0"
                     text="Registrer dine tider"
                     styleClass="subtitle" />
 
@@ -44,7 +42,6 @@
                     fx:id="errorText"
                     layoutX="810.0"
                     layoutY="350"
-                    prefWidth="300.0"
                     text="Brugernavn ugyldigt"
                     visible="false"
                     styleClass="errorText" />
@@ -54,8 +51,6 @@
                     fx:id="usernameField"
                     layoutX="810.0"
                     layoutY="395.0"
-                    prefHeight="40.0"
-                    prefWidth="300.0"
                     promptText="Brugernavn"
                     styleClass="usernameField" />
 
