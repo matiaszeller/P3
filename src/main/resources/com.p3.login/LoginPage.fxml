@@ -6,24 +6,66 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="1040.0" prefWidth="1920.0" spacing="15.0" styleClass="root" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.login.LoginController">
+<VBox
+        alignment="CENTER"
+        prefHeight="1040.0"
+        prefWidth="1920.0"
+        spacing="15.0"
+        styleClass="root"
+        stylesheets="@../style.css"
+        xmlns="http://javafx.com/javafx/23.0.1"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.p3.login.LoginController">
+
+    <!-- AnchorPane -->
     <AnchorPane prefHeight="1040.0" prefWidth="1920.0">
         <children>
 
             <!-- Welcome Label -->
-            <Label fx:id="welcomeText" layoutX="790.0" layoutY="100.0" prefWidth="300.0" text="Velkommen" styleClass="welcomeText" />
+            <Label
+                    fx:id="welcomeText"
+                    layoutX="810.0"
+                    layoutY="100.0"
+                    prefWidth="300.0"
+                    text="Velkommen"
+                    styleClass="welcomeText" />
 
             <!-- Subtitle Label -->
-            <Label fx:id="subtitle" layoutX="790.0" layoutY="180.0" prefWidth="300.0" text="Registrer dine tider" styleClass="subtitle" />
+            <Label
+                    fx:id="subtitle"
+                    layoutX="810.0"
+                    layoutY="180.0"
+                    prefWidth="300.0"
+                    text="Registrer dine tider"
+                    styleClass="subtitle" />
 
-            <!-- Default Error Message -->
-            <Label fx:id="errorText" layoutX="790" layoutY="350" prefWidth="300.0" text="Brugernavn ugyldigt" visible="false" styleClass="errorText" />
+            <!-- Error Message Label -->
+            <Label
+                    fx:id="errorText"
+                    layoutX="810.0"
+                    layoutY="350"
+                    prefWidth="300.0"
+                    text="Brugernavn ugyldigt"
+                    visible="false"
+                    styleClass="errorText" />
 
             <!-- Username TextField -->
-            <TextField fx:id="usernameField" layoutX="790.0" layoutY="395.0" prefHeight="40.0" prefWidth="300.0" promptText="Brugernavn" styleClass="usernameField" />
+            <TextField
+                    fx:id="usernameField"
+                    layoutX="810.0"
+                    layoutY="395.0"
+                    prefHeight="40.0"
+                    prefWidth="300.0"
+                    promptText="Brugernavn"
+                    styleClass="usernameField" />
 
             <!-- Login Button -->
-            <Button fx:id="loginButton" layoutX="840.0" layoutY="495.0" text="Login" styleClass="loginButton" />
+            <Button
+                    fx:id="loginButton"
+                    layoutX="860.0"
+                    layoutY="495.0"
+                    text="Login"
+                    styleClass="confirmButton" />
 
         </children>
     </AnchorPane>

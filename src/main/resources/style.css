@@ -1,0 +1,130 @@
+/* Fonts */
+@font-face {
+    font-family: 'Lato Bold';
+    src: url('fonts/Lato-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'Lato Italic';
+    src: url('fonts/Lato-Italic.ttf');
+}
+
+@font-face {
+    font-family: 'Lato Black';
+    src: url('fonts/Lato-Black.ttf');
+}
+
+@font-face {
+    font-family: 'Lato Regular';
+    src: url('fonts/Lato-Regular.ttf');
+}
+
+/* Root VBox Styling */
+.root {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #FFFFFF, #EAF2EF);
+    -fx-alignment: center;
+}
+
+/* Welcome Text */
+.welcomeText {
+    -fx-text-fill: #333333;
+    -fx-font-size: 40px;
+    -fx-font-family: 'Lato Bold';
+    -fx-alignment: center;
+}
+
+/* Subtitle Text */
+.subtitle {
+    -fx-text-fill: #888888;
+    -fx-font-size: 18px;
+    -fx-font-family: 'Lato Italic';
+    -fx-alignment: center;
+}
+
+/* Error Text */
+.errorText {
+    -fx-text-fill: #BC2626;
+    -fx-font-size: 20px;
+    -fx-font-family: 'Lato Regular';
+    -fx-alignment: center;
+}
+
+/* Username TextField */
+.usernameField {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-prompt-text-fill: #bbbbbb;
+    -fx-font-size: 14px;
+    -fx-font-family: 'Lato Italic';
+    -fx-padding: 0 10px;
+    -fx-alignment: center;
+}
+
+.usernameField:focused {
+    -fx-border-color: #20C997;
+    -fx-background-color: #F9F9F9;
+}
+
+/* Base Button */
+.confirmButton, .endShiftButton, .breakButton, .defaultButton {
+    -fx-font-weight: bold;
+    -fx-font-family: 'Lato Bold';
+    -fx-font-size: 12pt;
+    -fx-cursor: hand;
+    -fx-pref-width: 200px;
+    -fx-pref-height: 50px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-transition: all 0.2s ease-in-out;
+    -fx-alignment: center;
+}
+
+/* Confirm Button Style */
+.confirmButton {
+    -fx-background-color: #20C997;
+    -fx-text-fill: white;
+}
+.confirmButton:hover {
+    -fx-background-color: #33d6ad;
+}
+.confirmButton:pressed {
+    -fx-background-color: #009973;
+}
+
+/* End Shift Button Style */
+.endShiftButton {
+    -fx-background-color: #EE7572;
+    -fx-text-fill: white;
+}
+.endShiftButton:hover {
+    -fx-background-color: #e88784;
+}
+.endShiftButton:pressed {
+    -fx-background-color: #f15e5a;
+}
+
+/* Break Button Style */
+.breakButton {
+    -fx-background-color: #F9D58B;
+    -fx-text-fill: white;
+}
+.breakButton:hover {
+    -fx-background-color: #f8dda4;
+}
+.breakButton:pressed {
+    -fx-background-color: #fbca5e;
+}
+
+/* Default Button Style */
+.defaultButton {
+    -fx-background-color: #d1d1d1;
+    -fx-text-fill: black;
+}
+.defaultButton:hover {
+    -fx-background-color: #dfdfdf;
+}
+.defaultButton:pressed {
+    -fx-background-color: #8e8e8e;
+}
