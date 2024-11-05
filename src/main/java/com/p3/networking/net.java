@@ -5,7 +5,7 @@ import java.io.BufferedReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-
+import java.io.InputStreamReader;
 import javafx.scene.control.TextArea;
 
 
@@ -37,7 +37,7 @@ public class net {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              OutputStream output = socket.getOutputStream();
              PrintWriter writer = new PrintWriter(output, true);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(s$
+             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
         
             // Send req til server
             writer.println(request);
