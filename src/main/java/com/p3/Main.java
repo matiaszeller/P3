@@ -6,13 +6,22 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Objects;
 
 public class Main extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/com.p3.login/LoginPage.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1920, 1040);
+        Scene scene = null;
+        try{
+            URL fxmlLocation = Main.class.getResource("resources/com/p3/login/LoginPage.fxml");
+            FXMLLoader fxmlLoader = new FXMLLoader(fxmlLocation);
+            System.out.println("FXML Location: " + fxmlLocation); // Print the URL to confirm the path
+
+            scene = new Scene(fxmlLoader.load(), 1920, 1040);
+         } catch (IOException e) {
+            e.printStackTrace();
+         }
 
         stage.setTitle("Time Registration System");
         stage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("/icons/favicon.png"))));
