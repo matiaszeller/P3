@@ -14,7 +14,7 @@ public class Main extends javafx.application.Application {
     public void start(Stage stage) throws IOException {
         Scene scene = null;
         try{
-            URL fxmlLocation = Main.class.getResource("resources/com/p3/login/LoginPage.fxml");
+            URL fxmlLocation = Main.class.getResource("/com.p3.login/LoginPage.fxml");
             FXMLLoader fxmlLoader = new FXMLLoader(fxmlLocation);
             System.out.println("FXML Location: " + fxmlLocation); // Print the URL to confirm the path
 
