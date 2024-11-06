@@ -1,91 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox
-        alignment="CENTER"
-        prefHeight="1040.0"
-        prefWidth="1920.0"
-        spacing="15.0"
-        styleClass="root"
-        stylesheets="@../style.css"
-        xmlns="http://javafx.com/javafx/23.0.1"
-        xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="com.p3.menu.MenuController">
-
-    <!-- Main AnchorPane for Layout -->
-    <AnchorPane prefHeight="1040.0" prefWidth="1920.0">
+<VBox alignment="CENTER" spacing="15.0" styleClass="root" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.menu.MenuController">
+    <AnchorPane prefHeight="1000.0" prefWidth="1000.0" VBox.vgrow="ALWAYS">
         <children>
-
-            <!-- Welcome Label -->
-            <Label
-                    fx:id="welcomeText"
-                    layoutX="810.0"
-                    layoutY="100.0"
-                    styleClass="welcomeText"
-                    text="Velkommen test" />
-
-            <!-- Action Buttons -->
-            <Button
-                    fx:id="endShiftButton"
-                    layoutX="860.0"
-                    layoutY="495.0"
-                    styleClass="endShiftButton"
-                    text="Afslut Vagt" />
-
-            <Button
-                    fx:id="breakButton"
-                    layoutX="860.0"
-                    layoutY="395.0"
-                    styleClass="breakButton"
-                    text="Start Pause" />
-
-            <Button
-                    fx:id="managerButton"
-                    layoutX="200.0"
-                    layoutY="800.0"
-                    styleClass="defaultButton"
-                    text="Manager Oversigt" />
-
-            <Button
-                    fx:id="historyButton"
-                    layoutX="200.0"
-                    layoutY="900.0"
-                    styleClass="defaultButton"
-                    text="Din Historik" />
-
-            <Button
-                    fx:id="logOutButton"
-                    layoutX="1580.0"
-                    layoutY="104.0"
-                    styleClass="defaultButton"
-                    text="Log Ud" />
-
-            <!-- Notification Pane -->
-            <ScrollPane
-                    fx:id="notificationPane"
-                    layoutX="760.0"
-                    layoutY="690.0"
-                    styleClass="notificationPane">
-                <content>
-                    <VBox
-                            fx:id="notificationBox"
-                            styleClass="notificationBox"/>
-                </content>
-            </ScrollPane>
-
-            <!-- Overview Label -->
-            <Label
-                    fx:id="overviewLabel"
-                    layoutX="810.0"
-                    layoutY="650.0"
-                    styleClass="subtitle"
-                    text="Dagens Oversigt" />
-
+            <VBox alignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <children>
+                    <HBox>
+                        <children>
+                            <Region HBox.hgrow="ALWAYS">
+                                <HBox.margin>
+                                    <Insets left="250.0" />
+                                </HBox.margin>
+                            </Region>
+                            <Label fx:id="welcomeText" styleClass="welcomeText" text="Velkommen test" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Button fx:id="logOutButton" styleClass="defaultButton" text="Log Ud">
+                                <HBox.margin>
+                                    <Insets right="50.0" />
+                                </HBox.margin>
+                            </Button>
+                        </children>
+                        <VBox.margin>
+                            <Insets bottom="100.0" />
+                        </VBox.margin>
+                    </HBox>
+                    <Button fx:id="breakButton" styleClass="breakButton" text="Start Pause">
+                        <VBox.margin>
+                            <Insets bottom="50.0" />
+                        </VBox.margin>
+                    </Button>
+                    <Button fx:id="endShiftButton" styleClass="endShiftButton" text="Afslut Vagt">
+                        <VBox.margin>
+                            <Insets bottom="50.0" />
+                        </VBox.margin>
+                    </Button>
+                    <Region VBox.vgrow="ALWAYS" />
+                    <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
+                        <children>
+                            <VBox alignment="BOTTOM_CENTER">
+                                <children>
+                                    <Button fx:id="historyButton" styleClass="defaultButton" text="Din Historik">
+                                        <VBox.margin>
+                                            <Insets bottom="50.0" />
+                                        </VBox.margin>
+                                    </Button>
+                                    <Button fx:id="managerButton" styleClass="defaultButton" text="Manager Oversigt">
+                                        <VBox.margin>
+                                            <Insets bottom="100.0" />
+                                        </VBox.margin>
+                                    </Button>
+                                </children>
+                                <HBox.margin>
+                                    <Insets left="50.0" />
+                                </HBox.margin>
+                            </VBox>
+                            <Region HBox.hgrow="ALWAYS" />
+                            <VBox>
+                                <children>
+                                    <Label fx:id="overviewLabel" styleClass="subtitle" text="Dagens Oversigt">
+                                        <VBox.margin>
+                                            <Insets left="50.0" />
+                                        </VBox.margin>
+                                    </Label>
+                                    <ScrollPane fx:id="notificationPane" styleClass="notificationPane" VBox.vgrow="ALWAYS">
+                                        <content>
+                                            <VBox fx:id="notificationBox" styleClass="notificationBox" />
+                                        </content>
+                                        <VBox.margin>
+                                            <Insets />
+                                        </VBox.margin>
+                                    </ScrollPane>
+                                </children>
+                                <HBox.margin>
+                                    <Insets right="250.0" />
+                                </HBox.margin>
+                            </VBox>
+                            <Region HBox.hgrow="ALWAYS" />
+                        </children>
+                    </HBox>
+                </children>
+                <padding>
+                    <Insets top="100.0" />
+                </padding>
+            </VBox>
         </children>
     </AnchorPane>
 </VBox>
