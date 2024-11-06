@@ -38,8 +38,10 @@ public class LoginController {
     private void loadMenuPage() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com.p3.menu/MenuPage.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 1920, 1040);
             Stage stage = (Stage) loginButton.getScene().getWindow();
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            Scene scene = new Scene(fxmlLoader.load(), width, height);
             stage.setScene(scene);
         } catch (IOException e) {
             e.printStackTrace();
