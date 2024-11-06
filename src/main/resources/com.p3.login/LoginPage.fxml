@@ -1,66 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox
-        alignment="CENTER"
-        prefHeight="1040.0"
-        prefWidth="1920.0"
-        spacing="15.0"
-        styleClass="root"
-        stylesheets="@../style.css"
-        xmlns="http://javafx.com/javafx/23.0.1"
-        xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="com.p3.login.LoginController">
+<VBox alignment="CENTER" prefHeight="1040.0" prefWidth="1920.0" spacing="15.0" styleClass="root" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.login.LoginController">
 
     <!-- AnchorPane -->
     <AnchorPane prefHeight="1040.0" prefWidth="1920.0">
         <children>
 
             <!-- Welcome Label -->
-            <Label
-                    fx:id="welcomeText"
-                    layoutX="810.0"
-                    layoutY="100.0"
-                    text="Velkommen"
-                    styleClass="welcomeText" />
+            <Label fx:id="welcomeText" layoutX="810.0" layoutY="100.0" styleClass="welcomeText" text="Velkommen" />
 
             <!-- Subtitle Label -->
-            <Label
-                    fx:id="subtitle"
-                    layoutX="810.0"
-                    layoutY="180.0"
-                    text="Registrer dine tider"
-                    styleClass="subtitle" />
+            <Label fx:id="subtitle" layoutX="810.0" layoutY="180.0" styleClass="subtitle" text="Registrer dine tider" />
 
             <!-- Error Message Label -->
-            <Label
-                    fx:id="errorText"
-                    layoutX="810.0"
-                    layoutY="350"
-                    text="Brugernavn ugyldigt"
-                    visible="false"
-                    styleClass="errorText" />
+            <Label fx:id="errorText" layoutX="810.0" layoutY="350" styleClass="errorText" text="Brugernavn ugyldigt" visible="false" />
 
             <!-- Username TextField -->
-            <TextField
-                    fx:id="usernameField"
-                    layoutX="810.0"
-                    layoutY="395.0"
-                    promptText="Brugernavn"
-                    styleClass="usernameField" />
+            <TextField fx:id="usernameField" layoutX="810.0" layoutY="395.0" promptText="Brugernavn" styleClass="usernameField" />
 
             <!-- Login Button -->
-            <Button
-                    fx:id="loginButton"
-                    layoutX="860.0"
-                    layoutY="495.0"
-                    text="Login"
-                    styleClass="confirmButton" />
+            <Button fx:id="loginButton" layoutX="860.0" layoutY="495.0" styleClass="confirmButton" text="Login" />
+         <DialogPane layoutX="674.0" layoutY="362.0" prefHeight="209.0" prefWidth="572.0" />
+         <TextField alignment="CENTER" layoutX="712.0" layoutY="384.0" prefHeight="59.0" prefWidth="497.0" text="MANAGER AUTHENTICATION">
+            <font>
+               <Font name="Lato Regular" size="30.0" />
+            </font>
+         </TextField>
+         <PasswordField layoutX="800.0" layoutY="500.0" prefHeight="40.0" prefWidth="322.0" />
 
         </children>
     </AnchorPane>

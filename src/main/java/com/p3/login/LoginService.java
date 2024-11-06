@@ -10,7 +10,7 @@ public class LoginService {
         boolean isValid = false;
 
         String sql = "SELECT employment_role FROM user_table WHERE username = ?";
-        try (Connection con = LoginDTO.getConnection();
+        try (Connection con = LoginDAO.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, username);
