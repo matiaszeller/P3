@@ -3,6 +3,7 @@ package com.p3.login;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -27,11 +28,18 @@ public class LoginController {
     }
 
     private void handleLogin() {
-        boolean valid = loginService.validateUser(usernameField.getText());
-        if (!valid) {
+        RoleHolder roleHolder = new RoleHolder();
+        boolean isValid = loginService.validateUser(usernameField.getText(), roleHolder);
+
+        if (!isValid) {
             errorText.setVisible(true);
         } else {
-            loadMenuPage();
+            String employmentRole = roleHolder.getEmploymentRole();
+            if ("manager".equalsIgnoreCase(employmentRole)) {
+                loadManagerModal();
+            } else if ("employee".equalsIgnoreCase(employmentRole)) {
+                loadMenuPage();
+            }
         }
     }
 
@@ -44,5 +52,9 @@ public class LoginController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void loadManagerModal() {
+
     }
 }
