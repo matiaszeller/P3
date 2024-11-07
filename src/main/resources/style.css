@@ -64,6 +64,7 @@
     -fx-padding: 0 10px;
     -fx-pref-height: 40px;
     -fx-pref-width: 300px;
+    -fx-max-width: 300px;
     -fx-alignment: center;
 }
 
@@ -135,11 +136,9 @@
 }
 
 .notificationPane{
-    -fx-pref-height: 350px;
     -fx-pref-width: 400px;
 }
 
 .notificationBox{
-    -fx-pref-height: 346px;
     -fx-pref-width: 396px;
 }

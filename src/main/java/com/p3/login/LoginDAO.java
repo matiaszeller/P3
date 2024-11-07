@@ -3,7 +3,7 @@ package com.p3.login;
 import java.sql.*;
 
 public class LoginDAO {
-    private static final String URL = "jdbc:mysql://localhost:3306/time_registration_1.1";
+    private static final String URL = "jdbc:mysql://localhost:3306/database";
     private static final String USER = "root";
     private static final String PASSWORD = "Millehk123";
 
