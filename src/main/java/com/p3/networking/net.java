@@ -29,7 +29,7 @@ public class net {
 
                 // Resp
               response.append(reader.readLine());
-              
+
             } catch (Exception e) {
                 e.printStackTrace();
                 response.append("Error: ").append(e.getMessage());

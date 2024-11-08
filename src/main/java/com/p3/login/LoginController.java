@@ -30,6 +30,7 @@ public class LoginController {
         boolean valid = loginService.validateUser(usernameField.getText());
         if (!valid) {
             errorText.setVisible(true);
+
         } else {
             loadMenuPage();
         }
