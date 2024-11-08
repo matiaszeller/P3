@@ -34,6 +34,14 @@
     -fx-alignment: center;
 }
 
+/* Clock Styling */
+.clock {
+    -fx-text-fill: #333333;
+    -fx-font-size: 32px;
+    -fx-font-family: 'Lato Bold';
+    -fx-alignment: center;
+}
+
 /* Subtitle Text */
 .subtitle {
     -fx-text-fill: #888888;
@@ -46,6 +54,15 @@
 /* Error Text */
 .errorText {
     -fx-text-fill: #BC2626;
+    -fx-font-size: 20px;
+    -fx-font-family: 'Lato Regular';
+    -fx-pref-width: 300px;
+    -fx-alignment: center;
+}
+
+/* Regular Text */
+.modalText {
+    -fx-text-fill: #000000;
     -fx-font-size: 20px;
     -fx-font-family: 'Lato Regular';
     -fx-pref-width: 300px;
