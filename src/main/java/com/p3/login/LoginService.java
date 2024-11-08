@@ -1,26 +1,27 @@
 package com.p3.login;
 
-import org.mindrot.jbcrypt.BCrypt;
+//import org.mindrot.jbcrypt.BCrypt;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LoginService {
-    public boolean validateUser(String username) {
-        com.p3.networking.net request = new com.p3.networking.net();
-        String Response = request.sendRequestToServer(username);
-        if(Response.equals("correct") == true) {
-            return true;
-        } else{return false;}
-
-
-
-
 
     public boolean validateUser(String username, RoleHolder roleHolder) {
-        boolean isValid = false;
 
+
+        //boolean isValid = false;
+
+        com.p3.networking.net request = new com.p3.networking.net();
+        String Response = request.sendRequestToServer(username);
+        if (Response.equals("correct") == true) {
+            return true;
+        } else {
+            return false;
+        }
+    }}
+        /*
         String sql = "SELECT role FROM users WHERE username = ?";
         try (Connection con = LoginDAO.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -63,4 +64,6 @@ public class LoginService {
         return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
 
     }
-}
+
+         */
+

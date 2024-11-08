@@ -64,7 +64,8 @@ public class LoginController {
             e.printStackTrace();
         }
     }
-        // !!!!! Lige nu er koden til 'brain' som er manager: admin. 
+
+    // !!!!! Lige nu er koden til 'brain' som er manager: admin.
     private void showManagerModal(String username) {
         this.managerUsername = username;
 
@@ -89,7 +90,7 @@ public class LoginController {
         VBox vbox = new VBox(10, instructionLabel, passwordField, new HBox(10, submitButton, cancelButton), modalErrorLabel);
         vbox.setPadding(new Insets(10));
 
-        submitButton.setOnAction(event -> handleSubmit(modalStage, passwordField.getText(), modalErrorLabel));
+       // submitButton.setOnAction(event -> handleSubmit(modalStage, passwordField.getText(), modalErrorLabel));
         cancelButton.setOnAction(event -> modalStage.close());
 
         Scene modalScene = new Scene(vbox);
@@ -106,8 +107,8 @@ public class LoginController {
         modalStage.setScene(modalScene);
         modalStage.showAndWait();
     }
-
-
+}
+/*
     @FXML
     private void handleCancel() {
         managerModal.setVisible(false);
@@ -122,3 +123,5 @@ public class LoginController {
         }
     }
 }
+
+ */
