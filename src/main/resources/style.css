@@ -140,6 +140,19 @@
     -fx-background-color: #fbca5e;
 }
 
+/* On Break Button Style */
+.onBreakButton {
+    -fx-background-color: #F9D58B;
+    -fx-text-fill: white;
+    -fx-border-color: red;
+}
+.onBreakButton:hover {
+    -fx-background-color: #f8dda4;
+}
+.onBreakButton:pressed {
+    -fx-background-color: #fbca5e;
+}
+
 /* Default Button Style */
 .defaultButton {
     -fx-background-color: #d1d1d1;
