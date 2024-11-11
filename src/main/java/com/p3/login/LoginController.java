@@ -1,6 +1,7 @@
 package com.p3.login;
 
 import com.p3.instance.AppInstance;
+import com.p3.menu.MenuController;
 import com.p3.menu.MenuService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -191,6 +192,7 @@ public class LoginController {
     private void MenuAndClose(Stage modalStage) {
         modalStage.close();
         loadMenuPage();
+
     }
 }
 
