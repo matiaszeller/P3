@@ -159,9 +159,7 @@ public class LoginController {
         menu.getStyleClass().add("confirmButton");
         logout.getStyleClass().add("defaultButton");
 
-        //todo J: This might inadvertently create a memory leak, but i dont care right now.
-        menu.setOnAction(event -> {MenuAndClose(modalStage);});
-        logout.setOnAction(event -> {LogoutAndClose(modalStage);});
+
 
         HBox hbox = new HBox(10, textField, menu, logout);
         hbox.setPadding(new Insets(10));
@@ -180,6 +178,9 @@ public class LoginController {
 
         PauseTransition timer = new PauseTransition(Duration.seconds(5));
         timer.setOnFinished(event -> LogoutAndClose(modalStage));
+        //todo J: This might inadvertently create a memory leak, but i dont care right now.
+        menu.setOnAction(event -> { progressAnimation.stop(); timer.stop(); MenuAndClose(modalStage); });
+        logout.setOnAction(event -> {LogoutAndClose(modalStage);});
         progressAnimation.play();
         timer.play();
 
@@ -190,6 +191,7 @@ public class LoginController {
     }
 
     private void MenuAndClose(Stage modalStage) {
+
         modalStage.close();
         loadMenuPage();
 
