@@ -8,10 +8,10 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class AppInstance {
-    private final Stage stage;
+    private static Stage primaryStage;
 
     public AppInstance(Stage stage) {
-        this.stage = stage;
+        this.primaryStage = stage;
     }
 
     public void startApp() throws IOException {
@@ -22,10 +22,13 @@ public class AppInstance {
         FXMLLoader fxmlLoader = new FXMLLoader(AppInstance.class.getResource("/com.p3.login/LoginPage.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
-        stage.setTitle("Time Registration System");
-        stage.getIcons().add(new Image(Objects.requireNonNull(AppInstance.class.getResourceAsStream("/icons/favicon.png"))));
-        stage.setScene(scene);
-        stage.setMaximized(true);
-        stage.show();
+        primaryStage.setTitle("Time Registration System");
+        primaryStage.getIcons().add(new Image(Objects.requireNonNull(AppInstance.class.getResourceAsStream("/icons/favicon.png"))));
+        primaryStage.setScene(scene);
+        primaryStage.setMaximized(true);
+        primaryStage.show();
+    }
+    public static Stage getPrimaryStage() {
+        return primaryStage;
     }
 }

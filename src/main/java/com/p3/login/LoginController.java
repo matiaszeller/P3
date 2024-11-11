@@ -1,18 +1,21 @@
 package com.p3.login;
 
+import com.p3.instance.AppInstance;
+import com.p3.menu.MenuController;
+import com.p3.menu.MenuService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.PasswordField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.geometry.Pos;
 import java.io.IOException;
 import javafx.geometry.Insets;
+
+import javax.swing.*;
 
 public class LoginController {
     @FXML
@@ -27,7 +30,9 @@ public class LoginController {
     @FXML
     private VBox managerModal;
 
+
     private String managerUsername;
+    private String employeeUsername;
     private final LoginService loginService = new LoginService();
 
     @FXML
@@ -46,7 +51,10 @@ public class LoginController {
             if ("manager".equalsIgnoreCase(employmentRole)) {
                 showManagerModal(usernameField.getText());
             } else if ("employee".equalsIgnoreCase(employmentRole)) {
-                loadMenuPage();
+
+                showEmployeeModal(usernameField.getText());
+
+                //loadMenuPage();
             }
         }
     }
@@ -63,7 +71,8 @@ public class LoginController {
             e.printStackTrace();
         }
     }
-        // !!!!! Lige nu er koden til 'brain' som er manager: admin. 
+
+    // !!!!! Lige nu er koden til 'brain' som er manager: admin.
     private void showManagerModal(String username) {
         this.managerUsername = username;
 
@@ -88,7 +97,7 @@ public class LoginController {
         VBox vbox = new VBox(10, instructionLabel, passwordField, new HBox(10, submitButton, cancelButton), modalErrorLabel);
         vbox.setPadding(new Insets(10));
 
-        //submitButton.setOnAction(event -> handleSubmit(modalStage, passwordField.getText(), modalErrorLabel));
+        submitButton.setOnAction(event -> handleSubmit(modalStage, passwordField.getText(), modalErrorLabel));
         cancelButton.setOnAction(event -> modalStage.close());
 
         Scene modalScene = new Scene(vbox);
@@ -106,7 +115,7 @@ public class LoginController {
         modalStage.showAndWait();
     }
 
-/*
+
     @FXML
     private void handleCancel() {
         managerModal.setVisible(false);
@@ -121,5 +130,59 @@ public class LoginController {
         }
     }
 
- */
+
+    private void showEmployeeModal(String username) {
+        MenuService menuService = new MenuService();
+        this.employeeUsername = username;
+
+        Stage modalStage = new Stage();
+        modalStage.initModality(Modality.APPLICATION_MODAL);
+        modalStage.setTitle("Notifikation");
+
+
+        modalStage.setResizable(false);
+
+        Button menu = new Button("Gå til menu.");
+        Button logout = new Button("Log ud.");
+        Label textField = new Label("Din tid er blevet registrede.\n  Log ud eller gå til menu.");
+        textField.setWrapText(true); // Allow text wrapping for multi-line display
+        textField.setAlignment(Pos.CENTER); // Center align the text within the Label
+        textField.setMaxWidth(Double.MAX_VALUE); // Set max width to make centering effective
+
+        menu.getStyleClass().add("confirmButton");
+        logout.getStyleClass().add("defaultButton");
+
+        //todo J: This might inadvertently create a memory leak, but i dont care right now.
+        menu.setOnAction(event -> {MenuAndClose(modalStage);});
+        logout.setOnAction(event -> {LogoutAndClose(modalStage);});
+
+        HBox hbox = new HBox(10, textField, menu, logout);
+        hbox.setPadding(new Insets(10));
+        hbox.setPrefSize(300, 100);
+
+
+        VBox vbox = new VBox(15,textField,hbox);
+        vbox.setPadding(new Insets(20));
+
+        Scene modalScene = new Scene(vbox);
+
+
+
+        modalScene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
+
+        modalStage.setScene(modalScene);
+        modalStage.showAndWait();
+
+    }
+    private void LogoutAndClose(Stage modalStage) {
+        modalStage.close();
+        MenuService.loadLoginPage(AppInstance.getPrimaryStage());
+
+    }
+    private void MenuAndClose(Stage modalStage) {
+        modalStage.close();
+        loadMenuPage();
+
+    }
 }
+
