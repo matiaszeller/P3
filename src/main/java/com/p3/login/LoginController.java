@@ -72,13 +72,14 @@ public class LoginController {
         // Disable window resizing
         modalStage.setResizable(false);
 
-        Label instructionLabel = new Label("Enter Manager Password:");
+        Label instructionLabel = new Label("Indtast Manager Kode:");
+        instructionLabel.getStyleClass().add("modalText");
         PasswordField passwordField = new PasswordField();
-        passwordField.setPromptText("Password");
+        passwordField.setPromptText("Adgangskode");
 
-        Button submitButton = new Button("Submit");
-        Button cancelButton = new Button("Cancel");
-        Label modalErrorLabel = new Label("Invalid password. Try again.");
+        Button submitButton = new Button("Bekræft");
+        Button cancelButton = new Button("Annuller");
+        Label modalErrorLabel = new Label("Forkert kodeord. Prøv igen.");
         modalErrorLabel.setStyle("-fx-text-fill: red;");
         modalErrorLabel.setVisible(false);
 
