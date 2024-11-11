@@ -14,7 +14,6 @@ import java.sql.SQLException;
              DAO: Database kald
 */
 public class LoginDAO {
-
     public String getUserRole(String username) {
         String role = null;
         String sql = "SELECT role FROM users WHERE username = ?";

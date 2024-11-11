@@ -13,7 +13,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import java.io.IOException;
+import javafx.util.Duration;
+import javafx.scene.control.ProgressBar;
 import javafx.geometry.Insets;
+import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+
 
 public class LoginController {
     @FXML
@@ -122,34 +129,52 @@ public class LoginController {
 
         modalStage.setResizable(false);
 
-        Button menuButton = new Button("Gå til Menu");
-        Button logoutButton = new Button("Annuller");
-        Label textField = new Label("Din vagt er startet.\nGå til menu eller log ud automatisk.");
+        Button menu = new Button("Gå til menu");
+        Button logout = new Button("Log ud");
+        Label textField = new Label("Din vagt er startet.\n Gå til menu eller log ud automatisk.\n \n      Automatisk logud:");
+        textField.getStyleClass().add("modalText");
         textField.setWrapText(true);
         textField.setAlignment(Pos.CENTER);
         textField.setMaxWidth(Double.MAX_VALUE);
-        textField.getStyleClass().add("modalText");
+        ProgressBar progressBar = new ProgressBar(0);
+        progressBar.setPrefWidth(300);
 
-        menuButton.getStyleClass().add("confirmButton");
-        logoutButton.getStyleClass().add("defaultButton");
+        menu.getStyleClass().add("confirmButton");
+        logout.getStyleClass().add("defaultButton");
 
-        menuButton.setOnAction(event -> {
-            modalStage.close();
-            loadMenuPage();
-        });
-        logoutButton.setOnAction(event -> {
-            modalStage.close();
-            MenuService.loadLoginPage(AppInstance.getPrimaryStage());
-        });
-
-        VBox vbox = new VBox(15, textField, new HBox(10, menuButton, logoutButton));
+        HBox hbox = new HBox(10, textField, menu, logout);
+        hbox.setPadding(new Insets(10));
+        hbox.setPrefSize(300, 100);
+        VBox vbox = new VBox(15,textField,progressBar,hbox);
         vbox.setPadding(new Insets(20));
 
         Scene modalScene = new Scene(vbox);
-
         modalScene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
 
         modalStage.setScene(modalScene);
-        modalStage.showAndWait();
+        modalStage.show();
+        Timeline progressAnimation = new Timeline(
+                new KeyFrame(Duration.seconds(5), new KeyValue(progressBar.progressProperty(), 1))
+        );
+
+        PauseTransition timer = new PauseTransition(Duration.seconds(5));
+        timer.setOnFinished(event -> LogoutAndClose(modalStage));
+        //todo J: This might inadvertently create a memory leak, but i dont care right now.
+        menu.setOnAction(event -> { progressAnimation.stop(); timer.stop(); MenuAndClose(modalStage); });
+        logout.setOnAction(event -> {LogoutAndClose(modalStage);});
+        progressAnimation.play();
+        timer.play();
+
+    }
+    private void LogoutAndClose(Stage modalStage) {
+        modalStage.close();
+        MenuService.loadLoginPage(AppInstance.getPrimaryStage());
+    }
+
+    private void MenuAndClose(Stage modalStage) {
+
+        modalStage.close();
+        loadMenuPage();
+
     }
 }

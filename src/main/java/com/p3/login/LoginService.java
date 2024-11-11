@@ -3,9 +3,9 @@ package com.p3.login;
 import com.p3.login.LoginDAO;
 import org.mindrot.jbcrypt.BCrypt;
 
+//todo implement networking feature, to talk with server.
 public class LoginService {
     private final LoginDAO loginDAO = new LoginDAO();
-
     public String validateUser(String username) {
         return loginDAO.getUserRole(username);
     }
