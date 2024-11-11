@@ -1,7 +1,7 @@
 package com.p3.login;
 
 import com.p3.instance.AppInstance;
-import com.p3.menu.MenuController;
+import com.p3.login.LoginService;
 import com.p3.menu.MenuService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,16 +25,12 @@ import javafx.animation.KeyValue;
 public class LoginController {
     @FXML
     private Label errorText;
-
     @FXML
     private TextField usernameField;
-
     @FXML
     private Button loginButton;
-
     @FXML
     private VBox managerModal;
-
 
     private String managerUsername;
     private String employeeUsername;
@@ -46,20 +42,15 @@ public class LoginController {
     }
 
     private void handleLogin() {
-        RoleHolder roleHolder = new RoleHolder();
-        boolean isValid = loginService.validateUser(usernameField.getText(), roleHolder);
+        String role = loginService.validateUser(usernameField.getText());
 
-        if (!isValid) {
+        if (role == null) {
             errorText.setVisible(true);
         } else {
-            String employmentRole = roleHolder.getEmploymentRole();
-            if ("manager".equalsIgnoreCase(employmentRole)) {
+            if ("manager".equalsIgnoreCase(role)) {
                 showManagerModal(usernameField.getText());
-            } else if ("employee".equalsIgnoreCase(employmentRole)) {
-
+            } else if ("employee".equalsIgnoreCase(role)) {
                 showEmployeeModal(usernameField.getText());
-
-                //loadMenuPage();
             }
         }
     }
@@ -77,7 +68,6 @@ public class LoginController {
         }
     }
 
-    // !!!!! Lige nu er koden til 'brain' som er manager: admin.
     private void showManagerModal(String username) {
         this.managerUsername = username;
 
@@ -89,13 +79,14 @@ public class LoginController {
         // Disable window resizing
         modalStage.setResizable(false);
 
-        Label instructionLabel = new Label("Enter Manager Password:");
+        Label instructionLabel = new Label("Indtast Manager Kode:");
+        instructionLabel.getStyleClass().add("modalText");
         PasswordField passwordField = new PasswordField();
-        passwordField.setPromptText("Password");
+        passwordField.setPromptText("Adgangskode");
 
-        Button submitButton = new Button("Submit");
-        Button cancelButton = new Button("Cancel");
-        Label modalErrorLabel = new Label("Invalid password. Try again.");
+        Button submitButton = new Button("Bekræft");
+        Button cancelButton = new Button("Annuller");
+        Label modalErrorLabel = new Label("Forkert kodeord. Prøv igen.");
         modalErrorLabel.setStyle("-fx-text-fill: red;");
         modalErrorLabel.setVisible(false);
 
@@ -106,7 +97,6 @@ public class LoginController {
         cancelButton.setOnAction(event -> modalStage.close());
 
         Scene modalScene = new Scene(vbox);
-
 
         modalScene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
 
@@ -120,12 +110,6 @@ public class LoginController {
         modalStage.showAndWait();
     }
 
-
-    @FXML
-    private void handleCancel() {
-        managerModal.setVisible(false);
-    }
-
     private void handleSubmit(Stage modalStage, String password, Label modalErrorLabel) {
         if (loginService.validateManager(managerUsername, password)) {
             modalStage.close();
@@ -135,31 +119,28 @@ public class LoginController {
         }
     }
 
-
     private void showEmployeeModal(String username) {
         MenuService menuService = new MenuService();
         this.employeeUsername = username;
 
         Stage modalStage = new Stage();
         modalStage.initModality(Modality.APPLICATION_MODAL);
-        modalStage.setTitle("Notifikation");
-
+        modalStage.setTitle("Notification");
 
         modalStage.setResizable(false);
 
-        Button menu = new Button("Gå til menu.");
-        Button logout = new Button("Log ud.");
-        Label textField = new Label("Din tid er blevet registrede.\n  Log ud eller gå til menu. \n \n      Automatisk logud:");
+        Button menu = new Button("Gå til menu");
+        Button logout = new Button("Log ud");
+        Label textField = new Label("Din vagt er startet.\n Gå til menu eller log ud automatisk.\n \n      Automatisk logud:");
+        textField.getStyleClass().add("modalText");
         textField.setWrapText(true);
-        textField.setAlignment(Pos.CENTER); // Center align the text within the Label
-        textField.setMaxWidth(Double.MAX_VALUE); // Set max width to make centering effective
+        textField.setAlignment(Pos.CENTER);
+        textField.setMaxWidth(Double.MAX_VALUE);
         ProgressBar progressBar = new ProgressBar(0);
         progressBar.setPrefWidth(300);
 
         menu.getStyleClass().add("confirmButton");
         logout.getStyleClass().add("defaultButton");
-
-
 
         HBox hbox = new HBox(10, textField, menu, logout);
         hbox.setPadding(new Insets(10));
@@ -197,4 +178,3 @@ public class LoginController {
 
     }
 }
-
