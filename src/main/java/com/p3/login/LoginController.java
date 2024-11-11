@@ -145,7 +145,7 @@ public class LoginController {
         Button menu = new Button("Gå til menu.");
         Button logout = new Button("Log ud.");
         Label textField = new Label("Din tid er blevet registrede.\n  Log ud eller gå til menu.");
-        textField.setWrapText(true); // Allow text wrapping for multi-line display
+        textField.setWrapText(true);
         textField.setAlignment(Pos.CENTER); // Center align the text within the Label
         textField.setMaxWidth(Double.MAX_VALUE); // Set max width to make centering effective
 
