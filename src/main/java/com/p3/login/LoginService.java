@@ -7,9 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LoginService {
+
     public boolean validateUser(String username, RoleHolder roleHolder) {
         boolean isValid = false;
-
 /*
         com.p3.networking.Net request = new com.p3.networking.Net();
         String Response = request.sendRequestToServer(username);
@@ -21,9 +21,8 @@ public class LoginService {
     }
 }
 */
-
-
         String sql = "SELECT role FROM users WHERE username = ?";
+
         try (Connection con = LoginDAO.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
@@ -35,12 +34,11 @@ public class LoginService {
                 }
             }
         } catch (SQLException e) {
-         e.printStackTrace(System.out);
+            e.printStackTrace(System.out);
         }
 
         return isValid;
     }
-
 
     public boolean validateManager(String username, String password) {
         String query = "SELECT password FROM users WHERE username = ? AND role = 'manager'";
@@ -55,19 +53,17 @@ public class LoginService {
                 String storedPassword = resultSet.getString("password");
                 // Bcrypt checks the inputted password against the hashed password in the database
                 return BCrypt.checkpw(password, storedPassword);
-
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-            return false;
-        }
+
+        return false;
+    }
+
     public static String hashPassword(String plainPassword) {
         return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
     }
 
-
 }
-
-

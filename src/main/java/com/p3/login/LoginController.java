@@ -15,8 +15,6 @@ import javafx.geometry.Pos;
 import java.io.IOException;
 import javafx.geometry.Insets;
 
-import javax.swing.*;
-
 public class LoginController {
     @FXML
     private Label errorText;
