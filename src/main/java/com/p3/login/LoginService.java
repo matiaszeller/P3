@@ -9,6 +9,20 @@ import java.sql.SQLException;
 public class LoginService {
     public boolean validateUser(String username, RoleHolder roleHolder) {
         boolean isValid = false;
+
+/*
+        com.p3.networking.Net request = new com.p3.networking.Net();
+        String Response = request.sendRequestToServer(username);
+        if (Response.equals("correct") == true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+*/
+
+
         String sql = "SELECT role FROM users WHERE username = ?";
         try (Connection con = LoginDAO.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -53,20 +67,7 @@ public class LoginService {
         return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
     }
 
+
 }
 
 
-
-/*
-
-
-        com.p3.networking.Net request = new com.p3.networking.Net();
-        String Response = request.sendRequestToServer(username);
-        if (Response.equals("correct") == true) {
-                return true;
-                } else {
-                return false;
-                }
-
-
- */

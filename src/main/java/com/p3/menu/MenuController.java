@@ -20,22 +20,20 @@ public class MenuController {
     @FXML
     private Button breakButton;
     @FXML
-    private Label clock;  // The new label for the clock
-
-    private Timeline clockTimeline;
+    private Label clock;
 
     @FXML
     public void initialize() {
         endShiftButton.setOnAction(event -> handleEndShift());
         logOutButton.setOnAction(event -> handleLogOut());
-        breakButton.setOnAction(event -> handleStartBreak());
+        breakButton.setOnAction(event -> handleBreakButton());
 
         startClock();
     }
 
     private void startClock() {
         KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), event -> updateClock());
-        clockTimeline = new Timeline(keyFrame);
+        Timeline clockTimeline = new Timeline(keyFrame);
         clockTimeline.setCycleCount(Timeline.INDEFINITE);
         clockTimeline.play();
     }
@@ -62,7 +60,7 @@ public class MenuController {
         MenuService.loadLoginPage(stage);
     }
 
-    private void handleStartBreak() {
+    private void handleBreakButton() {
 
     }
 
