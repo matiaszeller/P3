@@ -6,19 +6,23 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+//todo implement networking feature, to talk with server.
 public class LoginService {
     public boolean validateUser(String username, RoleHolder roleHolder) {
         boolean isValid = false;
-
 /*
+        String requestBody = "getEmployeeUsername :" + username;
+
         com.p3.networking.Net request = new com.p3.networking.Net();
-        String Response = request.sendRequestToServer(username);
+        String Response = request.sendRequestToServer(requestBody);
         if (Response.equals("correct") == true) {
             return true;
         } else {
             return false;
         }
     }
+
+
 }
 */
 

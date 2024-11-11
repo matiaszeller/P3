@@ -1,7 +1,6 @@
 package com.p3.login;
 
 import com.p3.instance.AppInstance;
-import com.p3.menu.MenuController;
 import com.p3.menu.MenuService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,9 +12,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import java.io.IOException;
+import javafx.util.Duration;
+import javafx.scene.control.ProgressBar;
 import javafx.geometry.Insets;
+import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 
-import javax.swing.*;
 
 public class LoginController {
     @FXML
@@ -144,10 +148,12 @@ public class LoginController {
 
         Button menu = new Button("Gå til menu.");
         Button logout = new Button("Log ud.");
-        Label textField = new Label("Din tid er blevet registrede.\n  Log ud eller gå til menu.");
+        Label textField = new Label("Din tid er blevet registrede.\n  Log ud eller gå til menu. \n \n      Automatisk logud");
         textField.setWrapText(true);
         textField.setAlignment(Pos.CENTER); // Center align the text within the Label
         textField.setMaxWidth(Double.MAX_VALUE); // Set max width to make centering effective
+        ProgressBar progressBar = new ProgressBar(0);
+        progressBar.setPrefWidth(300);
 
         menu.getStyleClass().add("confirmButton");
         logout.getStyleClass().add("defaultButton");
@@ -159,30 +165,32 @@ public class LoginController {
         HBox hbox = new HBox(10, textField, menu, logout);
         hbox.setPadding(new Insets(10));
         hbox.setPrefSize(300, 100);
-
-
-        VBox vbox = new VBox(15,textField,hbox);
+        VBox vbox = new VBox(15,textField,progressBar,hbox);
         vbox.setPadding(new Insets(20));
 
         Scene modalScene = new Scene(vbox);
-
-
-
         modalScene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
 
         modalStage.setScene(modalScene);
-        modalStage.showAndWait();
+        modalStage.show();
+        Timeline progressAnimation = new Timeline(
+                new KeyFrame(Duration.seconds(5), new KeyValue(progressBar.progressProperty(), 1))
+        );
+
+        PauseTransition timer = new PauseTransition(Duration.seconds(5));
+        timer.setOnFinished(event -> LogoutAndClose(modalStage));
+        progressAnimation.play();
+        timer.play();
 
     }
     private void LogoutAndClose(Stage modalStage) {
         modalStage.close();
         MenuService.loadLoginPage(AppInstance.getPrimaryStage());
-
     }
+
     private void MenuAndClose(Stage modalStage) {
         modalStage.close();
         loadMenuPage();
-
     }
 }
 
