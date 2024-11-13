@@ -1,39 +1,37 @@
 package com.p3.networking;
 
-
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.net.Socket;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 
 public class Net {
 
+    private String IP;
+    private String endpoint;
+    private String urlString = "http://" + IP + endpoint;
 
-    private static final String SERVER_ADDRESS = "localhost"; // local $
-    private static final int SERVER_PORT = 10000;
+    public void sendRequestToServer(String request) throws IOException {
 
-    public String sendRequestToServer(String request) {
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-            StringBuilder response = new StringBuilder();
-            try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
-                 OutputStream output = socket.getOutputStream();
-                 PrintWriter writer = new PrintWriter(output, true);
-                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("PASSWORD", "secret");
 
-                // Send req til server
-                writer.println(request);
+        int responseCode = conn.getResponseCode();
+        System.out.println("Response Code: " + responseCode);
 
-                // Resp
-              response.append(reader.readLine());
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                response.append("Error: ").append(e.getMessage());
-            }
-            return response.toString();
 
+
+
+
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(conn.getInputStream())
+        );
 
 
     }
