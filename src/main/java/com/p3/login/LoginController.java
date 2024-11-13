@@ -20,6 +20,8 @@ import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import com.p3.session.Session;
+
 
 
 public class LoginController {
@@ -42,15 +44,22 @@ public class LoginController {
     }
 
     private void handleLogin() {
-        String role = loginService.validateUser(usernameField.getText());
+        String username = usernameField.getText();
+        String role = loginService.validateUser(username);
 
         if (role == null) {
             errorText.setVisible(true);
         } else {
             if ("manager".equalsIgnoreCase(role)) {
-                showManagerModal(usernameField.getText());
+                showManagerModal(username);
             } else if ("employee".equalsIgnoreCase(role)) {
-                showEmployeeModal(usernameField.getText());
+                int userId = loginService.getUserId(username);
+                String fullName = loginService.getUserFullName(username);
+
+                Session.setCurrentUserId(userId);
+                Session.setCurrentUserFullName(fullName);
+
+                showEmployeeModal(username);
             }
         }
     }
@@ -112,6 +121,12 @@ public class LoginController {
 
     private void handleSubmit(Stage modalStage, String password, Label modalErrorLabel) {
         if (loginService.validateManager(managerUsername, password)) {
+            int userId = loginService.getUserId(managerUsername);
+            String fullName = loginService.getUserFullName(managerUsername);
+
+            Session.setCurrentUserId(userId);
+            Session.setCurrentUserFullName(fullName);
+
             modalStage.close();
             loadMenuPage();
         } else {

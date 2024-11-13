@@ -53,4 +53,44 @@ public class LoginDAO {
 
         return password;
     }
+
+    public int getUserId(String username) {
+        int userId = -1;
+        String sql = "SELECT user_id FROM users WHERE username = ?";
+
+        try (Connection con = DatabaseConfig.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    userId = rs.getInt("user_id");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return userId;
+    }
+
+    public String getUserFullName(String username) {
+        String fullName = null;
+        String sql = "SELECT full_name FROM users WHERE username = ?";
+
+        try (Connection con = DatabaseConfig.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    fullName = rs.getString("full_name");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return fullName;
+    }
 }

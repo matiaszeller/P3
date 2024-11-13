@@ -18,4 +18,12 @@ public class LoginService {
     public static String hashPassword(String plainPassword) {
         return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
     }
+
+    public int getUserId(String username) {
+        return loginDAO.getUserId(username);
+    }
+    public String getUserFullName(String username) {
+        return loginDAO.getUserFullName(username);
+    }
+
 }
