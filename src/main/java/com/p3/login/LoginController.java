@@ -146,7 +146,7 @@ public class LoginController {
 
         Button menu = new Button("Gå til menu");
         Button logout = new Button("Log ud");
-        Label textField = new Label("Din vagt er startet.\n Gå til menu eller log ud automatisk.\n \n      Automatisk logud:");
+        Label textField = new Label("Din vagt er startet.\nGå til menu eller log ud automatisk.\n\nAutomatisk logud:");
         textField.getStyleClass().add("modalText");
         textField.setWrapText(true);
         textField.setAlignment(Pos.CENTER);

@@ -90,7 +90,7 @@ public class MenuController {
             String formattedTime = event.getEventTime().format(formatter);
             String eventType = event.getEventType();
 
-            Label eventLabel = new Label(eventType + " at " + formattedTime);
+            Label eventLabel = new Label(eventType + " klokken " + formattedTime); //TODO lave enumerator til formatering af eventTypes
             eventLabel.getStyleClass().add("eventLabel"); //TODO
 
             notificationBox.getChildren().add(eventLabel);
