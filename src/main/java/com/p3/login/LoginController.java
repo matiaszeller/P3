@@ -1,7 +1,6 @@
 package com.p3.login;
 
 import com.p3.instance.AppInstance;
-import com.p3.login.LoginService;
 import com.p3.menu.MenuService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +12,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import javafx.util.Duration;
 import javafx.scene.control.ProgressBar;
 import javafx.geometry.Insets;
@@ -50,16 +50,22 @@ public class LoginController {
         if (role == null) {
             errorText.setVisible(true);
         } else {
+            int userId = loginService.getUserId(username);
+            String fullName = loginService.getUserFullName(username);
+
+            Session.setCurrentUserId(userId);
+            Session.setCurrentUserFullName(fullName);
+
             if ("manager".equalsIgnoreCase(role)) {
                 showManagerModal(username);
             } else if ("employee".equalsIgnoreCase(role)) {
-                int userId = loginService.getUserId(username);
-                String fullName = loginService.getUserFullName(username);
+                boolean clockedIn = loginService.getClockedInStatus(username);
 
-                Session.setCurrentUserId(userId);
-                Session.setCurrentUserFullName(fullName);
-
-                showEmployeeModal(username);
+                if (clockedIn) {
+                    loadMenuPage();
+                } else {
+                    showEmployeeModal(username);
+                }
             }
         }
     }
@@ -137,6 +143,13 @@ public class LoginController {
     private void showEmployeeModal(String username) {
         MenuService menuService = new MenuService();
         this.employeeUsername = username;
+
+        int userId = Session.getCurrentUserId();
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        loginService.insertCheckInEvent(userId, currentTime);
+
+        loginService.setClockedInStatus(username, true);
 
         Stage modalStage = new Stage();
         modalStage.initModality(Modality.APPLICATION_MODAL);

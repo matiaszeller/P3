@@ -37,7 +37,6 @@ public class MenuService {
         return result.isPresent() && result.get() == confirmButton;
     }
 
-    //todo: if endshiftbutton pressed -> send to database
     public static void loadLoginPage(Stage stage) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(MenuService.class.getResource("/com.p3.login/LoginPage.fxml"));
