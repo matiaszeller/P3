@@ -3,6 +3,7 @@ package com.p3.login;
 import com.p3.instance.AppInstance;
 import com.p3.login.LoginService;
 import com.p3.menu.MenuService;
+import com.p3.networking.Net;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -43,6 +44,19 @@ public class LoginController {
 
     private void handleLogin() {
         String role = loginService.validateUser(usernameField.getText());
+
+        JsonObject requestJson = new JsonObject();
+        requestJson.addProperty("username", role);
+        String jsonData = requestJson.toString();
+
+        // Create an instance of NetworkClient
+        Net networkingClient = new Net();
+
+        // Send POST request and get the response
+        String response = Net.sendPostRequest("/validateUser", jsonData);
+
+
+
 
         if (role == null) {
             errorText.setVisible(true);
