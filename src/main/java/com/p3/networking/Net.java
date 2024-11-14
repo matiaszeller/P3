@@ -14,25 +14,30 @@ public class Net {
     private String urlString = "http://" + IP + endpoint;
 
     public void sendRequestToServer(String request) throws IOException {
+        try{
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-        URL url = new URL(urlString);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Accept", "application/json");
 
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("PASSWORD", "secret");
+            int responseCode = conn.getResponseCode();
+            System.out.println("Response Code: " + responseCode);
 
-        int responseCode = conn.getResponseCode();
-        System.out.println("Response Code: " + responseCode);
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
+            String inputLine;
+            StringBuilder response = new StringBuilder();
 
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
 
-
-
-
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(conn.getInputStream())
-        );
-
-
+            // Output the response
+            System.out.println("Response Body: " + response.toString());}
+            catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
