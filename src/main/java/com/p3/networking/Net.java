@@ -8,19 +8,19 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class Net {
-    private static final String SERVER_IP = "192.168.1.100";
-
+    private static final String SERVER_IP = "localhost:";
+    private static final String PORT = "8080";
     public static String sendPostRequest(String endpoint, String jsonData) {
         String response = null;
         try {
-            String urlString = "http://" + SERVER_IP + endpoint;
+
+            String urlString = "http://" + SERVER_IP + PORT + endpoint + jsonData;
 
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-            conn.setRequestMethod("POST");
+            conn.setRequestMethod("GET");
             conn.setRequestProperty("Content-Type", "application/json; utf-8");
-            conn.setRequestProperty("Accept", "application/json");
             conn.setDoOutput(true);
 
             try (OutputStream os = conn.getOutputStream()) {

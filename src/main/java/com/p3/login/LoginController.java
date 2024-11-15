@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
@@ -43,27 +44,27 @@ public class LoginController {
     }
 
     private void handleLogin() {
-        String role = loginService.validateUser(usernameField.getText());
+        String user = loginService.validateUser(usernameField.getText());
 
         JSONObject requestJson = new JSONObject();
-        requestJson.put("username", role);
+        requestJson.put("username", user);
         String jsonData = requestJson.toString();
 
         // Create an instance of NetworkClient
         Net networkingClient = new Net();
 
         // Send POST request and get the response
-        String response = Net.sendPostRequest("/validateUser", jsonData);
+        String response = Net.sendPostRequest("/api/user", user);
 
 
 
 
-        if (role == null) {
+        if (user == null) {
             errorText.setVisible(true);
         } else {
-            if ("manager".equalsIgnoreCase(role)) {
+            if ("manager".equalsIgnoreCase(user)) {
                 showManagerModal(usernameField.getText());
-            } else if ("employee".equalsIgnoreCase(role)) {
+            } else if ("employee".equalsIgnoreCase(user)) {
                 showEmployeeModal(usernameField.getText());
             }
         }
@@ -145,11 +146,12 @@ public class LoginController {
 
         Button menu = new Button("Gå til menu");
         Button logout = new Button("Log ud");
-        Label textField = new Label("Din vagt er startet.\n Gå til menu eller log ud automatisk.\n \n      Automatisk logud:");
+        Label textField = new Label("Din vagt er startet.\nGå til menu eller log ud.\n\nAutomatisk logud:");
         textField.getStyleClass().add("modalText");
-        textField.setWrapText(true);
+        //textField.setWrapText(true);
+        textField.setTextAlignment(TextAlignment.CENTER);
         textField.setAlignment(Pos.CENTER);
-        textField.setMaxWidth(Double.MAX_VALUE);
+        textField.setPrefWidth(Double.MAX_VALUE);
         ProgressBar progressBar = new ProgressBar(0);
         progressBar.setPrefWidth(300);
 
