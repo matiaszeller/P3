@@ -54,7 +54,7 @@ public class LoginController {
         Net networkingClient = new Net();
 
         // Send POST request and get the response
-        String response = Net.sendPostRequest("/api/user", user);
+        String response = Net.sendPostRequest("api/user/", user);
 
 
 
