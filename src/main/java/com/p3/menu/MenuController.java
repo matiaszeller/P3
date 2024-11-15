@@ -1,15 +1,20 @@
 package com.p3.menu;
 
+import com.p3.menu.MenuDAO.Event;
+import com.p3.session.Session;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class MenuController {
 
@@ -21,6 +26,12 @@ public class MenuController {
     private Button breakButton;
     @FXML
     private Label clock;
+    @FXML
+    private Label welcomeText;
+    @FXML
+    private VBox notificationBox;
+
+    private final MenuDAO menuDAO = new MenuDAO();
 
     @FXML
     public void initialize() {
@@ -29,6 +40,9 @@ public class MenuController {
         breakButton.setOnAction(event -> handleBreakButton());
 
         startClock();
+        loadDailyEvents();
+        initializeWelcomeText();
+        initializeBreakButton();
     }
 
     private void startClock() {
@@ -49,19 +63,102 @@ public class MenuController {
     private void handleEndShift() {
         boolean confirmed = MenuService.showEndShiftConfirmation();
         if (confirmed) {
-            System.out.println("Shift ended at " + java.time.LocalTime.now());
+            int userId = Session.getCurrentUserId();
+            LocalDateTime currentTime = LocalDateTime.now();
+
+            menuDAO.insertCheckOutEvent(userId, currentTime);
+            menuDAO.setClockedInStatusById(userId, false);
+            menuDAO.setOnBreakStatus(userId, false);
+
+            Session.clearSession();
+
             Stage stage = (Stage) endShiftButton.getScene().getWindow();
             MenuService.loadLoginPage(stage);
         }
     }
 
     private void handleLogOut() {
+        Session.clearSession();
+
         Stage stage = (Stage) logOutButton.getScene().getWindow();
         MenuService.loadLoginPage(stage);
     }
 
     private void handleBreakButton() {
+        int userId = Session.getCurrentUserId();
+        boolean onBreak = menuDAO.getOnBreakStatus(userId);
+        LocalDateTime currentTime = LocalDateTime.now();
 
+        if (onBreak) {
+            menuDAO.insertBreakEndEvent(userId, currentTime);
+            menuDAO.setOnBreakStatus(userId, false);
+
+            breakButton.getStyleClass().add("breakButton");
+            breakButton.getStyleClass().remove("onBreakButton");
+            breakButton.setText("Start Pause");
+        } else {
+            menuDAO.insertBreakStartEvent(userId, currentTime);
+            menuDAO.setOnBreakStatus(userId, true);
+
+            breakButton.getStyleClass().add("onBreakButton");
+            breakButton.setText("Afslut Pause");
+        }
+
+        loadDailyEvents();
     }
 
+    private void loadDailyEvents() {
+        int userId = Session.getCurrentUserId();
+        List<Event> events = menuDAO.getTodaysEventsForUser(userId);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        notificationBox.getChildren().clear();
+
+        for (Event event : events) {
+            String formattedTime = event.getEventTime().format(formatter);
+            String eventType = event.getEventType();
+
+            String eventDisplay = formatEventType(eventType);
+
+            Label eventLabel = new Label(eventDisplay + " klokken " + formattedTime);
+            eventLabel.getStyleClass().add("eventLabel");
+
+            notificationBox.getChildren().add(eventLabel);
+        }
+    }
+
+    private String formatEventType(String eventType) {
+        switch (eventType) {
+            case "check_in":
+                return "Check-ind";
+            case "check_out":
+                return "Check-ud";
+            case "break_start":
+                return "Pause start";
+            case "break_end":
+                return "Pause slut";
+            default:
+                return eventType;
+        }
+    }
+
+    private void initializeWelcomeText() {
+        String fullName = Session.getCurrentUserFullName();
+        welcomeText.setText("Velkommen " + fullName);
+    }
+
+    private void initializeBreakButton() {
+        int userId = Session.getCurrentUserId();
+        boolean onBreak = menuDAO.getOnBreakStatus(userId);
+
+        if (onBreak) {
+            breakButton.getStyleClass().add("onBreakButton");
+            breakButton.setText("Afslut Pause");
+        } else {
+            breakButton.getStyleClass().add("breakButton");
+            breakButton.getStyleClass().remove("onBreakButton");
+            breakButton.setText("Start Pause");
+        }
+    }
 }
