@@ -63,7 +63,7 @@ public class LoginController {
 
 
 
-        if (user == null) {
+        if (username == null) {
             errorText.setVisible(true);
         } else {
 
