@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class Net {
     private static final String SERVER_IP = "192.168.1.100";
@@ -23,7 +24,7 @@ public class Net {
             conn.setDoOutput(true);
 
             try (OutputStream os = conn.getOutputStream()) {
-                byte[] input = jsonData.getBytes("utf-8");
+                byte[] input = jsonData.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
             }
 
@@ -31,7 +32,7 @@ public class Net {
 
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 try (BufferedReader br = new BufferedReader(
-                        new InputStreamReader(conn.getInputStream(), "utf-8"))) {
+                        new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
                     StringBuilder responseBuilder = new StringBuilder();
                     String responseLine;
 

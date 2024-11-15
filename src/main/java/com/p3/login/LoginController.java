@@ -21,7 +21,7 @@ import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
-
+import org.json.*;
 
 public class LoginController {
     @FXML
@@ -45,8 +45,8 @@ public class LoginController {
     private void handleLogin() {
         String role = loginService.validateUser(usernameField.getText());
 
-        JsonObject requestJson = new JsonObject();
-        requestJson.addProperty("username", role);
+        JSONObject requestJson = new JSONObject();
+        requestJson.put("username", role);
         String jsonData = requestJson.toString();
 
         // Create an instance of NetworkClient
