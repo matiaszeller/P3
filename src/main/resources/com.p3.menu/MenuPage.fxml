@@ -11,12 +11,12 @@
                 <children>
                     <HBox>
                         <children>
-                            <Label fx:id="clock" styleClass="welcomeText" text="Indlæser klokkeslæt">
+                            <Label fx:id="clock" prefWidth="200.0" styleClass="welcomeText" text="Indlæser klokkeslæt">
                         <padding>
                            <Insets left="50.0" />
                         </padding></Label>
                             <Region HBox.hgrow="ALWAYS" />
-                            <Label fx:id="welcomeText" styleClass="welcomeText" text="Velkommen test" />
+                            <Label fx:id="welcomeText" styleClass="welcomeText" text="Velkommen test" HBox.hgrow="SOMETIMES" />
                             <Region HBox.hgrow="ALWAYS" />
                             <Button fx:id="logOutButton" styleClass="defaultButton" text="Log Ud">
                                 <HBox.margin>

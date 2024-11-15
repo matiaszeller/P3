@@ -1,7 +1,6 @@
 package com.p3.login;
 
 import com.p3.instance.AppInstance;
-import com.p3.login.LoginService;
 import com.p3.menu.MenuService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +12,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import javafx.util.Duration;
 import javafx.scene.control.ProgressBar;
 import javafx.geometry.Insets;
@@ -20,6 +20,8 @@ import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import com.p3.session.Session;
+
 
 
 public class LoginController {
@@ -42,15 +44,28 @@ public class LoginController {
     }
 
     private void handleLogin() {
-        String role = loginService.validateUser(usernameField.getText());
+        String username = usernameField.getText();
+        String role = loginService.validateUser(username);
 
         if (role == null) {
             errorText.setVisible(true);
         } else {
+            int userId = loginService.getUserId(username);
+            String fullName = loginService.getUserFullName(username);
+
+            Session.setCurrentUserId(userId);
+            Session.setCurrentUserFullName(fullName);
+
             if ("manager".equalsIgnoreCase(role)) {
-                showManagerModal(usernameField.getText());
+                showManagerModal(username);
             } else if ("employee".equalsIgnoreCase(role)) {
-                showEmployeeModal(usernameField.getText());
+                boolean clockedIn = loginService.getClockedInStatus(username);
+
+                if (clockedIn) {
+                    loadMenuPage();
+                } else {
+                    showEmployeeModal(username);
+                }
             }
         }
     }
@@ -112,6 +127,12 @@ public class LoginController {
 
     private void handleSubmit(Stage modalStage, String password, Label modalErrorLabel) {
         if (loginService.validateManager(managerUsername, password)) {
+            int userId = loginService.getUserId(managerUsername);
+            String fullName = loginService.getUserFullName(managerUsername);
+
+            Session.setCurrentUserId(userId);
+            Session.setCurrentUserFullName(fullName);
+
             modalStage.close();
             loadMenuPage();
         } else {
@@ -123,6 +144,13 @@ public class LoginController {
         MenuService menuService = new MenuService();
         this.employeeUsername = username;
 
+        int userId = Session.getCurrentUserId();
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        loginService.insertCheckInEvent(userId, currentTime);
+
+        loginService.setClockedInStatus(username, true);
+
         Stage modalStage = new Stage();
         modalStage.initModality(Modality.APPLICATION_MODAL);
         modalStage.setTitle("Notification");
@@ -131,7 +159,7 @@ public class LoginController {
 
         Button menu = new Button("Gå til menu");
         Button logout = new Button("Log ud");
-        Label textField = new Label("Din vagt er startet.\n Gå til menu eller log ud automatisk.\n \n      Automatisk logud:");
+        Label textField = new Label("Din vagt er startet.\nGå til menu eller log ud automatisk.\n\nAutomatisk logud:");
         textField.getStyleClass().add("modalText");
         textField.setWrapText(true);
         textField.setAlignment(Pos.CENTER);
