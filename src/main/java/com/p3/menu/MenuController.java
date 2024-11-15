@@ -131,9 +131,9 @@ public class MenuController {
     private String formatEventType(String eventType) {
         switch (eventType) {
             case "check_in":
-                return "Check-in";
+                return "Check-ind";
             case "check_out":
-                return "Check-out";
+                return "Check-ud";
             case "break_start":
                 return "Pause start";
             case "break_end":

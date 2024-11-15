@@ -1,6 +1,5 @@
 package com.p3.login;
 
-import com.p3.login.LoginDAO;
 import org.mindrot.jbcrypt.BCrypt;
 import java.time.LocalDateTime;
 
