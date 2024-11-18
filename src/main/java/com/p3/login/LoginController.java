@@ -154,7 +154,7 @@ public class LoginController {
         int userId = Session.getCurrentUserId();
         LocalDateTime currentTime = LocalDateTime.now();
 
-        loginService.insertCheckInEvent(userId, currentTime);
+        loginService.postCheckInEvent(userId, currentTime);
 
         loginService.setClockedInStatus(username, true);
 

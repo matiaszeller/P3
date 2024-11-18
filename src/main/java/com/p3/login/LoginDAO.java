@@ -63,17 +63,12 @@ public class LoginDAO {
         }
     }
 
-    public void insertCheckInEvent(int userId, LocalDateTime eventTime) {
-        String sql = "INSERT INTO timelog (user_id, shift_date, event_time, event_type) VALUES (?, CURDATE(), ?, 'check_in')";
+    public void postCheckInEvent(int userId, LocalDateTime eventTime) {
 
-        try (Connection con = DatabaseConfig.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setInt(1, userId);
-            ps.setTimestamp(2, Timestamp.valueOf(eventTime));
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
+        String url = "timelog/checkIn?userId=" + userId + "&eventTime=" + eventTime;
+        try{
+            api.post(url, null, null); // TODO Overvej om det skal sendes som body
+        } catch(Exception e){
             e.printStackTrace();
         }
     }
