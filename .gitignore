@@ -34,3 +34,6 @@ P3.iml
 
 ### Maven ###
 target/
+
+### env ###
+.env
