@@ -64,6 +64,17 @@ public class LoginDAO {
     }
 
     public void insertCheckInEvent(int userId, LocalDateTime eventTime) {
+        String sql = "INSERT INTO timelog (user_id, shift_date, event_time, event_type) VALUES (?, CURDATE(), ?, 'check_in')";
 
+        try (Connection con = DatabaseConfig.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            ps.setTimestamp(2, Timestamp.valueOf(eventTime));
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
