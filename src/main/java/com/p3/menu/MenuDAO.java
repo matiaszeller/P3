@@ -11,7 +11,7 @@ public class MenuDAO {
 
     public boolean getOnBreakStatus(int userId) {
         boolean onBreak = false;
-        String sql = "SELECT on_break FROM users WHERE user_id = ?";
+        String sql = "SELECT on_break FROM user WHERE user_id = ?";
 
         try (Connection con = DatabaseConfig.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -30,7 +30,7 @@ public class MenuDAO {
     }
 
     public void setOnBreakStatus(int userId, boolean status) {
-        String sql = "UPDATE users SET on_break = ? WHERE user_id = ?";
+        String sql = "UPDATE user SET on_break = ? WHERE user_id = ?";
 
         try (Connection con = DatabaseConfig.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -130,7 +130,7 @@ public class MenuDAO {
     }
 
     public void setClockedInStatusById(int userId, boolean status) {
-        String sql = "UPDATE users SET clocked_in = ? WHERE user_id = ?";
+        String sql = "UPDATE user SET clocked_in = ? WHERE user_id = ?";
 
         try (Connection con = DatabaseConfig.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {

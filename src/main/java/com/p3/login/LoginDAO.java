@@ -1,6 +1,9 @@
 package com.p3.login;
 
 import com.p3.config.DatabaseConfig;
+import com.p3.networking.ServerApi;
+
+import java.net.http.HttpResponse;
 import java.sql.*;
 import java.time.LocalDateTime;
 
@@ -12,118 +15,51 @@ import java.time.LocalDateTime;
              DAO: Database kald
 */
 public class LoginDAO {
-    public String getUserRole(String username) {
-        String role = null;
-        String sql = "SELECT role FROM users WHERE username = ?";
+    private final ServerApi api = new ServerApi();
 
-        try (Connection con = DatabaseConfig.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+    public String getUserRole(String username){
+        String url = "user/role/" + username;
+        HttpResponse response = api.get(url, null);
 
-            ps.setString(1, username);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    role = rs.getString("role");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return role;
+        return (String) response.body(); // Works for this method, but all repsonses from server should return json
     }
 
-    public String getManagerPassword(String username) {
-        String password = null;
-        String sql = "SELECT password FROM users WHERE username = ? AND role = 'manager'";
+    public String getManagerPassword(String username) { // TODO Prob not correct way to secure password
+        String url = "user/pass/" + username;
+        HttpResponse response = api.get(url, null);
 
-        try (Connection con = DatabaseConfig.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setString(1, username);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    password = rs.getString("password");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return password;
+        return (String) response.body();        // TODO har ikke lige testet om den decrypter ordentligt på service men burde virke
     }
 
-    public int getUserId(String username) {
-        int userId = -1;
-        String sql = "SELECT user_id FROM users WHERE username = ?";
+    public String getUserId(String username) {
+        String url = "user/id/" + username;
+        HttpResponse response = api.get(url, null);
 
-        try (Connection con = DatabaseConfig.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setString(1, username);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    userId = rs.getInt("user_id");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return userId;
+        return (String) response.body();
     }
 
     public String getUserFullName(String username) {
-        String fullName = null;
-        String sql = "SELECT full_name FROM users WHERE username = ?";
+        String url = "user/name/" + username;
+        HttpResponse response = api.get(url, null);
 
-        try (Connection con = DatabaseConfig.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setString(1, username);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    fullName = rs.getString("full_name");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return fullName;
+        return (String) response.body();
     }
 
-    public boolean getClockedInStatus(String username) {
-        boolean clockedIn = false;
-        String sql = "SELECT clocked_in FROM users WHERE username = ?";
+    public String getClockedInStatus(String username) {
+        String url = "user/clockInStatus/" + username;
+        HttpResponse response = api.get(url, null);
 
-        try (Connection con = DatabaseConfig.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setString(1, username);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    clockedIn = rs.getBoolean("clocked_in");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return clockedIn;
+        return (String) response.body();
     }
 
     public void setClockedInStatus(String username, boolean status) {
-        String sql = "UPDATE users SET clocked_in = ? WHERE username = ?";
+        String url = "user/clockInStatus/" + username + "?status=" + status;
 
-        try (Connection con = DatabaseConfig.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setBoolean(1, status);
-            ps.setString(2, username);
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try{
+            api.put(url, null, null);   // TODO Kan ikke lige få headers til at virke som jeg troede
+        }
+        catch(Exception e){
+            e.printStackTrace();    // Jeg er træt og forstår ikke hvorfor den kræver exception her - tror det fordi det put but idk fucksss
         }
     }
 

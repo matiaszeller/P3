@@ -6,12 +6,17 @@ import java.time.LocalDateTime;
 //todo implement networking feature, to talk with server.
 public class LoginService {
     private final LoginDAO loginDAO = new LoginDAO();
-    public String validateUser(String username) {
-        return loginDAO.getUserRole(username);
+
+    public String validateUser(String username){
+        String jsonResponse = loginDAO.getUserRole(username);
+        org.json.JSONObject json = new org.json.JSONObject(jsonResponse);
+        return json.getString("role");
     }
 
     public boolean validateManager(String username, String password) {
-        String storedPassword = loginDAO.getManagerPassword(username);
+        String jsonResponse = loginDAO.getManagerPassword(username);
+        org.json.JSONObject json = new org.json.JSONObject(jsonResponse);
+        String storedPassword = json.getString("password");
         return storedPassword != null && BCrypt.checkpw(password, storedPassword);
     }
 
@@ -20,14 +25,21 @@ public class LoginService {
     }
 
     public int getUserId(String username) {
-        return loginDAO.getUserId(username);
+        String jsonResponse = loginDAO.getUserId(username);
+        org.json.JSONObject json = new org.json.JSONObject(jsonResponse);
+        return json.getInt("user_id");
     }
+
     public String getUserFullName(String username) {
-        return loginDAO.getUserFullName(username);
+        String jsonResponse = loginDAO.getUserFullName(username);
+        org.json.JSONObject json = new org.json.JSONObject(jsonResponse);
+        return json.getString("full_name");
     }
 
     public boolean getClockedInStatus(String username) {
-        return loginDAO.getClockedInStatus(username);
+        String jsonResponse = loginDAO.getClockedInStatus(username);
+        org.json.JSONObject json = new org.json.JSONObject(jsonResponse);
+        return json.getBoolean("clocked_in");
     }
 
     public void setClockedInStatus(String username, boolean status) {

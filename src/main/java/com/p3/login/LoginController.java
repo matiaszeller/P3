@@ -40,10 +40,16 @@ public class LoginController {
 
     @FXML
     private void initialize() {
-        loginButton.setOnAction(event -> handleLogin());
+        loginButton.setOnAction(event -> {
+            try {
+                handleLogin();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
-    private void handleLogin() {
+    private void handleLogin(){ // TODO ærligt måske bare overvej at lave én method til login DAO så vi ikke laver 4 forskellige kald til db
         String username = usernameField.getText();
         String role = loginService.validateUser(username);
 
@@ -60,6 +66,7 @@ public class LoginController {
                 showManagerModal(username);
             } else if ("employee".equalsIgnoreCase(role)) {
                 boolean clockedIn = loginService.getClockedInStatus(username);
+                System.out.println(clockedIn);
 
                 if (clockedIn) {
                     loadMenuPage();
