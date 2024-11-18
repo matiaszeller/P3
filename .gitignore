@@ -31,3 +31,6 @@ bin/
 
 ### IML ###
 P3.iml
+
+### Maven ###
+target/
