@@ -5,12 +5,15 @@ import com.p3.session.Session;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +33,8 @@ public class MenuController {
     private Label welcomeText;
     @FXML
     private VBox notificationBox;
+    @FXML
+    private Button managerButton;
 
     private final MenuDAO menuDAO = new MenuDAO();
 
@@ -38,7 +43,7 @@ public class MenuController {
         endShiftButton.setOnAction(event -> handleEndShift());
         logOutButton.setOnAction(event -> handleLogOut());
         breakButton.setOnAction(event -> handleBreakButton());
-
+        managerButton.setOnAction(event -> handleOnPressManager());
         startClock();
         loadDailyEvents();
         initializeWelcomeText();
@@ -160,5 +165,20 @@ public class MenuController {
             breakButton.getStyleClass().remove("onBreakButton");
             breakButton.setText("Start Pause");
         }
+    }
+    private void loadManagerPage() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("com/p3/managerDaily/ManagerDaily.fxml"));
+            Stage stage = (Stage) managerButton.getScene().getWindow();
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            Scene scene = new Scene(loader.load(), width, height);
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void handleOnPressManager(){
+        loadManagerPage(); //xD
     }
 }
