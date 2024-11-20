@@ -1,102 +1,67 @@
 package com.p3.menu;
 
-import com.p3.config.DatabaseConfig;
-
-import java.sql.*;
+import java.net.http.HttpResponse;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
+import com.p3.networking.ServerApi;
 
 public class MenuDAO {
 
-    public boolean getOnBreakStatus(int userId) {
-        boolean onBreak = false;
-        String sql = "SELECT on_break FROM user WHERE user_id = ?";
+    private final ServerApi api = new ServerApi();
 
-        try (Connection con = DatabaseConfig.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setInt(1, userId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    onBreak = rs.getBoolean("on_break");
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public String getOnBreakStatus(int userId) {
+        String url = "user/breakStatus/" + userId;
+        HttpResponse response = api.get(url, null);
 
-        return onBreak;
+        return (String) response.body();
     }
 
     public void setOnBreakStatus(int userId, boolean status) {
-        String sql = "UPDATE user SET on_break = ? WHERE user_id = ?";
-
-        try (Connection con = DatabaseConfig.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setBoolean(1, status);
-            ps.setInt(2, userId);
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
+        String url = "user/breakStatus/" + userId + "?status=" + status;
+        try {
+            api.put(url, null, null);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void insertBreakStartEvent(int userId, LocalDateTime eventTime) {
-        String sql = "INSERT INTO timelog (user_id, shift_date, event_time, event_type) VALUES (?, CURDATE(), ?, 'break_start')";
+    public void postBreakStartEvent(int userId) {
+        String url = "timelog/breakStart";
 
-        try (Connection con = DatabaseConfig.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setInt(1, userId);
-            ps.setTimestamp(2, Timestamp.valueOf(eventTime));
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
+        String jsonBody = "{ \"user_id\": " + userId + ", " +
+                "\"event_type\": \"break_start\" " +
+                "}";
+        try {
+            api.post(url, null, jsonBody);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void insertBreakEndEvent(int userId, LocalDateTime eventTime) {
-        String sql = "INSERT INTO timelog (user_id, shift_date, event_time, event_type) VALUES (?, CURDATE(), ?, 'break_end')";
+    public void postBreakEndEvent(int userId) {
+        String url = "timelog/breakEnd";
 
-        try (Connection con = DatabaseConfig.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        String jsonBody = "{ \"user_id\": " + userId + ", " +
+                "\"event_type\": \"break_end\" " +
+                "}";
 
-            ps.setInt(1, userId);
-            ps.setTimestamp(2, Timestamp.valueOf(eventTime));
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
+        try {
+            api.post(url, null, jsonBody);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public List<Event> getTodaysEventsForUser(int userId) {
-        List<Event> events = new ArrayList<>();
-        String sql = "SELECT event_time, event_type FROM timelog WHERE user_id = ? AND shift_date = CURDATE() ORDER BY event_time";
+    public String getTodaysEventsForUser(int userId, LocalDate today) {
+        String url = "timelog/ALL?user_id=" + userId + "&date=" + today;
+        HttpResponse response = api.get(url, null);
 
-        try (Connection con = DatabaseConfig.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setInt(1, userId);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    LocalDateTime eventTime = rs.getTimestamp("event_time").toLocalDateTime();
-                    String eventType = rs.getString("event_type");
-                    events.add(new Event(eventTime, eventType));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return events;
+        return (String) response.body();
     }
 
-    public static class Event {
+    public static class Event {     // TODO Lav class i sin egen fil
         private LocalDateTime eventTime;
         private String eventType;
 
@@ -114,32 +79,24 @@ public class MenuDAO {
         }
     }
 
-    public void insertCheckOutEvent(int userId, LocalDateTime eventTime) {
-        String sql = "INSERT INTO timelog (user_id, shift_date, event_time, event_type) VALUES (?, CURDATE(), ?, 'check_out')";
+    public void postCheckOutEvent(int userId) {
+        String url = "timelog/checkOut";
 
-        try (Connection con = DatabaseConfig.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setInt(1, userId);
-            ps.setTimestamp(2, Timestamp.valueOf(eventTime));
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
+        String jsonBody = "{ \"user_id\": " + userId + ", " +
+                "\"event_type\": \"check_out\" " +
+                "}";
+        try {
+            api.post(url, null, jsonBody);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void setClockedInStatusById(int userId, boolean status) {
-        String sql = "UPDATE user SET clocked_in = ? WHERE user_id = ?";
-
-        try (Connection con = DatabaseConfig.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setBoolean(1, status);
-            ps.setInt(2, userId);
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
+    public void putClockedInStatusById(int userId, boolean status) {
+        String url = "user/clockInStatus/userId/" + userId + "?status=" + status;
+        try {
+            api.put(url, null, null);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

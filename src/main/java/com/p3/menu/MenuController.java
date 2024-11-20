@@ -31,7 +31,8 @@ public class MenuController {
     @FXML
     private VBox notificationBox;
 
-    private final MenuDAO menuDAO = new MenuDAO();
+    private final MenuDAO menuDAO = new MenuDAO();  // TODO DAO skal ikke kunne tilgåes fra controller
+    private final MenuService menuService = new MenuService();
 
     @FXML
     public void initialize() {
@@ -66,9 +67,9 @@ public class MenuController {
             int userId = Session.getCurrentUserId();
             LocalDateTime currentTime = LocalDateTime.now();
 
-            menuDAO.insertCheckOutEvent(userId, currentTime);
-            menuDAO.setClockedInStatusById(userId, false);
-            menuDAO.setOnBreakStatus(userId, false);
+            menuService.postCheckOutEvent(userId);
+            menuService.putClockedInStatusById(userId, false);
+            menuService.setOnBreakStatus(userId, false);
 
             Session.clearSession();
 
@@ -86,19 +87,19 @@ public class MenuController {
 
     private void handleBreakButton() {
         int userId = Session.getCurrentUserId();
-        boolean onBreak = menuDAO.getOnBreakStatus(userId);
+        boolean onBreak = menuService.getOnBreakStatus(userId);
         LocalDateTime currentTime = LocalDateTime.now();
 
         if (onBreak) {
-            menuDAO.insertBreakEndEvent(userId, currentTime);
-            menuDAO.setOnBreakStatus(userId, false);
+            menuService.postBreakEndEvent(userId);
+            menuService.setOnBreakStatus(userId, false);
 
             breakButton.getStyleClass().add("breakButton");
             breakButton.getStyleClass().remove("onBreakButton");
             breakButton.setText("Start Pause");
         } else {
-            menuDAO.insertBreakStartEvent(userId, currentTime);
-            menuDAO.setOnBreakStatus(userId, true);
+            menuService.postBreakStartEvent(userId);
+            menuService.setOnBreakStatus(userId, true);
 
             breakButton.getStyleClass().add("onBreakButton");
             breakButton.setText("Afslut Pause");
@@ -109,7 +110,7 @@ public class MenuController {
 
     private void loadDailyEvents() {
         int userId = Session.getCurrentUserId();
-        List<Event> events = menuDAO.getTodaysEventsForUser(userId);
+        List<Event> events = menuService.getTodaysEventsForUser(userId);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -150,7 +151,7 @@ public class MenuController {
 
     private void initializeBreakButton() {
         int userId = Session.getCurrentUserId();
-        boolean onBreak = menuDAO.getOnBreakStatus(userId);
+        boolean onBreak = menuService.getOnBreakStatus(userId);     // TODO Overvej om det skal være sessiondata?
 
         if (onBreak) {
             breakButton.getStyleClass().add("onBreakButton");

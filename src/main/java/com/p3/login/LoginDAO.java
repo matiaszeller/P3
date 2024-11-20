@@ -52,7 +52,7 @@ public class LoginDAO {
         return (String) response.body();
     }
 
-    public void setClockedInStatus(String username, boolean status) {
+    public void setClockedInStatus(String username, boolean status) {   // TODO forstår ikke hvorfor vi bruger username her, men id i menuDAO
         String url = "user/clockInStatus/" + username + "?status=" + status;
 
         try{
@@ -63,12 +63,15 @@ public class LoginDAO {
         }
     }
 
-    public void postCheckInEvent(int userId, LocalDateTime eventTime) {
+    public void postCheckInEvent(int userId) {
+        String url = "timelog/checkIn";
 
-        String url = "timelog/checkIn?userId=" + userId + "&eventTime=" + eventTime;
-        try{
-            api.post(url, null, null); // TODO Overvej om det skal sendes som body
-        } catch(Exception e){
+        String jsonBody = "{ \"user_id\": " + userId + ", " +   // Event time and date will be handled on server to ensure consitency
+                "\"event_type\": \"check_in\" " +
+                "}";
+        try {
+            api.post(url, null, jsonBody);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

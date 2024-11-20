@@ -46,7 +46,7 @@ public class LoginService {
         loginDAO.setClockedInStatus(username, status);
     }
 
-    public void postCheckInEvent(int userId, LocalDateTime eventTime) {
-        loginDAO.postCheckInEvent(userId, eventTime);
+    public void postCheckInEvent(int userId) {
+        loginDAO.postCheckInEvent(userId);
     }
 }
