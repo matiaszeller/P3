@@ -53,6 +53,11 @@
                                             <Insets bottom="100.0" />
                                         </VBox.margin>
                                     </Button>
+                                    <Button fx:id="adminButton" styleClass="defaultButton" text="Administrator panel">
+                                        <VBox.margin>
+                                            <Insets bottom="100.0" />
+                                        </VBox.margin>
+                                    </Button>
                                 </children>
                                 <HBox.margin>
                                     <Insets left="50.0" />

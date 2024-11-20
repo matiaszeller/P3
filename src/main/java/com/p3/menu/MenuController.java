@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 public class MenuController {
 
@@ -25,11 +26,14 @@ public class MenuController {
     @FXML
     private Button breakButton;
     @FXML
+    private Button adminButton;
+    @FXML
     private Label clock;
     @FXML
     private Label welcomeText;
     @FXML
     private VBox notificationBox;
+
 
     private final MenuDAO menuDAO = new MenuDAO();
 
@@ -38,6 +42,11 @@ public class MenuController {
         endShiftButton.setOnAction(event -> handleEndShift());
         logOutButton.setOnAction(event -> handleLogOut());
         breakButton.setOnAction(event -> handleBreakButton());
+        adminButton.setOnAction(event -> handleAdminButton());
+        if (!Objects.equals(Session.getRole(), "manager")){
+            adminButton.setDisable(true);
+        } else {adminButton.setDisable(false);}
+
 
         startClock();
         loadDailyEvents();
@@ -105,6 +114,10 @@ public class MenuController {
         }
 
         loadDailyEvents();
+    }
+    private void handleAdminButton() {
+        Stage stage = (Stage) adminButton.getScene().getWindow();
+        MenuService.loadAdminPage(stage);
     }
 
     private void loadDailyEvents() {

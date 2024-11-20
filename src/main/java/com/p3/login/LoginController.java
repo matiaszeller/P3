@@ -51,7 +51,7 @@ public class LoginController {
 
     private void handleLogin(){ // TODO ærligt måske bare overvej at lave én method til login DAO så vi ikke laver 4 forskellige kald til db
         String username = usernameField.getText();
-        String role = loginService.validateUser(username);
+        String role = loginService.setUserRole(username);
 
         if (role == null) {
             errorText.setVisible(true);
@@ -61,6 +61,7 @@ public class LoginController {
 
             Session.setCurrentUserId(userId);
             Session.setCurrentUserFullName(fullName);
+            Session.setRole(role);
 
             if ("manager".equalsIgnoreCase(role)) {
                 showManagerModal(username);
