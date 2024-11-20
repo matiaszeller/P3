@@ -66,7 +66,6 @@ public class LoginController {
                 showManagerModal(username);
             } else if ("employee".equalsIgnoreCase(role)) {
                 boolean clockedIn = loginService.getClockedInStatus(username);
-                System.out.println(clockedIn);
 
                 if (clockedIn) {
                     loadMenuPage();
@@ -154,7 +153,7 @@ public class LoginController {
         int userId = Session.getCurrentUserId();
         LocalDateTime currentTime = LocalDateTime.now();
 
-        loginService.insertCheckInEvent(userId, currentTime);
+        loginService.postCheckInEvent(userId);
 
         loginService.setClockedInStatus(username, true);
 
