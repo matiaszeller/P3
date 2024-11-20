@@ -49,11 +49,12 @@ public class LoginController {
         });
     }
 
-    private void handleLogin(){ // TODO ærligt måske bare overvej at lave én method til login DAO så vi ikke laver 4 forskellige kald til db
+    private void handleLogin() {
         String username = usernameField.getText();
         String role = loginService.validateUser(username);
 
         if (role == null) {
+            errorText.setText("Invalid username or role not found.");
             errorText.setVisible(true);
         } else {
             int userId = loginService.getUserId(username);
@@ -72,9 +73,13 @@ public class LoginController {
                 } else {
                     showEmployeeModal(username);
                 }
+            } else {
+                errorText.setText("Unknown role: " + role);
+                errorText.setVisible(true);
             }
         }
     }
+
 
     private void loadMenuPage() {
         try {
