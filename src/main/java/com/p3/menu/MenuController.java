@@ -10,7 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -44,6 +44,7 @@ public class MenuController {
         loadDailyEvents();
         initializeWelcomeText();
         initializeBreakButton();
+        getMissedCheckout();
     }
 
     private void startClock() {
@@ -161,5 +162,29 @@ public class MenuController {
             breakButton.getStyleClass().remove("onBreakButton");
             breakButton.setText("Start Pause");
         }
+    }
+
+    private void getMissedCheckout() {
+        int userId = Session.getCurrentUserId();
+        MenuDAO.Event lastCheckOutEvent = menuService.getLastCheckOutEvent(userId);
+
+        if (lastCheckOutEvent != null) {
+            LocalTime key = LocalTime.of(23, 59, 0); // key = 23:59:00
+            LocalTime lastCheckOutTime = lastCheckOutEvent.getEventTime().toLocalTime();
+
+            if (lastCheckOutTime.equals(key)) {
+                LocalDate missedShiftDate = lastCheckOutEvent.getEventTime().toLocalDate();
+                showMissedCheckoutModal(missedShiftDate);
+            }
+        } else {
+            System.out.println("No last check-out event found for user.");
+        }
+    }
+
+    private void showMissedCheckoutModal(LocalDate missedShiftDate) {
+        MenuService.showMissedCheckoutModal(missedShiftDate, note -> {
+            int userId = Session.getCurrentUserId();
+            menuService.postMissedCheckoutNote(userId, note, missedShiftDate);
+        });
     }
 }
