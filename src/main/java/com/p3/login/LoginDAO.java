@@ -3,13 +3,6 @@ package com.p3.login;
 import com.p3.networking.ServerApi;
 import java.net.http.HttpResponse;
 
-/*  TODO OBS!!!! Disse queries ligger lokalt lige NU. Men de skal flyttes til at køre på serveren.
-    Denne class skal kalde de forskellige queries og sende dem tilbage til LoginService.
-    Her skal vi måske bruge Jakobs kode til at oprette connections(?)
-    Husk på: Controllers: Håndterer UI og kalder services
-             Services: Logic
-             DAO: Database kald
-*/
 public class LoginDAO {
     private final ServerApi api = new ServerApi();
 
