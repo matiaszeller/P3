@@ -174,7 +174,12 @@ public class MenuController {
 
             if (lastCheckOutTime.equals(key)) {
                 LocalDate missedShiftDate = lastCheckOutEvent.getEventTime().toLocalDate();
-                showMissedCheckoutModal(missedShiftDate);
+
+                boolean noteExists = menuService.checkIfNoteExists(userId, missedShiftDate);
+
+                if (!noteExists) {
+                    showMissedCheckoutModal(missedShiftDate);
+                }
             }
         } else {
             System.out.println("No last check-out event found for user.");

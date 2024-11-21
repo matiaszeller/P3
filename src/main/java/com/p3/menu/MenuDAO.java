@@ -123,4 +123,10 @@ public class MenuDAO {
             e.printStackTrace();
         }
     }
+
+    public String noteExistsForDate(int userId, LocalDate noteDate) {
+        String url = "note/exists?userId=" + userId + "&noteDate=" + noteDate;
+        HttpResponse response = api.get(url, null);
+        return (String) response.body();
+    }
 }

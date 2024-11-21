@@ -176,4 +176,9 @@ public class MenuService {
             onSubmit.accept(note);
         });
     }
+
+    public boolean checkIfNoteExists(int userId, LocalDate missedShiftDate) {
+        String response = menuDao.noteExistsForDate(userId, missedShiftDate);
+        return Boolean.parseBoolean(response);
+    }
 }
