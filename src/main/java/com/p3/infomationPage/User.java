@@ -24,7 +24,7 @@ public class User {
         this.role = role;
     }
 
-    // Getters and Setters
+    // Getters & Setters
     public int getUserId() { return userId; }
     public void setUserId(int userId) { this.userId = userId; }
 
@@ -49,7 +49,7 @@ public class User {
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
 
-    // Convert User to JSON
+
     public String toJson() {
         JSONObject json = new JSONObject();
         json.put("user_id", userId);

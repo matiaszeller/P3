@@ -2,7 +2,7 @@ package com.p3.infomationPage;
 
 import com.p3.networking.ServerApi;
 import java.net.http.HttpResponse;
-import com.p3.infomationPage.User; // Ensure correct reference
+
 
 public class InformationDAO {
 
@@ -21,11 +21,11 @@ public class InformationDAO {
     public static boolean updateUser(User user) {
         ServerApi api = new ServerApi();
 
-        // Serialize the user object to JSON
+
         String userJson = user.toJson();
 
         try {
-            HttpResponse<String> response = api.post("user/update", null, userJson); // Pass null for headers
+            HttpResponse<String> response = api.post("user/update", null, userJson);
             if (response.statusCode() == 200) {
                 System.out.println("User updated successfully: " + response.body());
                 return true;

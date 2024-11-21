@@ -16,63 +16,63 @@ public class InformationController {
     private ChoiceBox<String> choiceBox;
 
     @FXML
-    private TextField usernameField;
+    private TextField nameField;
 
     @FXML
     private PasswordField passwordField;
 
     @FXML
-    private Button tilbage; // Back button
+    private Button tilbage;
 
     private final informationService infoService = new informationService();
-    private List<User> users; // List to store all users
-    private User selectedUser; // Currently selected user
+    private List<User> users;
+    private User selectedUser;
 
     public void initialize() {
-        // Fetch all users and populate ChoiceBox
+
         users = infoService.getAllUsers();
         ObservableList<String> userNames = FXCollections.observableArrayList();
 
         for (User user : users) {
-            userNames.add(user.getFullName()); // Corrected method name
+            userNames.add(user.getFullName());
         }
 
         choiceBox.setItems(userNames);
 
-        // Add listener to handle selection changes
+
         choiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 updateUserDetails(newValue);
             }
         });
 
-        // Add action to Back button
+
         tilbage.setOnAction(event -> goBack());
     }
 
     private void updateUserDetails(String fullName) {
-        // Find the selected user by full name
+
         for (User user : users) {
-            if (user.getFullName().equals(fullName)) { // Corrected method name
+            if (user.getFullName().equals(fullName)) {
                 selectedUser = user;
                 break;
             }
         }
 
-        // Populate the fields with the selected user's details
+
         if (selectedUser != null) {
-            usernameField.setText(selectedUser.getUsername());
+            nameField.setText(selectedUser.getUsername());
             passwordField.setText(selectedUser.getPassword());
         }
     }
 
     private void saveChanges() {
         if (selectedUser != null) {
-            // Update the selected user with the new values
-            selectedUser.setUsername(usernameField.getText());
+
+            selectedUser.setUsername(nameField.getText());
             selectedUser.setPassword(passwordField.getText());
 
-            // Submit the updated user to the backend
+
             boolean success = infoService.updateUser(selectedUser);
 
             if (success) {
@@ -84,7 +84,7 @@ public class InformationController {
     }
 
     private void goBack() {
-        // Logic to navigate back to the previous screen
+
         System.out.println("Navigating back...");
     }
 }
