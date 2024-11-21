@@ -2,24 +2,32 @@ package com.p3.managerDaily;
 
 import com.p3.session.Session;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
+import java.util.Map;
+import java.util.List;
+import java.time.format.DateTimeFormatter;
+
 
 
 public class ManagerDailyController {
+
+    ManagerDailyDAO dao = new ManagerDailyDAO();
+
+    @FXML
+    private VBox centerPanel;
 
     @FXML
     private Button managerLogOutButton;
@@ -53,15 +61,15 @@ public class ManagerDailyController {
 
     @FXML
     public void initialize() {
-       /* handleLogOut();
-        handleDailyOverview();
-        handleWeeklyOverview();
-        handleEditEmployees();
-        handleExportData();
-*/
+        managerLogOutButton.setOnAction(event -> handleLogOut());
+        dailyOverviewButton.setOnAction(event -> handleDailyOverview());
+        weeklyOverviewButton.setOnAction(event -> handleWeeklyOverview());
+        editEmployeesButton.setOnAction(event -> handleEditEmployees());
+        exportDataButton.setOnAction(event -> handleExportData());
+
         currentMonth = YearMonth.now();
         generateCalendar(currentMonth);
-
+        generateTimelogBoxes(LocalDate.now(), 50);
 
         // Add navigation button actions
         prevMonthButton.setOnAction(event -> changeMonth(-1));
@@ -130,7 +138,73 @@ public class ManagerDailyController {
             calendarGrid.getRowConstraints().add(rowConstraints);
         }
     }
+    public void generateTimelogBoxes(LocalDate startDate, int daysCount) {
+        centerPanel.getChildren().clear();
+        // Generate timelog boxes for each day within the range
+        for (int i = 0; i < daysCount; i++) {
+            LocalDate currentDate = startDate.minusDays(i);
+            generateTimelogBox(currentDate);
+        }
+    }
+    private void generateTimelogBox(LocalDate date) {
+        List<Map<String, Object>> timelogs = dao.getTimelogsForDate(date);
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+        String formattedDate = date.format(formatter);
+
+        TitledPane dayPane = new TitledPane();
+        dayPane.setText("Timelogs for " + formattedDate);
+
+        dayPane.setExpanded(false);
+
+        VBox employeeRows = new VBox();
+        employeeRows.setSpacing(10); // Space between rows
+
+
+        for (Map<String, Object> timelog : timelogs) {
+
+            // Use safe methods to get values from the map and handle potential nulls
+            Integer userId = (Integer) timelog.get("userId");
+            String eventType = (String) timelog.get("eventType");
+            String shiftDate = (String) timelog.get("shiftDate");
+
+            if (userId == null) {
+                userId = 0;
+            }
+
+            if (eventType == null) {
+                eventType = "Unknown Event";
+            }
+            if (shiftDate == null) {
+                shiftDate = "Unknown Date";
+            }
+
+
+            HBox employeeRow = new HBox();
+            employeeRow.setSpacing(15);
+
+            Text userText = new Text("User ID: " + userId);
+            Text eventText = new Text("Event: " + eventType);
+            Text dateText = new Text("Shift Date: " + shiftDate);
+
+
+            employeeRow.getChildren().addAll(userText, eventText, dateText);
+
+
+            employeeRows.getChildren().add(employeeRow);
+        }
+
+        dayPane.setContent(employeeRows);
+
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(employeeRows);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        dayPane.setContent(scrollPane);
+
+        centerPanel.getChildren().add(dayPane);
+    }
     private void handleDateClick(ActionEvent event) {
         Button clickedButton = (Button) event.getSource();
         String day = clickedButton.getText();

@@ -42,14 +42,14 @@
             <Button text="Eksporter Data" fx:id="exportDataButton" styleClass="defaultButton" prefWidth="180" />
             </VBox>
             <VBox spacing="50" alignment="BOTTOM_CENTER">
-            <Button text="Log Ud" fx:id="managerLogOutButton" prefWidth="180" />
+            <Button text="Log Ud" fx:id="managerLogOutButton" prefWidth="180" styleClass="defaultButton" />
             </VBox>
         </VBox>
     </left>
 
     <!-- Center Panel -->
     <center>
-        <VBox spacing="5" style="-fx-padding: 10;">
+        <VBox fx:id="centerPanel" spacing="10" style="-fx-padding: 10;">
 
         </VBox>
     </center>
