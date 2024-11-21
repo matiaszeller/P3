@@ -1,7 +1,6 @@
 package com.p3.login;
 
 import org.mindrot.jbcrypt.BCrypt;
-import java.time.LocalDateTime;
 
 //todo implement networking feature, to talk with server.
 public class LoginService {
