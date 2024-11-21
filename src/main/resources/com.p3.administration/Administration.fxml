@@ -13,22 +13,36 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.layout.BorderPane?>
 <AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.p3.informationPage.InformationController">
+            fx:controller="com.p3.infomationPage.InformationController">
+   <!-- SplitPane occupies the entire AnchorPane -->
    <SplitPane dividerPositions="0.3" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
       <!-- Left Pane -->
-      <VBox spacing="20.0">
-         <padding>
-            <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
-         </padding>
-         <Label text="Administrer Medarbejder"/>
-         <ChoiceBox prefWidth="200.0"/>
-         <Button text="Tilbage"/>
+      <VBox spacing="20.0" prefWidth="200">
+         <!-- BorderPane for layout management -->
+         <BorderPane>
+            <padding>
+               <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+            </padding>
+            <!-- Center section with label and choice box -->
+            <center>
+               <VBox spacing="10.0" alignment="CENTER">
+                  <Label text="Administrer Medarbejder"/>
+                  <ChoiceBox fx:id="choiceBox" prefWidth="200.0"/>
+               </VBox>
+            </center>
+            <!-- Bottom section with button -->
+            <bottom>
+               <HBox alignment="CENTER_LEFT">
+                  <Button fx:id="tilbage" text="Tilbage"/>
+               </HBox>
+            </bottom>
+         </BorderPane>
       </VBox>
-
       <!-- Right Pane -->
-      <ScrollPane fitToWidth="true">
+      <ScrollPane fx:id="rightPane"> <fitToWidth>true</fitToWidth>
          <VBox spacing="20.0">
             <padding>
                <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
@@ -38,20 +52,20 @@
 
                <!-- Name Field -->
                <Label text="Navn:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-               <TextField GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="200.0"/>
+               <TextField fx:id="nameField" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="200.0"/>
 
                <!-- Role Field -->
                <Label text="Rolle:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-               <ChoiceBox GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="200.0"/>
+               <ChoiceBox fx:id="roleChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="200.0"/>
 
                <!-- Password Field -->
                <Label text="Adgangskode:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-               <PasswordField GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="200.0"/>
+               <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="200.0"/>
 
             </GridPane>
             <HBox spacing="10.0">
-               <Button text="Gem"/>
-               <Button text="Annuller"/>
+               <Button fx:id="submitBtn" text="Gem"/>
+               <Button fx:id="CancelBtn" text="Annuller"/>
             </HBox>
          </VBox>
       </ScrollPane>
