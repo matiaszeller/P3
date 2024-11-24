@@ -16,6 +16,7 @@ public class ManagerDailyDAO {
     public List<Map<String, Object>> getTimelogsForDate(LocalDate date) {
         String url = "timelog/getTimelogsByDate?date=" + date;
 
+
         HttpResponse response = api.get(url, null);
 
         ObjectMapper objectMapper = new ObjectMapper();

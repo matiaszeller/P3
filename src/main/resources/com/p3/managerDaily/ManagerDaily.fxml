@@ -7,8 +7,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
 
-<VBox alignment="CENTER" spacing="15.0" styleClass="root" stylesheets="@../../../style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.managerDaily.ManagerDailyController">
-<BorderPane prefHeight="1000.0" prefWidth="1000.0">
+<VBox fx:id="managerDailyRoot" alignment="CENTER" spacing="15.0" styleClass="root" stylesheets="@../../../style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.managerDaily.ManagerDailyController">
+<BorderPane fx:id="BorderPaneOuter" prefHeight="1000.0" prefWidth="1000.0">
     <!-- Left Panel -->
     <left>
         <VBox fx:id="leftDailyManagerBox" spacing="150" alignment="TOP_CENTER" prefWidth="200" styleClass="leftDailyManagerBox">
@@ -16,7 +16,7 @@
             <VBox spacing="5" alignment="TOP_CENTER">
                 <HBox spacing="10" alignment="TOP_CENTER">
                     <Button text="&lt;" fx:id="prevMonthButton" />
-                    <Label fx:id="yearMonthLabel" text="Month Year" style="-fx-font-size: 16px;" />
+                    <Label fx:id="yearMonthLabel" text="Month Year" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
                     <Button text="&gt;" fx:id="nextMonthButton" />
                 </HBox>
                 <!-- Calendar Grid -->

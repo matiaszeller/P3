@@ -186,3 +186,17 @@
     -fx-min-width: 40px;
     -fx-min-height: 40px;
 }
+.collapseDateBox {
+    -fx-border-color: #000000;
+    -fx-background-color: #FFFFFF;
+    -fx-font-size: 17pt;
+    -fx-font-weight: bold;
+
+
+}
+.managerDailyEmployeeBox {
+    -fx-border-color: #000000;
+    -fx-background-color: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
