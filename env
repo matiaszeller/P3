@@ -1,0 +1,4 @@
+# .env
+DB_URL=jdbc:mysql://localhost:3306/database
+DB_USER=root
+DB_PASSWORD=Westcoast33!

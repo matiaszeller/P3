@@ -94,126 +94,156 @@ public class HistoryController {
 
     public boolean checkDatabaseConnection() {
         try (Connection connection = DriverManager.getConnection(url, user, password)) {
-            return connection != null;
+            if (connection != null) {
+                System.out.println("Connected to the database successfully!");
+                return true;
+            }
         } catch (SQLException e) {
+            System.out.println("Database connection error:");
             e.printStackTrace();
-            return false;
         }
+        return false;
     }
 
-    private void loadWeeklyGridPane() {
+
+    void loadWeeklyGridPane() {
         GridPane gridPane = new GridPane();
         LocalDate today = LocalDate.now();
-        LocalDate weekStart = today.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY));
+        LocalDate weekStart = today.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY)); // Start of week
         int startHour = 7;
-        int endHour = calculateEndHour(weekStart);
+        int endHour = calculateEndHour(weekStart); // Ensure this returns a valid value
 
+        // Validate that endHour is greater than startHour
+        if (endHour <= startHour) {
+            System.err.println("Invalid hours range: startHour=" + startHour + ", endHour=" + endHour);
+            return;
+        }
+
+        // Rows for each day
         for (int day = 0; day < 7; day++) {
             LocalDate date = weekStart.plusDays(day);
 
+            // Add day label (e.g., "2024-11-21 (THURSDAY)")
             Label dayLabel = new Label(date + " (" + date.getDayOfWeek() + ")");
             dayLabel.setMinWidth(80);
-            gridPane.add(dayLabel, 0, day + 1);
+            gridPane.add(dayLabel, 0, day + 1); // Column 0, Row day + 1
 
+            // Add comment button
             Button commentButton = new Button("Tilføj kommentar");
             commentButton.setOnAction(e -> openCommentDialog(date));
-            gridPane.add(commentButton, endHour - startHour + 2, day + 1);
+            gridPane.add(commentButton, endHour - startHour + 2, day + 1); // Place after hour columns
 
+            // Generate columns for hours
             for (int hour = startHour; hour < endHour; hour++) {
-                StackPane cellContainer = new StackPane();
+                int columnIndex = hour - startHour + 1;
+
+                // Validate columnIndex to prevent adding at invalid positions
+                if (columnIndex < 0) {
+                    System.err.println("Invalid columnIndex: " + columnIndex + " for hour: " + hour);
+                    continue; // Skip invalid cells
+                }
+
+                // Create a white cell with a border
                 Rectangle cell = new Rectangle(50, 50);
                 cell.setFill(Color.WHITE);
                 cell.setStroke(Color.GRAY);
 
+                // Add time label to the cell (e.g., "07:00")
                 Label timeLabel = new Label(String.format("%02d:00", hour));
                 timeLabel.setStyle("-fx-font-size: 10; -fx-text-fill: black;");
 
+                // Create a StackPane to hold the cell and time label
+                StackPane cellContainer = new StackPane();
                 cellContainer.getChildren().addAll(cell, timeLabel);
                 StackPane.setAlignment(timeLabel, Pos.TOP_LEFT);
                 StackPane.setMargin(timeLabel, new Insets(2, 0, 0, 2));
-                gridPane.add(cellContainer, hour - startHour + 1, day + 1);
+
+                // Add the cell container to the grid
+                gridPane.add(cellContainer, columnIndex, day + 1);
             }
         }
 
+        // Apply colors to the grid based on weekly events
         applyWeeklyEventColors(gridPane, weekStart);
+
+        // Clear and update the content pane with the grid
         contentPane.getChildren().clear();
         contentPane.getChildren().add(gridPane);
     }
 
-    private void applyWeeklyEventColors(GridPane gridPane, LocalDate weekStart) {
-        String query = "SELECT shift_date, event_time, event_type FROM timelog WHERE shift_date BETWEEN ? AND ? ORDER BY shift_date, event_time";
 
-        Map<LocalDate, LocalDateTime> checkInMap = new HashMap<>();
-        Map<LocalDate, Integer> dailyWorkMinutes = new HashMap<>();
+
+
+
+
+    public void applyWeeklyEventColors(GridPane gridPane, LocalDate weekStart) {
+        String query = "SELECT user_id, shift_date, event_time, event_type FROM timelog " +
+                "WHERE shift_date BETWEEN ? AND ? ORDER BY shift_date, event_time";
 
         int totalMinutesWorked = 0;
 
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
+            LocalDate weekEnd = weekStart.plusDays(6);
             stmt.setDate(1, Date.valueOf(weekStart));
-            stmt.setDate(2, Date.valueOf(weekStart.plusDays(6)));
+            stmt.setDate(2, Date.valueOf(weekEnd));
             ResultSet rs = stmt.executeQuery();
+
+            Map<LocalDate, LocalDateTime> checkInMap = new HashMap<>();
+            Map<LocalDate, LocalDateTime> breakStartMap = new HashMap<>();
+            Map<LocalDate, Integer> dailyWorkMinutes = new HashMap<>();
 
             while (rs.next()) {
                 LocalDate shiftDate = rs.getDate("shift_date").toLocalDate();
                 LocalDateTime eventTime = rs.getTimestamp("event_time").toLocalDateTime();
                 String eventType = rs.getString("event_type");
-                int row = shiftDate.getDayOfWeek().getValue();
+
+                int row = shiftDate.getDayOfWeek().getValue() % 8; // Consistent row mapping
 
                 switch (eventType) {
                     case "check_in":
                         checkInMap.put(shiftDate, eventTime);
                         break;
 
-                    case "check_out":
+                    case "break_start":
                         LocalDateTime checkInTime = checkInMap.get(shiftDate);
                         if (checkInTime != null) {
-                            // Calculate minutes worked for this interval
+                            colorCells(gridPane, row, checkInTime, eventTime, Color.GREEN);
                             int workedMinutes = (int) Duration.between(checkInTime, eventTime).toMinutes();
                             dailyWorkMinutes.put(shiftDate, dailyWorkMinutes.getOrDefault(shiftDate, 0) + workedMinutes);
-                            totalMinutesWorked += workedMinutes;
-
-                            // Color the cells for this interval
-                            colorCells(gridPane, row, checkInTime, eventTime, Color.GREEN);
                             checkInMap.remove(shiftDate);
                         }
+                        breakStartMap.put(shiftDate, eventTime);
                         break;
 
-                    case "break_start":
-                        LocalDateTime activeCheckInTime = checkInMap.get(shiftDate);
-                        if (activeCheckInTime != null) {
-                            // Color work period before the break
-                            colorCells(gridPane, row, activeCheckInTime, eventTime, Color.GREEN);
-
-                            // Calculate minutes worked up to the break
-                            int workedMinutes = (int) Duration.between(activeCheckInTime, eventTime).toMinutes();
-                            dailyWorkMinutes.put(shiftDate, dailyWorkMinutes.getOrDefault(shiftDate, 0) + workedMinutes);
-                            totalMinutesWorked += workedMinutes;
-
-                            checkInMap.remove(shiftDate);
+                    case "break_end":
+                        LocalDateTime breakStartTime = breakStartMap.get(shiftDate);
+                        if (breakStartTime != null) {
+                            colorCells(gridPane, row, breakStartTime, eventTime, Color.ORANGE);
+                            breakStartMap.remove(shiftDate);
                         }
                         checkInMap.put(shiftDate, eventTime);
                         break;
 
-                    case "break_end":
-                        LocalDateTime breakStartTime = checkInMap.get(shiftDate);
-                        if (breakStartTime != null) {
-                            // Color the break period
-                            colorCells(gridPane, row, breakStartTime, eventTime, Color.ORANGE);
-
-                            // Update the map with the time after the break
-                            checkInMap.put(shiftDate, eventTime);
+                    case "check_out":
+                        LocalDateTime activeCheckInTime = checkInMap.get(shiftDate);
+                        if (activeCheckInTime != null) {
+                            colorCells(gridPane, row, activeCheckInTime, eventTime, Color.GREEN);
+                            int workedMinutes = (int) Duration.between(activeCheckInTime, eventTime).toMinutes();
+                            dailyWorkMinutes.put(shiftDate, dailyWorkMinutes.getOrDefault(shiftDate, 0) + workedMinutes);
+                            checkInMap.remove(shiftDate);
                         }
                         break;
                 }
             }
 
-            // Handle missing check-outs by coloring red to the end of the day
+            // Handle incomplete check-ins (mark cells red)
+            System.out.println("Check-In Map before processing missing checkouts: " + checkInMap);
             for (Map.Entry<LocalDate, LocalDateTime> entry : checkInMap.entrySet()) {
                 LocalDate shiftDate = entry.getKey();
                 LocalDateTime checkInTime = entry.getValue();
-                int row = shiftDate.getDayOfWeek().getValue();
+                int row = shiftDate.getDayOfWeek().getValue() % 8;
 
                 LocalDateTime endOfDay = checkInTime.toLocalDate().atTime(23, 59);
                 int missingMinutes = (int) Duration.between(checkInTime, endOfDay).toMinutes();
@@ -223,7 +253,10 @@ public class HistoryController {
                 colorCells(gridPane, row, checkInTime, endOfDay, Color.RED);
             }
 
-            // Display total weekly hours
+            // Update the total hours worked label
+            for (int minutes : dailyWorkMinutes.values()) {
+                totalMinutesWorked += minutes;
+            }
             int totalHours = totalMinutesWorked / 60;
             int remainingMinutes = totalMinutesWorked % 60;
             totalHoursLabel.setText(String.format("Samlet timer denne uge: %d:%02d", totalHours, remainingMinutes));
@@ -235,23 +268,39 @@ public class HistoryController {
 
 
 
+
+
+
+
     private int calculateEndHour(LocalDate weekStart) {
         String query = "SELECT MAX(HOUR(event_time)) AS max_hour FROM timelog WHERE shift_date BETWEEN ? AND ?";
+        int defaultEndHour = 24;
+
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
+            LocalDate weekEnd = weekStart.plusDays(6);
             stmt.setDate(1, Date.valueOf(weekStart));
-            stmt.setDate(2, Date.valueOf(weekStart.plusDays(6)));
+            stmt.setDate(2, Date.valueOf(weekEnd));
+
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return rs.getInt("max_hour");
+                int maxHour = rs.getInt("max_hour");
+                if (!rs.wasNull()) {
+                    return maxHour;
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return 24;
+
+        System.err.println("No events found for the week. Defaulting endHour to 24.");
+        return defaultEndHour;
     }
+
+
+
 
     private void colorCells(GridPane gridPane, int row, LocalDateTime start, LocalDateTime end, Color color) {
         int startHour = start.getHour();
@@ -264,34 +313,35 @@ public class HistoryController {
             StackPane cellContainer = getNodeByRowColumnIndex(row, col, gridPane);
 
             if (cellContainer != null) {
-                // Calculate the fraction of the hour that the event covers
-                double startFraction = (hour == startHour) ? startMinute / 60.0 : 0;
-                double endFraction = (hour == endHour) ? endMinute / 60.0 : 1;
+                Rectangle baseCell = cellContainer.getChildren().isEmpty() ? null : (Rectangle) cellContainer.getChildren().get(0);
 
-                // Adjust the width and position of the overlay rectangle
-                double cellWidth = 50; // Assuming each cell is 50px wide
-                double overlayWidth = cellWidth * (endFraction - startFraction);
-                Rectangle overlayRect = new Rectangle(overlayWidth, 50); // 50px height for each cell
-                overlayRect.setFill(color);
-                overlayRect.setTranslateX(cellWidth * (startFraction - 0.5) + overlayWidth / 2);
+                if (baseCell != null) {
+                    double startFraction = (hour == startHour) ? startMinute / 60.0 : 0;
+                    double endFraction = (hour == endHour) ? endMinute / 60.0 : 1;
+                    double fillWidth = baseCell.getWidth() * (endFraction - startFraction);
 
-                // Remove conflicting rectangles of the same color
-                cellContainer.getChildren().removeIf(node -> node instanceof Rectangle && ((Rectangle) node).getFill().equals(color));
+                    // Create the overlay rectangle
+                    Rectangle overlayRect = new Rectangle(fillWidth, baseCell.getHeight());
+                    overlayRect.setFill(color);
+                    overlayRect.setTranslateX(baseCell.getWidth() * startFraction - baseCell.getWidth() / 2 + fillWidth / 2);
 
-                // Add the overlay rectangle to the cell
-                cellContainer.getChildren().add(overlayRect);
+                    // Remove any existing overlay of the same color
+                    cellContainer.getChildren().removeIf(node -> node instanceof Rectangle && ((Rectangle) node).getFill().equals(color));
+                    cellContainer.getChildren().add(overlayRect);
 
-                // Ensure the time label remains on top
-                cellContainer.getChildren().stream()
-                        .filter(node -> node instanceof Label)
-                        .findFirst()
-                        .ifPresent(label -> {
-                            cellContainer.getChildren().remove(label);
-                            cellContainer.getChildren().add(label);
-                        });
+                    // Re-add the time label to ensure it stays on top
+                    cellContainer.getChildren().stream()
+                            .filter(node -> node instanceof Label)
+                            .findFirst()
+                            .ifPresent(label -> {
+                                cellContainer.getChildren().remove(label);
+                                cellContainer.getChildren().add(label);
+                            });
+                }
             }
         }
     }
+
 
 
 
@@ -326,7 +376,10 @@ public class HistoryController {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == ButtonType.OK) {
-                saveCommentToDatabase(date, textArea.getText());
+                String newComment = textArea.getText().trim();
+                if (!newComment.isEmpty() || existingComment != null) {
+                    saveCommentToDatabase(date, newComment);
+                }
             }
             return null;
         });
@@ -335,16 +388,16 @@ public class HistoryController {
     }
 
     private String getCommentFromDatabase(LocalDate date) {
-        String query = "SELECT comment FROM comments WHERE user_id = ? AND shift_date = ?";
+        String query = "SELECT written_note FROM note WHERE writer_id = ? AND note_date = ?";
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            stmt.setInt(1, 1); // Replace 1 with actual user ID if needed
+            stmt.setInt(1, 1); // Replace with the actual user ID if needed
             stmt.setDate(2, Date.valueOf(date));
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return rs.getString("comment");
+                return rs.getString("written_note");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -353,20 +406,47 @@ public class HistoryController {
     }
 
     private void saveCommentToDatabase(LocalDate date, String comment) {
-        String query = "INSERT INTO comments (user_id, shift_date, comment) VALUES (?, ?, ?) " +
-                "ON DUPLICATE KEY UPDATE comment = VALUES(comment)";
+        String deleteQuery = "DELETE FROM note WHERE writer_id = ? AND note_date = ?";
+        String insertQuery = "INSERT INTO note (note_date, writer_id, recipient_id, full_name, written_note) " +
+                "VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection conn = DriverManager.getConnection(url, user, password);
-             PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = DriverManager.getConnection(url, user, password)) {
+            if (comment == null || comment.isEmpty()) {
+                // If the comment is empty, delete the existing record
+                try (PreparedStatement stmt = conn.prepareStatement(deleteQuery)) {
+                    stmt.setInt(1, 1); // Replace with the actual writer ID if needed
+                    stmt.setDate(2, Date.valueOf(date));
+                    int rowsDeleted = stmt.executeUpdate();
+                    if (rowsDeleted > 0) {
+                        System.out.println("Comment deleted for " + date);
+                    } else {
+                        System.out.println("No comment found to delete for " + date);
+                    }
+                }
+            } else {
+                // Insert or update the comment
+                try (PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery);
+                     PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
+                    // Delete existing comment first
+                    deleteStmt.setInt(1, 1);
+                    deleteStmt.setDate(2, Date.valueOf(date));
+                    deleteStmt.executeUpdate();
 
-            stmt.setInt(1, 1); // Replace 1 with actual user ID if needed
-            stmt.setDate(2, Date.valueOf(date));
-            stmt.setString(3, comment);
-            stmt.executeUpdate();
-            System.out.println("Comment saved for " + date);
-
+                    // Insert new comment
+                    insertStmt.setDate(1, Date.valueOf(date));
+                    insertStmt.setInt(2, 1); // Replace with the actual writer ID if needed
+                    insertStmt.setInt(3, 1); // Replace with the actual recipient ID if needed
+                    insertStmt.setString(4, "Writer Full Name"); // Replace with the writer's full name
+                    insertStmt.setString(5, comment);
+                    insertStmt.executeUpdate();
+                    System.out.println("Comment saved for " + date);
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+
+
 }

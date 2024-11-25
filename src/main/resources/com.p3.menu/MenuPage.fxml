@@ -43,8 +43,9 @@
                         <children>
                             <VBox alignment="BOTTOM_CENTER">
                                 <children>
-                                    <Button fx:id="historyButton" styleClass="defaultButton" text="Din Historik">
-                                        <VBox.margin>
+                                    <Button fx:id="historyButton" styleClass="defaultButton" text="Din Historik" onAction="#handleHistoryButton">
+
+                                    <VBox.margin>
                                             <Insets bottom="50.0" />
                                         </VBox.margin>
                                     </Button>

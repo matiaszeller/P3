@@ -1,16 +1,20 @@
 package com.p3.menu;
 
+import com.p3.history.HistoryController;
 import com.p3.menu.MenuDAO.Event;
 import com.p3.session.Session;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +34,8 @@ public class MenuController {
     private Label welcomeText;
     @FXML
     private VBox notificationBox;
+    @FXML
+    private Button historyButton;
 
     private final MenuDAO menuDAO = new MenuDAO();  // TODO DAO skal ikke kunne tilgåes fra controller
     private final MenuService menuService = new MenuService();
@@ -107,6 +113,20 @@ public class MenuController {
 
         loadDailyEvents();
     }
+
+    @FXML
+    private void handleHistoryButton() {
+        try {
+            // Get the current stage
+            Stage stage = (Stage) historyButton.getScene().getWindow();
+
+            // Call HistoryController to show the HistoryPage
+            HistoryController.showHistoryPage(stage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void loadDailyEvents() {
         int userId = Session.getCurrentUserId();
