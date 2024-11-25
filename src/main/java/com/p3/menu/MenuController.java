@@ -30,7 +30,6 @@ public class MenuController {
     @FXML
     private VBox notificationBox;
 
-    private final MenuDAO menuDAO = new MenuDAO();  // TODO DAO skal ikke kunne tilgåes fra controller
     private final MenuService menuService = new MenuService();
 
     @FXML
@@ -125,7 +124,6 @@ public class MenuController {
             String eventDisplay;
             String styleClass;
 
-            // Combine formatting and styling logic
             switch (eventType) {
                 case "check_in":
                     eventDisplay = "Check ind";
