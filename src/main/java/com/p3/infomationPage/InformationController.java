@@ -24,6 +24,9 @@ public class InformationController {
     @FXML
     private Button tilbage;
 
+   @FXML
+   private ChoiceBox<String> roleChoiceBox;
+
     private final informationService infoService = new informationService();
     private List<User> users;
     private User selectedUser;
@@ -63,6 +66,7 @@ public class InformationController {
         if (selectedUser != null) {
             nameField.setText(selectedUser.getUsername());
             passwordField.setText(selectedUser.getPassword());
+            roleChoiceBox.getSelectionModel().select(selectedUser.getRole());
         }
     }
 
