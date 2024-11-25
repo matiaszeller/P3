@@ -66,11 +66,15 @@ public class MenuController {
         boolean confirmed = MenuService.showEndShiftConfirmation();
         if (confirmed) {
             int userId = Session.getCurrentUserId();
-            LocalDateTime currentTime = LocalDateTime.now();
+
+            boolean onBreak = menuService.getOnBreakStatus(userId);
+            if (onBreak) {
+                menuService.postBreakEndEvent(userId);
+                menuService.setOnBreakStatus(userId, false);
+            }
 
             menuService.postCheckOutEvent(userId);
             menuService.putClockedInStatusById(userId, false);
-            menuService.setOnBreakStatus(userId, false);
 
             Session.clearSession();
 
@@ -89,7 +93,6 @@ public class MenuController {
     private void handleBreakButton() {
         int userId = Session.getCurrentUserId();
         boolean onBreak = menuService.getOnBreakStatus(userId);
-        LocalDateTime currentTime = LocalDateTime.now();
 
         if (onBreak) {
             menuService.postBreakEndEvent(userId);
@@ -120,28 +123,38 @@ public class MenuController {
         for (Event event : events) {
             String formattedTime = event.getEventTime().format(formatter);
             String eventType = event.getEventType();
+            String eventDisplay;
+            String styleClass;
 
-            String eventDisplay = formatEventType(eventType);
+            // Combine formatting and styling logic
+            switch (eventType) {
+                case "check_in":
+                    eventDisplay = "Check ind";
+                    styleClass = "checkInNotification";
+                    break;
+                case "check_out":
+                    eventDisplay = "Check ud";
+                    styleClass = "checkOutNotification";
+                    break;
+                case "break_start":
+                    eventDisplay = "Pause start";
+                    styleClass = "breakStartNotification";
+                    break;
+                case "break_end":
+                    eventDisplay = "Pause slut";
+                    styleClass = "breakEndNotification";
+                    break;
+                default:
+                    eventDisplay = eventType;
+                    styleClass = "defaultNotification";
+                    break;
+            }
 
-            Label eventLabel = new Label(eventDisplay + " klokken " + formattedTime);
+            Label eventLabel = new Label(eventDisplay + ": " + formattedTime);
             eventLabel.getStyleClass().add("eventLabel");
+            eventLabel.getStyleClass().add(styleClass);
 
             notificationBox.getChildren().add(eventLabel);
-        }
-    }
-
-    private String formatEventType(String eventType) {
-        switch (eventType) {
-            case "check_in":
-                return "Check-ind";
-            case "check_out":
-                return "Check-ud";
-            case "break_start":
-                return "Pause start";
-            case "break_end":
-                return "Pause slut";
-            default:
-                return eventType;
         }
     }
 
