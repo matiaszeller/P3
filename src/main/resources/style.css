@@ -169,12 +169,12 @@
 }
 
 .notificationBox{
-    -fx-pref-width: 396px;
+    -fx-pref-width: 400px;
 }
 
 /* Base Notification Styling */
 .breakEndNotification, .checkInNotification, .checkOutNotification, .breakStartNotification {
-    -fx-pref-width: 396px;
+    -fx-pref-width: 398px;
     -fx-text-alignment: center;
     -fx-alignment: center;
     -fx-padding: 10px;
