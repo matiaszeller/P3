@@ -245,9 +245,7 @@ public class ManagerDailyController {
             employeeRows.getChildren().add(employeeRow);
         }
 
-
         dayPane.setContent(employeeRows);
-
 
         centerPanel.getChildren().add(dayPane);
     }

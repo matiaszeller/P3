@@ -50,15 +50,15 @@ public class ManagerDailyService {
             return timelogs;
         }
 
-        // Get the event type for a user at a given hour
+
         public static String getEventForHour(Integer userId, int hour) {
             for (Map<String, Object> log : timelogs) {
                 Integer logUserId = (Integer) log.get("user_id");
                 if (logUserId.equals(userId)) {
-                    // Assuming event_time is stored as a String in ISO 8601 format (e.g., "2024-11-20T08:00:00")
+
                     String eventTimeStr = (String) log.get("event_time");
                     try {
-                        // Parse the event time string into LocalDateTime
+
                         LocalDateTime eventTime = LocalDateTime.parse(eventTimeStr);
                         int logHour = eventTime.getHour();
                         if (logHour == hour) {
@@ -72,16 +72,14 @@ public class ManagerDailyService {
             return "No Event";
         }
 
-        // Get the earliest time for a user
         public static int getEarliestTime(Integer userId) {
             int earliestHour = Integer.MAX_VALUE;
             for (Map<String, Object> log : timelogs) {
                 Integer logUserId = (Integer) log.get("user_id");
                 if (logUserId.equals(userId)) {
-                    // Assuming event_time is stored as a String in ISO 8601 format (e.g., "2024-11-20T08:00:00")
+
                     String eventTimeStr = (String) log.get("event_time");
                     try {
-                        // Parse the event time string into LocalDateTime
                         LocalDateTime eventTime = LocalDateTime.parse(eventTimeStr);
                         int logHour = eventTime.getHour();
                         earliestHour = Math.min(earliestHour, logHour);
@@ -93,16 +91,13 @@ public class ManagerDailyService {
             return earliestHour == Integer.MAX_VALUE ? 0 : earliestHour;
         }
 
-        // Get the latest time for a user
         public static int getLatestTime(Integer userId) {
             int latestHour = Integer.MIN_VALUE;
             for (Map<String, Object> log : timelogs) {
                 Integer logUserId = (Integer) log.get("user_id");
                 if (logUserId.equals(userId)) {
-                    // Assuming event_time is stored as a String in ISO 8601 format (e.g., "2024-11-20T08:00:00")
                     String eventTimeStr = (String) log.get("event_time");
                     try {
-                        // Parse the event time string into LocalDateTime
                         LocalDateTime eventTime = LocalDateTime.parse(eventTimeStr);
                         int logHour = eventTime.getHour();
                         latestHour = Math.max(latestHour, logHour);
@@ -112,17 +107,6 @@ public class ManagerDailyService {
                 }
             }
             return latestHour == Integer.MIN_VALUE ? 0 : latestHour;
-        }
-
-        // Add a helper method to parse shift_date (assuming it's stored as String)
-        public static LocalDate parseShiftDate(String shiftDateStr) {
-            try {
-                // Assuming shift_date is in ISO 8601 format (e.g., "2024-11-20")
-                return LocalDate.parse(shiftDateStr);
-            } catch (Exception e) {
-                System.err.println("Error parsing shift date: " + shiftDateStr);
-                return null;  // Return null or a default value if parsing fails
-            }
         }
     }
 
