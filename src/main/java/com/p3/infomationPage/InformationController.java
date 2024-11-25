@@ -42,6 +42,8 @@ public class InformationController {
 
         choiceBox.setItems(userNames);
 
+        ObservableList<String> roles = FXCollections.observableArrayList("manager", "medarbejder");
+        roleChoiceBox.setItems(roles);
 
         choiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {

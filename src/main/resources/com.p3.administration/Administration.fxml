@@ -14,11 +14,11 @@
 <?import javafx.scene.layout.VBox?>
 
 <?import javafx.scene.layout.BorderPane?>
-<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+<AnchorPane styleClass="root" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.p3.infomationPage.InformationController">
    <!-- SplitPane occupies the entire AnchorPane -->
    <SplitPane dividerPositions="0.3" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
-              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" styleClass="root">
       <!-- Left Pane -->
       <VBox spacing="20.0" prefWidth="200">
          <!-- BorderPane for layout management -->
@@ -35,14 +35,14 @@
             </center>
             <!-- Bottom section with button -->
             <bottom>
-               <HBox alignment="CENTER_LEFT">
-                  <Button fx:id="tilbage" text="Tilbage"/>
+               <HBox alignment="BOTTOM_LEFT">
+                  <Button fx:id="tilbage" styleClass="defaultButton" text="Tilbage"/>
                </HBox>
             </bottom>
          </BorderPane>
       </VBox>
       <!-- Right Pane -->
-      <ScrollPane fx:id="rightPane"> <fitToWidth>true</fitToWidth>
+      <ScrollPane styleClass="root"> <fitToWidth>true</fitToWidth>
          <VBox spacing="20.0">
             <padding>
                <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
@@ -64,8 +64,8 @@
 
             </GridPane>
             <HBox spacing="10.0">
-               <Button fx:id="submitBtn" text="Gem"/>
-               <Button fx:id="CancelBtn" text="Annuller"/>
+               <Button fx:id="submitBtn" styleClass="confirmButton" text="Gem"/>
+               <Button fx:id="CancelBtn" styleClass="endShiftButton" text="Annuller"/>
             </HBox>
          </VBox>
       </ScrollPane>
