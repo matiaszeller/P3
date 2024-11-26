@@ -19,8 +19,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import com.p3.session.Session;
 
-
-
 public class LoginController {
     @FXML
     private Label errorText;
@@ -211,6 +209,7 @@ public class LoginController {
         timer.play();
 
     }
+
     private void LogoutAndClose(Stage modalStage) {
         modalStage.close();
         usernameField.clear();
