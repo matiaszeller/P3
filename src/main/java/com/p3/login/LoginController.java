@@ -1,7 +1,5 @@
 package com.p3.login;
 
-import com.p3.instance.AppInstance;
-import com.p3.menu.MenuService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,7 +10,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import javafx.util.Duration;
 import javafx.scene.control.ProgressBar;
 import javafx.geometry.Insets;
@@ -59,6 +56,7 @@ public class LoginController {
             int userId = loginService.getUserId(username);
             String fullName = loginService.getUserFullName(username);
 
+            Session.setCurrentUserRole(role);
             Session.setCurrentUserId(userId);
             Session.setCurrentUserFullName(fullName);
 
@@ -147,11 +145,9 @@ public class LoginController {
     }
 
     private void showEmployeeModal(String username) {
-        MenuService menuService = new MenuService();
         this.employeeUsername = username;
 
         int userId = Session.getCurrentUserId();
-        LocalDateTime currentTime = LocalDateTime.now();
 
         loginService.postCheckInEvent(userId);
 
@@ -202,13 +198,12 @@ public class LoginController {
     }
     private void LogoutAndClose(Stage modalStage) {
         modalStage.close();
-        MenuService.loadLoginPage(AppInstance.getPrimaryStage());
+        usernameField.clear();
+        Session.clearSession();
     }
 
     private void MenuAndClose(Stage modalStage) {
-
         modalStage.close();
         loadMenuPage();
-
     }
 }

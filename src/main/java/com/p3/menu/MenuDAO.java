@@ -62,24 +62,6 @@ public class MenuDAO {
         return (String) response.body();
     }
 
-    public static class Event {     // TODO Lav class i sin egen fil
-        private LocalDateTime eventTime;
-        private String eventType;
-
-        public Event(LocalDateTime eventTime, String eventType) {
-            this.eventTime = eventTime;
-            this.eventType = eventType;
-        }
-
-        public LocalDateTime getEventTime() {
-            return eventTime;
-        }
-
-        public String getEventType() {
-            return eventType;
-        }
-    }
-
     public void postCheckOutEvent(int userId) {
         String url = "timelog/checkOut";
 

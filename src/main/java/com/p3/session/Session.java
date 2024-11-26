@@ -3,6 +3,7 @@ package com.p3.session;
 public class Session {
     private static int currentUserId;
     private static String currentUserFullName;
+    private static String currentUserRole;
 
     public static int getCurrentUserId() {
         return currentUserId;
@@ -18,6 +19,14 @@ public class Session {
 
     public static void setCurrentUserFullName(String fullName) {
         currentUserFullName = fullName;
+    }
+
+    public static String getCurrentUserRole() {
+        return currentUserRole;
+    }
+
+    public static void setCurrentUserRole(String role) {
+        currentUserRole = role;
     }
 
     public static void clearSession() {
