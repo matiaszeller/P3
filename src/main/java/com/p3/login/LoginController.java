@@ -198,12 +198,11 @@ public class LoginController {
     private void LogoutAndClose(Stage modalStage) {
         modalStage.close();
         usernameField.clear();
+        Session.clearSession();
     }
 
     private void MenuAndClose(Stage modalStage) {
-
         modalStage.close();
         loadMenuPage();
-
     }
 }

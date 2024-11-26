@@ -166,6 +166,8 @@
 
 .notificationPane{
     -fx-pref-width: 400px;
+    -fx-pref-height: 360px;
+    -fx-alignment: bottom;
 }
 
 .notificationBox{
