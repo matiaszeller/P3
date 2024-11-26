@@ -5,11 +5,15 @@ import com.p3.session.Session;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -25,13 +29,14 @@ public class MenuController {
     @FXML
     private Button breakButton;
     @FXML
+    private Button historyButton;
+    @FXML
     private Label clock;
     @FXML
     private Label welcomeText;
     @FXML
     private VBox notificationBox;
 
-    private final MenuDAO menuDAO = new MenuDAO();  // TODO DAO skal ikke kunne tilgåes fra controller
     private final MenuService menuService = new MenuService();
 
     @FXML
@@ -39,6 +44,7 @@ public class MenuController {
         endShiftButton.setOnAction(event -> handleEndShift());
         logOutButton.setOnAction(event -> handleLogOut());
         breakButton.setOnAction(event -> handleBreakButton());
+        historyButton.setOnAction(event -> loadEmployeeHistoryPage());
 
         startClock();
         loadDailyEvents();
@@ -76,6 +82,19 @@ public class MenuController {
 
             Stage stage = (Stage) endShiftButton.getScene().getWindow();
             MenuService.loadLoginPage(stage);
+        }
+    }
+
+    private void loadEmployeeHistoryPage() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com.p3.employeeHistory/EmployeeHistoryPage.fxml"));
+            Stage stage = (Stage) historyButton.getScene().getWindow();
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            Scene scene = new Scene(fxmlLoader.load(), width, height);
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

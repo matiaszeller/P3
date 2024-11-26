@@ -171,3 +171,54 @@
 .notificationBox{
     -fx-pref-width: 396px;
 }
+
+.emptyShiftBox{
+    -fx-background-color: lightgray;
+    -fx-padding: 20;
+    -fx-border-style: dotted;
+    -fx-border-width: 1px;
+    -fx-border-color: grey;
+    -fx-font-size: 12pt;
+    -fx-alignment: center;
+}
+
+.filledShiftBox{
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-border-style: dotted;
+    -fx-border-width: 1px;
+    -fx-border-color: grey;
+}
+
+
+.empHisLeftContainer{
+    -fx-border-style: hidden solid hidden hidden;
+    -fx-border-width: 2px;
+    -fx-border-color: grey;
+}
+
+.empHisCenterContainer{
+}
+
+.empHisWeekNumberContainer{
+    -fx-padding: 20;
+
+}
+
+.empHisCalendarContainer{
+    -fx-border-style: hidden hidden solid hidden;
+    -fx-border-color: grey;
+}
+
+.empHisButtonContainer{
+    -fx-padding: 40;
+}
+
+.empHisWorkHoursLabel{
+    -fx-font-size: 8pt;
+}
+
+.empHisWorkHours{
+    -fx-font-weight: bold;
+    -fx-font-size: 12pt;
+}
