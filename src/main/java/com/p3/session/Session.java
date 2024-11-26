@@ -32,5 +32,6 @@ public class Session {
     public static void clearSession() {
         currentUserId = 0;
         currentUserFullName = null;
+        currentUserRole = null;
     }
 }
