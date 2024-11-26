@@ -1,6 +1,6 @@
 package com.p3.menu;
 
-import com.p3.menu.MenuDAO.Event;
+import com.p3.event.Event;
 import com.p3.session.Session;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -29,6 +29,8 @@ public class MenuController {
     private Label welcomeText;
     @FXML
     private VBox notificationBox;
+    @FXML
+    private Button managerButton;
 
     private final MenuService menuService = new MenuService();
 
@@ -43,6 +45,16 @@ public class MenuController {
         initializeWelcomeText();
         initializeBreakButton();
         getMissedCheckout();
+        hideManagerButton();
+    }
+
+    private void hideManagerButton() {
+        String role = Session.getCurrentUserRole();
+
+        if ("employee".equalsIgnoreCase(role)) {
+            managerButton.setDisable(true);
+            managerButton.setVisible(false);
+        }
     }
 
     private void startClock() {
@@ -176,7 +188,7 @@ public class MenuController {
 
     private void getMissedCheckout() {
         int userId = Session.getCurrentUserId();
-        MenuDAO.Event lastCheckOutEvent = menuService.getLastCheckOutEvent(userId);
+        Event lastCheckOutEvent = menuService.getLastCheckOutEvent(userId);
 
         if (lastCheckOutEvent != null) {
             LocalTime key = LocalTime.of(23, 59, 0); // key = 23:59:00

@@ -56,6 +56,7 @@ public class LoginController {
             int userId = loginService.getUserId(username);
             String fullName = loginService.getUserFullName(username);
 
+            Session.setCurrentUserRole(role);
             Session.setCurrentUserId(userId);
             Session.setCurrentUserFullName(fullName);
 
