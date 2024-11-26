@@ -78,7 +78,7 @@ public class LoginController {
         }
     }
 
-    private void loadMenuPage() {
+    public void loadMenuPage() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com.p3.menu/MenuPage.fxml"));
             Stage stage = (Stage) loginButton.getScene().getWindow();

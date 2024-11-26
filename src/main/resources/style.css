@@ -24,6 +24,11 @@
     -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #FFFFFF, #EAF2EF);
     -fx-alignment: center;
 }
+.scroll-pane .right-pane {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #FFFFFF, #EAF2EF);
+    -fx-border-color: blue;
+
+}
 
 /* Welcome Text */
 .welcomeText {

@@ -12,58 +12,72 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.layout.BorderPane?>
+
 <AnchorPane styleClass="root" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.p3.infomationPage.InformationController">
    <!-- SplitPane occupies the entire AnchorPane -->
    <SplitPane dividerPositions="0.3" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" styleClass="root">
       <!-- Left Pane -->
-      <VBox spacing="20.0" prefWidth="200">
-         <!-- BorderPane for layout management -->
-         <BorderPane>
-            <padding>
-               <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
-            </padding>
-            <!-- Center section with label and choice box -->
-            <center>
-               <VBox spacing="10.0" alignment="CENTER">
-                  <Label text="Administrer Medarbejder"/>
-                  <ChoiceBox fx:id="choiceBox" prefWidth="200.0"/>
-               </VBox>
-            </center>
-            <!-- Bottom section with button -->
-            <bottom>
-               <HBox alignment="BOTTOM_LEFT">
-                  <Button fx:id="tilbage" styleClass="defaultButton" text="Tilbage"/>
-               </HBox>
-            </bottom>
-         </BorderPane>
-      </VBox>
+      <BorderPane>
+         <padding>
+            <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+         </padding>
+         <!-- Center section with label and choice box -->
+         <center>
+            <VBox spacing="10.0">
+               <Label text="Administrer Medarbejder"/>
+               <ChoiceBox fx:id="choiceBox" prefWidth="200.0"/>
+            </VBox>
+         </center>
+         <!-- Bottom section with button -->
+         <bottom>
+            <HBox alignment="BOTTOM_LEFT" spacing="40.0">
+               <Button fx:id="tilbage" styleClass="defaultButton" text="Tilbage"/>
+            </HBox>
+         </bottom>
+      </BorderPane>
+
       <!-- Right Pane -->
-      <ScrollPane styleClass="root"> <fitToWidth>true</fitToWidth>
-         <VBox spacing="20.0">
+      <ScrollPane styleClass="right-pane">
+         <fitToWidth>true</fitToWidth>
+         <fitToHeight>true</fitToHeight>
+         <VBox style="-fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #FFFFFF, #EAF2EF);
+    -fx-alignment: TOP_CENTER;" spacing="20.0">
             <padding>
                <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
             </padding>
             <Label text="Rediger Medarbejder"/>
-            <GridPane hgap="10.0" vgap="10.0">
+            <GridPane alignment="TOP_CENTER" vgap="10">
 
                <!-- Name Field -->
-               <Label text="Navn:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+
+               <Label text="Brugernavn:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
                <TextField fx:id="nameField" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="200.0"/>
 
+               <!-- Last name field -->
+               <Label text="Fulde navn:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+               <TextField fx:id="lastNameField" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="200.0"/>
+
+
                <!-- Role Field -->
-               <Label text="Rolle:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-               <ChoiceBox fx:id="roleChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="200.0"/>
+               <Label text="Rolle:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+               <ChoiceBox fx:id="roleChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="200.0"/>
 
                <!-- Password Field -->
-               <Label text="Adgangskode:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-               <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="200.0"/>
+               <Label text="Adgangskode: " GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+               <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="200.0"/>
+
+               <Label text="Gentag Adgangskode: " GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+               <PasswordField fx:id="secondPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="200.0"/>
+
 
             </GridPane>
-            <HBox spacing="10.0">
+            <HBox alignment="TOP_CENTER" spacing="10.0">
+               <padding>
+                  <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+               </padding>
                <Button fx:id="submitBtn" styleClass="confirmButton" text="Gem"/>
                <Button fx:id="CancelBtn" styleClass="endShiftButton" text="Annuller"/>
             </HBox>

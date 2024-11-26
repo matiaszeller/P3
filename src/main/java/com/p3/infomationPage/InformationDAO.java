@@ -23,14 +23,15 @@ public class InformationDAO {
 
 
         String userJson = user.toJson();
+        System.out.println(userJson);
 
         try {
-            HttpResponse<String> response = api.post("user/update", null, userJson);
+            HttpResponse<String> response = api.put("user/update", null, userJson);
             if (response.statusCode() == 200) {
                 System.out.println("User updated successfully: " + response.body());
                 return true;
             } else {
-                System.err.println("Error updating user: " + response.statusCode() + " - " + response.body());
+                System.err.println("Error up dating user: " + response.statusCode() + " - " + response.body());
                 return false;
             }
         } catch (Exception e) {

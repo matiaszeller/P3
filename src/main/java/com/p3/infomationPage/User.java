@@ -3,9 +3,9 @@ import org.json.JSONObject;
 
 
 public class User {
-    private int userId;
+    private int user_id;
     private String username;
-    private String fullName;
+    private String full_name;
     private boolean clockedIn;
     private boolean onBreak;
     private boolean loggedIn;
@@ -14,9 +14,9 @@ public class User {
 
     // Constructor
     public User(int userId, String username, String fullName, boolean clockedIn, boolean onBreak, boolean loggedIn, String password, String role) {
-        this.userId = userId;
+        this.user_id = userId;
         this.username = username;
-        this.fullName = fullName;
+        this.full_name = fullName;
         this.clockedIn = clockedIn;
         this.onBreak = onBreak;
         this.loggedIn = loggedIn;
@@ -25,14 +25,14 @@ public class User {
     }
 
     // Getters & Setters
-    public int getUserId() { return userId; }
-    public void setUserId(int userId) { this.userId = userId; }
+    public int getUserId() { return user_id; }
+    public void setUserId(int userId) { this.user_id = userId; }
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
 
-    public String getFullName() { return fullName; }
-    public void setFullName(String fullName) { this.fullName = fullName; }
+    public String getFullName() { return full_name; }
+    public void setFullName(String fullName) { this.full_name = fullName; }
 
     public boolean isClockedIn() { return clockedIn; }
     public void setClockedIn(boolean clockedIn) { this.clockedIn = clockedIn; }
@@ -52,9 +52,9 @@ public class User {
 
     public String toJson() {
         JSONObject json = new JSONObject();
-        json.put("user_id", userId);
+        json.put("user_id", user_id);
         json.put("username", username);
-        json.put("full_name", fullName);
+        json.put("full_name", full_name);
         json.put("clocked_in", clockedIn);
         json.put("on_break", onBreak);
         json.put("logged_in", loggedIn);
