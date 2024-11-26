@@ -23,7 +23,7 @@ public class AppInstance {
 
     private void fetchAndStoreServerTime() {
         AppInstanceDAO dao = new AppInstanceDAO();
-        serverStartTime = dao.fetchServerTime();
+        serverStartTime = dao.getServerTime();
     }
 
     public static LocalDateTime getServerStartTime() {
