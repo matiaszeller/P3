@@ -12,7 +12,7 @@
         </VBox>
 
         <Label styleClass="empHisWorkHoursLabel" text="Total Ugentlig Arbejdstid"/>
-        <Label styleClass="empHisWorkHours" text="TEMP_TID"/>
+        <Label fx:id="weekWorkHoursLabel" styleClass="empHisWorkHours" text="TEMP_TID"/>
 
         <Region VBox.vgrow="ALWAYS"/>
 
@@ -26,7 +26,7 @@
     <VBox alignment="TOP_CENTER" styleClass="empHisCenterContainer" fx:id="contentContainer" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0">
         <HBox spacing="10" alignment="CENTER" styleClass="empHisWeekNumberContainer" AnchorPane.topAnchor="10.0">
             <Button fx:id="prevWeekButton">left</Button>
-            <Label>TEMP_WEEK_NUMBER</Label>
+            <Label fx:id="weekNumberLabel" styleClass="modalText" style="-fx-pref-width: 120">TEMP_WEEK_NUMBER</Label>
             <Button fx:id="nextWeekButton">right</Button>
         </HBox>
     </VBox>

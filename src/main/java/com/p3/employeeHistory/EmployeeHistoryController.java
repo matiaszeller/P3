@@ -16,6 +16,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.IsoFields;
+import java.time.temporal.WeekFields;
 
 
 public class EmployeeHistoryController {
@@ -30,6 +34,10 @@ public class EmployeeHistoryController {
     private Button prevWeekButton;
     @FXML
     private Button nextWeekButton;
+    @FXML
+    private Label weekNumberLabel;
+    @FXML
+    private Label weekWorkHoursLabel;
 
     private final EmployeeHistoryService employeeHistoryService = new EmployeeHistoryService();
     private LocalDate date; // On load is .now, afterwards is used as working date
@@ -68,9 +76,11 @@ public class EmployeeHistoryController {
     }
 
 
-    private void handleWeekTimelogs(LocalDate localDate){
-        JSONArray jsonArray = new JSONArray(employeeHistoryService.getWeekTimelogs(localDate, Session.getCurrentUserId()));
+    private void handleWeekTimelogs(LocalDate date){
+        JSONArray jsonArray = new JSONArray(employeeHistoryService.getWeekTimelogs(date, Session.getCurrentUserId()));
         contentContainer.getChildren().removeIf(node -> node instanceof VBox);
+        weekNumberLabel.setText("Uge nr: " + String.valueOf(this.date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)));
+        double weekWorkHours = 0;
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONArray dayTimelogs = jsonArray.getJSONArray(i);
@@ -90,6 +100,15 @@ public class EmployeeHistoryController {
                     JSONObject timelog = dayTimelogs.getJSONObject(j);
                     String eventType = timelog.getString("event_type");
                     String eventTime = timelog.getString("event_time");
+                    LocalDateTime workTime = LocalDateTime.parse(timelog.getString("event_time"));
+
+                    if (eventType.equals("check_out") || eventType.equals("break_end")){  // TODO FIX minute and second
+                        weekWorkHours += (double) workTime.getHour();
+                    } else{
+                        weekWorkHours -= (double) workTime.getHour();
+                    }
+                    System.out.println(weekWorkHours);
+                    System.out.println(eventType);
 
                     Label timelogLabel = new Label("Type: " + eventType + ", Time: " + eventTime);
                     filledBox.getChildren().add(timelogLabel);
@@ -97,9 +116,9 @@ public class EmployeeHistoryController {
                 filledBox.setVgrow(filledBox, Priority.ALWAYS);
                 contentContainer.getChildren().add(filledBox);
             }
+            weekWorkHoursLabel.setText(String.valueOf(weekWorkHours));
         }
     }
-
 
     //TODO also change weeknumber label
     private void fetchNextWeekHistory(){
@@ -111,4 +130,5 @@ public class EmployeeHistoryController {
         date = date.minusWeeks(1);
         handleWeekTimelogs(date);
     }
+
 }
