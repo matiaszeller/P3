@@ -29,7 +29,13 @@
             <VBox spacing="10.0">
                <Label text="Administrer Medarbejder"/>
                <ChoiceBox fx:id="choiceBox" prefWidth="200.0"/>
+               <Button fx:id="newUserBtn" styleClass="confirmButton" text="Tilføj ny bruger">
+               <VBox.margin>
+                  <Insets top="70"/>
+               </VBox.margin>
+               </Button>
             </VBox>
+
          </center>
          <!-- Bottom section with button -->
          <bottom>
@@ -66,10 +72,10 @@
                <ChoiceBox fx:id="roleChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="200.0"/>
 
                <!-- Password Field -->
-               <Label text="Adgangskode: " GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+               <Label text="Adgangskode: " fx:id="PassText" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
                <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="200.0"/>
 
-               <Label text="Gentag Adgangskode: " GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+               <Label text="Gentag Adgangskode: " fx:id="secPassText" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
                <PasswordField fx:id="secondPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="200.0"/>
 
 
@@ -79,7 +85,6 @@
                   <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
                </padding>
                <Button fx:id="submitBtn" styleClass="confirmButton" text="Gem"/>
-               <Button fx:id="CancelBtn" styleClass="endShiftButton" text="Annuller"/>
             </HBox>
          </VBox>
       </ScrollPane>

@@ -5,10 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -38,12 +35,19 @@ public class InformationController {
     @FXML
     private Button tilbage;
 
-    @FXML Button CancelBtn;
+    @FXML
+    Button submitBtn;
 
-    @FXML Button submitBtn;
+    @FXML
+    Button newUserBtn;
 
    @FXML
    private ChoiceBox<String> roleChoiceBox;
+
+   @FXML
+   private Label PassText;
+
+   @FXML Label secPassText;
 
     private final informationService infoService = new informationService();
     private List<User> users;
@@ -71,12 +75,23 @@ public class InformationController {
 
         submitBtn.setOnAction(event -> saveChanges());
         tilbage.setOnAction(event -> goBack());
+        newUserBtn.setOnAction(event -> newUser());
     }
 
     private void updateUserDetails(String fullName) {
 
         for (User user : users) {
             if (user.getFullName().equals(fullName)) {
+                if (Objects.equals(user.getRole(), "employee")){
+                    passwordField.visibleProperty().set(false);
+                    secondPasswordField.visibleProperty().set(false);
+                    PassText.visibleProperty().set(false);
+                    secPassText.visibleProperty().set(false);
+                }
+                else{passwordField.visibleProperty().set(true);
+                    secondPasswordField.visibleProperty().set(true);
+                    PassText.visibleProperty().set(true);
+                    secPassText.visibleProperty().set(true);}
                 selectedUser = user;
                 break;
             }
@@ -121,7 +136,9 @@ public class InformationController {
     private void goBack() {
         loadMenuPage();
     }
-
+    private void newUser() {
+        System.out.println("New User");
+    }
     private void loadMenuPage() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com.p3.menu/MenuPage.fxml"));
