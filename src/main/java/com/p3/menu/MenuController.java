@@ -1,6 +1,7 @@
 package com.p3.menu;
 
 import com.p3.event.Event;
+import com.p3.instance.AppInstance;
 import com.p3.session.Session;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -11,6 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -34,18 +36,46 @@ public class MenuController {
 
     private final MenuService menuService = new MenuService();
 
+    private LocalDateTime currentDateTime;
+
     @FXML
     public void initialize() {
         endShiftButton.setOnAction(event -> handleEndShift());
         logOutButton.setOnAction(event -> handleLogOut());
         breakButton.setOnAction(event -> handleBreakButton());
 
-        startClock();
+        initializeClock();
         loadDailyEvents();
         initializeWelcomeText();
         initializeBreakButton();
         getMissedCheckout();
         hideManagerButton();
+    }
+
+    private void initializeClock() {
+        currentDateTime = AppInstance.getServerStartTime();
+        updateClockLabel(currentDateTime);
+        startClock();
+    }
+
+    private void startClock() {
+        KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), event -> {
+            if (currentDateTime != null) {
+                currentDateTime = currentDateTime.plusSeconds(1);
+                updateClockLabel(currentDateTime);
+            }
+        });
+        Timeline clockTimeline = new Timeline(keyFrame);
+        clockTimeline.setCycleCount(Timeline.INDEFINITE);
+        clockTimeline.play();
+    }
+
+    private void updateClockLabel(LocalDateTime dateTime) {
+        if (dateTime != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            String formattedTime = dateTime.toLocalTime().format(formatter);
+            clock.setText(formattedTime);
+        }
     }
 
     private void hideManagerButton() {
@@ -55,21 +85,6 @@ public class MenuController {
             managerButton.setDisable(true);
             managerButton.setVisible(false);
         }
-    }
-
-    private void startClock() {
-        KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), event -> updateClock());
-        Timeline clockTimeline = new Timeline(keyFrame);
-        clockTimeline.setCycleCount(Timeline.INDEFINITE);
-        clockTimeline.play();
-    }
-
-    private void updateClock() {
-        LocalTime currentTime = LocalTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        String formattedTime = currentTime.format(formatter);
-
-        clock.setText(formattedTime);
     }
 
     private void handleEndShift() {

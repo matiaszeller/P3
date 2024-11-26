@@ -2,7 +2,6 @@ package com.p3.menu;
 
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import com.p3.networking.ServerApi;
 import com.p3.session.Session;
 import org.json.JSONObject;
@@ -10,7 +9,6 @@ import org.json.JSONObject;
 public class MenuDAO {
 
     private final ServerApi api = new ServerApi();
-
 
     public String getOnBreakStatus(int userId) {
         String url = "user/breakStatus/" + userId;

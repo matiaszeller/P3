@@ -28,8 +28,6 @@ public class LoginController {
     private TextField usernameField;
     @FXML
     private Button loginButton;
-    @FXML
-    private VBox managerModal;
 
     private String managerUsername;
     private String employeeUsername;
@@ -42,6 +40,18 @@ public class LoginController {
                 handleLogin();
             } catch (Exception e) {
                 throw new RuntimeException(e);
+            }
+        });
+
+        usernameField.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case ENTER -> {
+                    try {
+                        handleLogin();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
         });
     }
@@ -78,10 +88,15 @@ public class LoginController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com.p3.menu/MenuPage.fxml"));
             Stage stage = (Stage) loginButton.getScene().getWindow();
+            // This is for getting the stage sizes so it doesn't mess with alignment and centering
             double width = stage.getWidth();
             double height = stage.getHeight();
-            Scene scene = new Scene(fxmlLoader.load(), width, height);
+
+            Scene scene = new Scene(fxmlLoader.load());
             stage.setScene(scene);
+
+            stage.setWidth(width);
+            stage.setHeight(height);
         } catch (IOException e) {
             e.printStackTrace();
         }
