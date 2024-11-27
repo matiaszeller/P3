@@ -45,4 +45,13 @@ public class informationService {
     public boolean updateUser(User user) {
         return InformationDAO.updateUser(user);
     }
+
+    public boolean createUser(User user) {
+        return true;
+
+
+
+
+    }
+
 }
