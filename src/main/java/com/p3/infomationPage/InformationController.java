@@ -187,7 +187,7 @@ public class InformationController {
         Label errorLabel = new Label();
         errorLabel.setStyle("-fx-text-fill: red;");
 
-        // Add components to layout
+
         layout.getChildren().addAll(
                 instructionLabel,
                 fullNameField,
