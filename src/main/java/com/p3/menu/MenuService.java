@@ -98,8 +98,8 @@ public class MenuService {
         return events;
     }
 
-    public void postCheckOutEvent(int user_id){
-        menuDao.postCheckOutEvent(user_id);
+    public void postCheckOutEvent(int userId){
+        menuDao.postCheckOutEvent(userId);
     }
 
     public void putClockedInStatusById(int userId, boolean status){
