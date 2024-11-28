@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -12,7 +11,7 @@
         </VBox>
 
         <Label styleClass="empHisWorkHoursLabel" text="Total Ugentlig Arbejdstid"/>
-        <Label fx:id="weekWorkHoursLabel" styleClass="empHisWorkHours" text="TEMP_TID"/>
+        <Label fx:id="weekWorkHoursLabel" style="-fx-font-size: 14pt;" text="TEMP_TID"/>
 
         <Region VBox.vgrow="ALWAYS"/>
 
@@ -23,12 +22,15 @@
     </VBox>
 
 
-    <VBox alignment="TOP_CENTER" styleClass="empHisCenterContainer" fx:id="contentContainer" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0">
+    <VBox alignment="TOP_CENTER" styleClass="empHisCenterContainer" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0">
         <HBox spacing="10" alignment="CENTER" styleClass="empHisWeekNumberContainer" AnchorPane.topAnchor="10.0">
-            <Button fx:id="prevWeekButton">left</Button>
-            <Label fx:id="weekNumberLabel" styleClass="modalText" style="-fx-pref-width: 120">TEMP_WEEK_NUMBER</Label>
-            <Button fx:id="nextWeekButton">right</Button>
+            <Button fx:id="prevWeekButton" styleClass="weekButton" text="Tidligere uge"/>
+            <Label fx:id="weekNumberLabel" styleClass="modalText" style="-fx-pref-width: 220; -fx-font-size: 25; -fx-font-weight: bold;">TEMP_WEEK_NUMBER</Label>
+            <Button fx:id="nextWeekButton" styleClass="weekButton" text="Næste uge"/>
         </HBox>
+        <VBox fx:id="contentContainer" styleClass="contentContainer" VBox.vgrow="ALWAYS">
+
+        </VBox>
     </VBox>
 
 </AnchorPane>

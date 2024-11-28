@@ -172,22 +172,58 @@
     -fx-pref-width: 396px;
 }
 
+
+
 .emptyShiftBox{
-    -fx-background-color: lightgray;
-    -fx-padding: 20;
+    -fx-background-color: rgba(0, 0, 0, 0.1);
+    -fx-padding: 0;
     -fx-border-style: dotted;
     -fx-border-width: 1px;
     -fx-border-color: grey;
     -fx-font-size: 12pt;
+    -fx-pref-height: 100%;
+    -fx-pref-width: 100%;
     -fx-alignment: center;
+    -fx-fill-width: true;
 }
 
-.filledShiftBox{
-    -fx-background-color: white;
-    -fx-padding: 20;
+.dayShiftBoxHeader{
+    -fx-background-color: transparent;
+    -fx-pref-height: 10%;
+    -fx-border-width: 1px;
+    -fx-border-color: grey;
+    -fx-font-size: 12pt;
+    -fx-padding: 0 0 0 6;
+}
+
+.dayHoursHBox{
+    -fx-background-color: transparent;
+    -fx-padding: 0;
     -fx-border-style: dotted;
     -fx-border-width: 1px;
     -fx-border-color: grey;
+    -fx-pref-height: 100%;
+    -fx-pref-width: 100%;
+    -fx-alignment: center;
+    -fx-fill-width: true;
+}
+
+
+
+.weekButton {
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #333;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 8 15 8 15;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 1);
+}
+
+.weekButton:hover {
+    -fx-background-color: #d0d0d0;
+    -fx-cursor: hand;
 }
 
 
@@ -195,19 +231,24 @@
     -fx-border-style: hidden solid hidden hidden;
     -fx-border-width: 2px;
     -fx-border-color: grey;
+    -fx-background-color: transparent;
 }
 
 .empHisCenterContainer{
+    -fx-fill-height: true;
+    -fx-background-color: transparent;
 }
 
 .empHisWeekNumberContainer{
     -fx-padding: 20;
+    -fx-background-color: transparent;
 
 }
 
 .empHisCalendarContainer{
     -fx-border-style: hidden hidden solid hidden;
     -fx-border-color: grey;
+    -fx-background-color: transparent;
 }
 
 .empHisButtonContainer{
@@ -215,10 +256,78 @@
 }
 
 .empHisWorkHoursLabel{
-    -fx-font-size: 8pt;
+    -fx-padding: 20 0 0 10;
+    -fx-font-weight: bold;
+    -fx-font-size: 14pt;
 }
 
-.empHisWorkHours{
-    -fx-font-weight: bold;
-    -fx-font-size: 12pt;
+.hourShiftBox{
+    -fx-background-color: transparent;
+    -fx-border-style: dotted;
+    -fx-border-color: grey;
+    -fx-border-width: 1px;
+    -fx-padding: 0;
+    -fx-margin: 0;
 }
+
+.hourShiftBoxLabel{
+    -fx-background-color: transparent;
+    -fx-padding: 5;
+}
+
+.contentContainer{
+    -fx-fill-height: true;
+}
+
+.shiftBoxRegistered{
+    -fx-background-color: #20c997;
+    -fx-padding: 0;
+    -fx-margin: 0;
+}
+
+.shiftBoxMissedEvent{
+    -fx-background-color: #ee7572;
+}
+
+.shiftBoxBreak{
+    -fx-background-color: #f9d58b;
+}
+
+
+.shiftBoxEdited{
+    -fx-background-color: #fdbb3c;
+}
+
+.shiftBoxNoneRegistered{
+    -fx-background-color: transparent;
+}
+
+.noteHBox{
+    -fx-background-color: transparent;
+    -fx-pref-width: 150px;
+    -fx-padding: 8;
+    -fx-border-width: 0 0 0 1px;
+    -fx-border-color: grey;
+}
+
+.noteButton{
+    -fx-cursor: hand;
+    -fx-font-size: 12;
+    -fx-padding: 2;
+    -fx-font-weight: 100;
+    -fx-pref-width: 100;
+    -fx-pref-height: 25;
+    -fx-text-fill: black;
+    -fx-background-color: white;
+    -fx-border-width: 1px;
+    -fx-border-color: grey;
+    -fx-border-radius: 5px;
+}
+
+.noteButton:hover{
+    -fx-background-color: #cdcdcd;
+
+}
+
+
+
