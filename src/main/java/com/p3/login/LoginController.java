@@ -1,7 +1,5 @@
 package com.p3.login;
 
-import com.p3.instance.AppInstance;
-import com.p3.menu.MenuService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,7 +10,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import javafx.util.Duration;
 import javafx.scene.control.ProgressBar;
 import javafx.geometry.Insets;
@@ -22,8 +19,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import com.p3.session.Session;
 
-
-
 public class LoginController {
     @FXML
     private Label errorText;
@@ -31,8 +26,6 @@ public class LoginController {
     private TextField usernameField;
     @FXML
     private Button loginButton;
-    @FXML
-    private VBox managerModal;
 
     private String managerUsername;
     private String employeeUsername;
@@ -47,6 +40,18 @@ public class LoginController {
                 throw new RuntimeException(e);
             }
         });
+
+        usernameField.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case ENTER -> {
+                    try {
+                        handleLogin();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        });
     }
 
     private void handleLogin(){ // TODO ærligt måske bare overvej at lave én method til login DAO så vi ikke laver 4 forskellige kald til db
@@ -59,6 +64,7 @@ public class LoginController {
             int userId = loginService.getUserId(username);
             String fullName = loginService.getUserFullName(username);
 
+            Session.setCurrentUserRole(role);
             Session.setCurrentUserId(userId);
             Session.setCurrentUserFullName(fullName);
             Session.setRole(role);
@@ -67,7 +73,6 @@ public class LoginController {
                 showManagerModal(username);
             } else if ("employee".equalsIgnoreCase(role)) {
                 boolean clockedIn = loginService.getClockedInStatus(username);
-                System.out.println(clockedIn);
 
                 if (clockedIn) {
                     loadMenuPage();
@@ -82,10 +87,15 @@ public class LoginController {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com.p3.menu/MenuPage.fxml"));
             Stage stage = (Stage) loginButton.getScene().getWindow();
+            // This is for getting the stage sizes so it doesn't mess with alignment and centering
             double width = stage.getWidth();
             double height = stage.getHeight();
-            Scene scene = new Scene(fxmlLoader.load(), width, height);
+
+            Scene scene = new Scene(fxmlLoader.load());
             stage.setScene(scene);
+
+            stage.setWidth(width);
+            stage.setHeight(height);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -149,13 +159,11 @@ public class LoginController {
     }
 
     private void showEmployeeModal(String username) {
-        MenuService menuService = new MenuService();
         this.employeeUsername = username;
 
         int userId = Session.getCurrentUserId();
-        LocalDateTime currentTime = LocalDateTime.now();
 
-        loginService.insertCheckInEvent(userId, currentTime);
+        loginService.postCheckInEvent(userId);
 
         loginService.setClockedInStatus(username, true);
 
@@ -202,15 +210,15 @@ public class LoginController {
         timer.play();
 
     }
+
     private void LogoutAndClose(Stage modalStage) {
         modalStage.close();
-        MenuService.loadLoginPage(AppInstance.getPrimaryStage());
+        usernameField.clear();
+        Session.clearSession();
     }
 
     private void MenuAndClose(Stage modalStage) {
-
         modalStage.close();
         loadMenuPage();
-
     }
 }

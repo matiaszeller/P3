@@ -1,7 +1,6 @@
 package com.p3.login;
 
 import org.mindrot.jbcrypt.BCrypt;
-import java.time.LocalDateTime;
 
 //todo implement networking feature, to talk with server.
 public class LoginService {
@@ -46,7 +45,7 @@ public class LoginService {
         loginDAO.setClockedInStatus(username, status);
     }
 
-    public void insertCheckInEvent(int userId, LocalDateTime eventTime) {
-        loginDAO.insertCheckInEvent(userId, eventTime);
+    public void postCheckInEvent(int userId) {
+        loginDAO.postCheckInEvent(userId);
     }
 }

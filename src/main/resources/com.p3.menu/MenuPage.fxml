@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
 <VBox alignment="CENTER" spacing="15.0" styleClass="root" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.menu.MenuController">
     <AnchorPane prefHeight="1000.0" prefWidth="1000.0" VBox.vgrow="ALWAYS">
@@ -64,14 +69,14 @@
                                 </HBox.margin>
                             </VBox>
                             <Region HBox.hgrow="ALWAYS" />
-                            <VBox>
+                            <VBox alignment="BOTTOM_CENTER" HBox.hgrow="NEVER">
                                 <children>
                                     <Label fx:id="overviewLabel" styleClass="subtitle" text="Dagens Oversigt">
                                         <VBox.margin>
-                                            <Insets left="50.0" />
+                                            <Insets />
                                         </VBox.margin>
                                     </Label>
-                                    <ScrollPane fx:id="notificationPane" styleClass="notificationPane" VBox.vgrow="ALWAYS">
+                                    <ScrollPane fx:id="notificationPane" styleClass="notificationPane" vbarPolicy="NEVER" hbarPolicy="NEVER">
                                         <content>
                                             <VBox fx:id="notificationBox" styleClass="notificationBox" />
                                         </content>
