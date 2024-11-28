@@ -108,5 +108,11 @@ public class ManagerDailyService {
             }
             return latestHour == Integer.MIN_VALUE ? 0 : latestHour;
         }
+    public String getUserFullName(int user_id) {
+        String jsonResponse = dao.getUserFullNameById(user_id);
+        org.json.JSONObject json = new org.json.JSONObject(jsonResponse);
+        return json.getString("full_name");
+    }
+
     }
 

@@ -191,12 +191,63 @@
     -fx-background-color: #FFFFFF;
     -fx-font-size: 17pt;
     -fx-font-weight: bold;
-
-
+    -fx-pref-width: 100%;
 }
 .managerDailyEmployeeBox {
     -fx-border-color: #000000;
     -fx-background-color: #FFFFFF;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
+
+}
+
+.hourLabel{
+    -fx-background-color: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.yearMonth{
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-max-width: 100px;
+}
+.hourBox {
+    -fx-border-color: #000000;
+    -fx-border-style: dashed;
+    -fx-border-width: 2px;
+    -fx-pref-height: 100px;
+    -fx-pref-width: 100px;
+}
+
+.hourBoxTimeLabel {
+    -fx-text-fill: black;
+    -fx-font-size: 14px;
+    -fx-font-family: 'Lato Bold';
+    -fx-padding: 3px;
+}
+.eventTypeLabel {
+    -fx-text-fill: black;
+    -fx-font-family: 'Lato Bold';
+    -fx-font-size: 8px;
+    -fx-padding: 1px;
+}
+
+.managerDailyButtons {
+    -fx-pref-width: 70px;
+    -fx-pref-height: 40px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Lato Bold';
+    -fx-font-size: 12pt;
+    -fx-cursor: hand;
+    -fx-background-color: #d1d1d1;
+    -fx-text-fill: black;
+}
+
+.managerDailyButtons:hover{
+    -fx-background-color: #dfdfdf;
+}
+
+.managerDailyButtons:pressed {
+    -fx-background-color: #8e8e8e;
 }

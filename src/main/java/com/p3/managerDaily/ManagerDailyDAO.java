@@ -30,4 +30,10 @@ public class ManagerDailyDAO {
             throw new RuntimeException("Shit aint good cuh.. DAO gal på den..", e);
         }
     }
+    public String getUserFullNameById(int user_id) {
+        String url = "user/fullNameId/" + user_id;
+        HttpResponse response = api.get(url, null);
+
+        return (String) response.body();
+    }
 }

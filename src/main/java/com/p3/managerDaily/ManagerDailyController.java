@@ -6,18 +6,23 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
+import java.util.Comparator;
 import java.util.Locale;
+import java.util.Iterator;
 import javafx.event.ActionEvent;
 import javafx.scene.text.Text;
 import java.util.Map;
 import java.util.List;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
-
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import javafx.scene.shape.Rectangle;
 
 public class ManagerDailyController {
 
@@ -94,9 +99,8 @@ public class ManagerDailyController {
         // Update the month label
         yearMonthLabel.setText(yearMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + yearMonth.getYear());
 
-
         // Add day-of-week headers
-        String[] daysOfWeek = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+        String[] daysOfWeek = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}; // Start with Monday
         for (int col = 0; col < daysOfWeek.length; col++) {
             Label dayLabel = new Label(daysOfWeek[col]);
             calendarGrid.add(dayLabel, col, 0); // Add to the first row
@@ -106,13 +110,13 @@ public class ManagerDailyController {
         LocalDate firstDayOfMonth = yearMonth.atDay(1);
         int daysInMonth = yearMonth.lengthOfMonth();
 
-        // Determine the starting day of the week (0=Sunday, 1=Monday, etc.)
-        int startDayOfWeek = firstDayOfMonth.getDayOfWeek().getValue() % 7;
+        // Determine the starting day of the week (1=Monday, 2=Tuesday, ..., 7=Sunday)
+        int startDayOfWeek = (firstDayOfMonth.getDayOfWeek().getValue() - 1) % 7;
 
         // Set grid constraints to ensure equal column widths
         for (int col = 0; col < 7; col++) {
             ColumnConstraints colConstraints = new ColumnConstraints();
-            colConstraints.setPercentWidth(14.2857); // 100% / 7 columns = 14.2857% duhh..
+            colConstraints.setPercentWidth(14.2857); // 100% / 7 columns = 14.2857%
             calendarGrid.getColumnConstraints().add(colConstraints);
         }
 
@@ -128,7 +132,7 @@ public class ManagerDailyController {
             calendarGrid.add(dateButton, col, row);
 
             col++;
-            if (col == 7) { // Move to the next row after Saturday
+            if (col == 7) { // Move to the next row after Sunday
                 col = 0;
                 row++;
             }
@@ -141,6 +145,7 @@ public class ManagerDailyController {
             calendarGrid.getRowConstraints().add(rowConstraints);
         }
     }
+
     public void generateTimelogBoxes(LocalDate startDate, int daysCount) {
         centerPanel.getChildren().clear();
         ScrollPane scrollPane = new ScrollPane();
@@ -165,11 +170,10 @@ public class ManagerDailyController {
     }
 
     public void generateTimelogBox(LocalDate date, List<Map<String, Object>> timelogs) {
-
-        List<Map<String, Object>> dailyTimelogs = timelogs.stream()
+        // Group timelogs by user_id
+        Map<Integer, List<Map<String, Object>>> timelogsByUserId = timelogs.stream()
                 .filter(timelog -> {
                     Object shiftDate = timelog.get("shift_date");
-
                     if (shiftDate instanceof String) {
                         try {
                             LocalDate shiftDateParsed = LocalDate.parse((String) shiftDate);
@@ -177,14 +181,12 @@ public class ManagerDailyController {
                         } catch (Exception e) {
                             System.err.println("Error parsing shift date: " + shiftDate);
                         }
-                    }
-
-                    else if (shiftDate instanceof LocalDate) {
+                    } else if (shiftDate instanceof LocalDate) {
                         return shiftDate.equals(date);
                     }
                     return false;
                 })
-                .collect(Collectors.toList());
+                .collect(Collectors.groupingBy(timelog -> (Integer) timelog.getOrDefault("user_id", 0)));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH);
         String formattedDate = date.format(formatter);
@@ -194,60 +196,185 @@ public class ManagerDailyController {
         dayPane.getStyleClass().add("collapseDateBox");
         dayPane.setExpanded(false);
 
-
         VBox employeeRows = new VBox();
         employeeRows.setSpacing(15);
-        System.out.println("Timelogs for " + date + ": " + dailyTimelogs);
 
-        for (Map<String, Object> timelog : dailyTimelogs) {
-            Integer userId = (Integer) timelog.getOrDefault("user_id", 0);
-            String userName = (String) timelog.getOrDefault("username", "Unknown Name");
+        // Iterate over each user_id and their timelogs
+        for (Map.Entry<Integer, List<Map<String, Object>>> entry : timelogsByUserId.entrySet()) {
+            Integer userId = entry.getKey();
+            List<Map<String, Object>> userTimelogs = entry.getValue();
+            String fullName = service.getUserFullName(userId);
 
-
+            // Create a structured employee row
             HBox employeeRow = new HBox();
             employeeRow.getStyleClass().add("managerDailyEmployeeBox");
-            employeeRow.setSpacing(15);
+            employeeRow.setSpacing(20); // Add spacing between the three parts
+            employeeRow.setAlignment(Pos.CENTER_LEFT); // Align to the left
+
+            // Box with employee's name
+            VBox nameBox = new VBox();
+            nameBox.setAlignment(Pos.CENTER); // Align name to the left
+            nameBox.setMinSize(125, 100);
+            Text fullNameText = new Text(fullName);
+            nameBox.getChildren().add(fullNameText);
+
+            // Box with the timelog (hourly shifts)
+            VBox timelogBox = new VBox();
+            timelogBox.setSpacing(2);  // Add spacing between hour boxes
+            timelogBox.setAlignment(Pos.CENTER_LEFT); // Align the hourly boxes to the left
+            timelogBox.setMaxWidth(Double.POSITIVE_INFINITY);
+
+            // Get start and end times for the user's shift
+            int startTime = ManagerDailyService.getEarliestTime(userId);
+            int endTime = ManagerDailyService.getLatestTime(userId);
+
+            // Sort timelogs by event time
+            userTimelogs.sort(Comparator.comparing(timelog -> {
+                Object eventTimeObj = timelog.get("event_time");
+                if (eventTimeObj instanceof String) {
+                    try {
+                        return LocalDateTime.parse((String) eventTimeObj, DateTimeFormatter.ISO_DATE_TIME);
+                    } catch (Exception e) {
+                        System.err.println("Error parsing event time: " + eventTimeObj);
+                    }
+                } else if (eventTimeObj instanceof LocalDateTime) {
+                    return (LocalDateTime) eventTimeObj;
+                }
+                return LocalDateTime.MIN;
+            }));
+
+            // Create an HBox for hourly boxes
+            HBox hourlyBoxes = new HBox();
+            // Track the current color
+            String currentColor = "#F9F6EE"; // Default color
+            Iterator<Map<String, Object>> timelogIterator = userTimelogs.iterator();
+            Map<String, Object> nextTimelog = timelogIterator.hasNext() ? timelogIterator.next() : null;
+
+            for (int hour = startTime; hour < endTime; hour++) {
+                StackPane hourBox = new StackPane();
+                hourBox.getStyleClass().add("hourBox");
+
+                // Label to display the time
+                Label timeLabel = new Label(hour + ":00");
+                timeLabel.getStyleClass().add("hourBoxTimeLabel");
+                StackPane.setAlignment(timeLabel, Pos.TOP_LEFT);
+
+                // Create a VBox to stack event type labels
+                VBox eventLabels = new VBox();
+                eventLabels.setSpacing(5);  // Spacing between multiple event labels
+                eventLabels.setAlignment(Pos.CENTER); // Align labels in the center of the hour box
 
 
-            Text usernameText = new Text("Ansat: " + userName);
+                // Check if we have a new event in this hour
+                while (nextTimelog != null) {
+                    Object eventTimeObj = nextTimelog.get("event_time");
+                    LocalDateTime eventTime = null;
 
+                    // Parse the event_time to LocalDateTime
+                    if (eventTimeObj instanceof String) {
+                        eventTime = LocalDateTime.parse((String) eventTimeObj, DateTimeFormatter.ISO_DATE_TIME);
+                    } else if (eventTimeObj instanceof LocalDateTime) {
+                        eventTime = (LocalDateTime) eventTimeObj;
+                    }
 
-            GridPane timeGrid = new GridPane();
-            timeGrid.setHgap(5);
-            timeGrid.setVgap(5);
+                    if (eventTime != null && eventTime.getHour() == hour) {
+                        // Handle event_type processing
+                        Object eventTypeObj = nextTimelog.get("event_type");
+                        String eventType = null;
 
-            // Start and end hours for a shift
-            int startHour = ManagerDailyService.getEarliestTime(userId);
-            int endHour = ManagerDailyService.getLatestTime(userId);
+                        if (eventTypeObj instanceof String) {
+                            try {
+                                String eventTypeStr = ((String) eventTypeObj).toUpperCase().replace("_", "_");
+                                EventType eventTypeEnum = EventType.valueOf(eventTypeStr); // Parse the Enum
+                                eventType = eventTypeEnum.name(); // Get the Enum's name as a String
+                            } catch (IllegalArgumentException e) {
+                                System.err.println("Unknown event_type: " + eventTypeObj);
+                            }
+                        }
 
-            for (int hour = startHour; hour <= endHour; hour++) {
-                String timeLabel = String.format("%02d:00", hour);
-                Label timeSlot = new Label(timeLabel);
-                timeSlot.getStyleClass().add("hourLabel");
-                timeGrid.add(timeSlot, hour - startHour, 0);
+                        if (eventType != null) {
+                            // Display event time and event type
+                            Label eventLabel = new Label(eventTime.getMinute() + " - " + eventType);
+                            eventLabel.getStyleClass().add("eventTypeLabel");
 
-                String eventForHour = ManagerDailyService.getEventForHour(userId, hour);
-                Label eventLabel = new Label(eventForHour);
-                eventLabel.getStyleClass().add("eventLabel");
-                timeGrid.add(eventLabel, hour - startHour, 1);
+                            // Add the event label to the VBox
+                            eventLabels.getChildren().add(eventLabel);
+
+                            // Determine the color of the event
+                            currentColor = getColorForEventType(eventType); // Update the current color
+                        }
+
+                        nextTimelog = timelogIterator.hasNext() ? timelogIterator.next() : null; // Move to the next event
+                    } else {
+                        break; // No more events in this hour
+                    }
+                }
+
+                hourBox.setStyle("-fx-background-color: " + currentColor + "; -fx-border-color: #000000;");
+                hourBox.getChildren().add(timeLabel);
+                hourBox.getChildren().add(eventLabels); // Add event labels
+
+                hourlyBoxes.getChildren().add(hourBox);
             }
-            System.out.println("Start hour:" + startHour);
-            System.out.println("End hour:" + endHour);
 
-            // Edit and note button
-            Button editButton = new Button();
+            // Add hourly boxes to the timelogBox
+            timelogBox.getChildren().add(hourlyBoxes);
+
+            // Box with the buttons (Edit and Note)
+            VBox buttonBox = new VBox();
+            buttonBox.setSpacing(10);  // Add spacing between the buttons
+            buttonBox.setAlignment(Pos.CENTER); // Center the buttons
+            buttonBox.setMinSize(100, 100);
+
+            // Edit Button
+            Button editButton = new Button("Edit");
             editButton.setOnAction(e -> showEditModal(userId));
-
-            Button noteButton = new Button();
+            editButton.getStyleClass().add("managerDailyButtons");
+            // Note Button
+            Button noteButton = new Button("Note");
             noteButton.setOnAction(e -> showNoteModal(userId));
+            noteButton.getStyleClass().add("managerDailyButtons");
+            buttonBox.getChildren().addAll(editButton, noteButton);
 
-            employeeRow.getChildren().addAll(usernameText, timeGrid, editButton, noteButton);
+            // Add all the parts to the employeeRow
+            employeeRow.getChildren().addAll(nameBox, timelogBox, buttonBox);
             employeeRows.getChildren().add(employeeRow);
         }
 
-        dayPane.setContent(employeeRows);
+        HBox.setHgrow(employeeRows, Priority.ALWAYS);
+        employeeRows.prefWidthProperty().bind(dayPane.widthProperty());
 
+        dayPane.setContent(employeeRows);
         centerPanel.getChildren().add(dayPane);
+    }
+
+
+
+
+    // Helper method to determine color based on event type
+    public String getColorForEventType(String eventType) {
+        if (eventType == null) {
+            return "#F9F6EE"; // Default white
+        }
+        switch (eventType) {
+            case "CHECK_IN":
+                return "#28a745"; // Green
+            case "CHECK_OUT":
+                return "#28a745"; // Green
+            case "BREAK_START":
+                return "#ffc107"; // Yellow
+            case "BREAK_END":
+                return "#28a745"; // Green
+            default:
+                return "#F9F6EE"; // Default white
+        }
+    }
+
+    public enum EventType {
+        CHECK_IN,
+        CHECK_OUT,
+        BREAK_START,
+        BREAK_END,
     }
 
 
