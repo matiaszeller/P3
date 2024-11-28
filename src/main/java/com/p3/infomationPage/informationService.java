@@ -47,11 +47,7 @@ public class informationService {
     }
 
     public boolean createUser(User user) {
-        return true;
-
-
-
-
+        return InformationDAO.createUser(user);
     }
 
 }

@@ -39,4 +39,26 @@ public class InformationDAO {
             return false;
         }
     }
+    public static boolean createUser(User user) {
+        ServerApi api = new ServerApi();
+
+
+        String userJson = user.toJson();
+        System.out.println(userJson);
+
+        try {
+            HttpResponse<String> response = api.post("user/newUser", null, userJson);
+            if (response.statusCode() == 200) {
+                System.out.println("User updated successfully: " + response.body());
+                return true;
+            } else {
+                System.err.println("Error up dating user: " + response.statusCode() + " - " + response.body());
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
