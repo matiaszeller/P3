@@ -6,16 +6,28 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Objects;
+import java.time.LocalDateTime;
 
 public class AppInstance {
     private static Stage primaryStage;
+    private static LocalDateTime serverStartTime;
 
     public AppInstance(Stage stage) {
         this.primaryStage = stage;
     }
 
     public void startApp() throws IOException {
+        fetchAndStoreServerTime();
         loadLoginScene();
+    }
+
+    private void fetchAndStoreServerTime() {
+        AppInstanceDAO dao = new AppInstanceDAO();
+        serverStartTime = dao.getServerTime();
+    }
+
+    public static LocalDateTime getServerStartTime() {
+        return serverStartTime;
     }
 
     public void loadLoginScene() throws IOException {
@@ -27,8 +39,5 @@ public class AppInstance {
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
         primaryStage.show();
-    }
-    public static Stage getPrimaryStage() {
-        return primaryStage;
     }
 }

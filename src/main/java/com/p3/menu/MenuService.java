@@ -108,21 +108,7 @@ public class MenuService {
 
     public Event getLastCheckOutEvent(int userId) {
         String jsonResponse = menuDao.getLastCheckOutEvent(userId);
-        //this is just here to identify errors
-        System.out.println("Server Response: " + jsonResponse);
-
-        if (jsonResponse == null || jsonResponse.trim().isEmpty()) {
-            System.out.println("Received empty or null response from server for last check-out event.");
-            return null;
-        }
-        //
         JSONObject jsonObject = new JSONObject(jsonResponse);
-        //more manual error detection
-        if (!jsonObject.has("event_time")) {
-            System.out.println("JSON response does not contain 'event_time'. Response: " + jsonResponse);
-            return null;
-        }
-
         LocalDateTime eventTime = LocalDateTime.parse(jsonObject.getString("event_time"));
         String eventType = jsonObject.getString("event_type");
         Event event = new Event(eventTime, eventType);
