@@ -76,7 +76,7 @@ public class EmployeeHistoryController {
         loadStage("/com.p3.login/LoginPage.fxml");
     }
 
-    private void loadStage(String fxmlPath) {   // Loads any stage given by the path provided
+    private void loadStage(String fxmlPath) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath));
             Stage stage = (Stage) logOutButton.getScene().getWindow();
@@ -189,7 +189,7 @@ public class EmployeeHistoryController {
         String currentStyleClass = shiftSequences.get(shiftSequenceIndex).styleClass;
         int remainingDuration = shiftSequences.get(shiftSequenceIndex).duration;
 
-// Loop through each hour to create minute boxes
+        // Loop through each hour to create minute boxes
         for (int i = 0; i < weeklyMaxAmountSingleShiftHours; i++) {
             LocalDateTime workingTime = firstTime.withHour(weeklyStartHour).plusHours(i);
 
@@ -370,7 +370,7 @@ public class EmployeeHistoryController {
             }
         }
 
-        // Handle the final event in the day
+        // Handle the final event in the day TODO fix gap between edited time
         JSONObject lastTimelog = timelogs.getJSONObject(timelogs.length() - 1);
         LocalDateTime lastEventTime = LocalDateTime.parse(lastTimelog.getString("event_time"));
         String lastEventType = lastTimelog.getString("event_type");
