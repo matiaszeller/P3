@@ -108,6 +108,11 @@ public class MenuService {
 
     public Event getLastCheckOutEvent(int userId) {
         String jsonResponse = menuDao.getLastCheckOutEvent(userId);
+
+        if (jsonResponse == null || jsonResponse.isEmpty() || jsonResponse.equals("null")) {
+            return null;
+        }
+
         JSONObject jsonObject = new JSONObject(jsonResponse);
         LocalDateTime eventTime = LocalDateTime.parse(jsonObject.getString("event_time"));
         String eventType = jsonObject.getString("event_type");

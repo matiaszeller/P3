@@ -85,6 +85,12 @@ public class MenuDAO {
     public String getLastCheckOutEvent(int userId) {
         String url = "timelog/lastCheckOut?user_id=" + userId;
         HttpResponse response = api.get(url, null, true);
+
+        // Check if the response status is 204 No Content
+        if (response.statusCode() == 204) {
+            return null;
+        }
+
         return (String) response.body();
     }
 
