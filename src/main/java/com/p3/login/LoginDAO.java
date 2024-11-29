@@ -6,11 +6,12 @@ import java.net.http.HttpResponse;
 public class LoginDAO {
     private final ServerApi api = new ServerApi();
 
-    public String getUserRole(String username){
+    public String getUserRole(String username) {
         String url = "user/role/" + username;
         HttpResponse response = api.get(url, null);
 
-        return (String) response.body(); // Works for this method, but all repsonses from server should return json
+        org.json.JSONObject json = new org.json.JSONObject((String) response.body());
+        return json.getString("role"); // Works for this method, but all repsonses from server should return json
     }
 
     public String getManagerPassword(String username) { // TODO Prob not correct way to secure password
@@ -63,5 +64,11 @@ public class LoginDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public String getApiKey(String username) {
+        String url = "user/apiKey/" + username;
+        HttpResponse response = api.get(url, null);
+        return (String) response.body();
     }
 }

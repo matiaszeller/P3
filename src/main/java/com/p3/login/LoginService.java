@@ -48,4 +48,10 @@ public class LoginService {
     public void postCheckInEvent(int userId) {
         loginDAO.postCheckInEvent(userId);
     }
+
+    public String getApiKey(String username) {
+        String jsonResponse = loginDAO.getApiKey(username);
+        org.json.JSONObject json = new org.json.JSONObject(jsonResponse);
+        return json.getString("api_key");
+    }
 }

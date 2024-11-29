@@ -63,7 +63,9 @@ public class LoginController {
         } else {
             int userId = loginService.getUserId(username);
             String fullName = loginService.getUserFullName(username);
+            String apiKey = loginService.getApiKey(username);
 
+            Session.setApiKey(apiKey);
             Session.setCurrentUserRole(role);
             Session.setCurrentUserId(userId);
             Session.setCurrentUserFullName(fullName);
