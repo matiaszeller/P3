@@ -7,9 +7,7 @@ public class LoginService {
     private final LoginDAO loginDAO = new LoginDAO();
 
     public String validateUser(String username){
-        String jsonResponse = loginDAO.getUserRole(username);
-        org.json.JSONObject json = new org.json.JSONObject(jsonResponse);
-        return json.getString("role");
+        return loginDAO.getUserRole(username);
     }
 
     public boolean validateManager(String username, String password) {
@@ -47,5 +45,11 @@ public class LoginService {
 
     public void postCheckInEvent(int userId) {
         loginDAO.postCheckInEvent(userId);
+    }
+
+    public String getApiKey(String username) {
+        String jsonResponse = loginDAO.getApiKey(username);
+        org.json.JSONObject json = new org.json.JSONObject(jsonResponse);
+        return json.getString("api_key");
     }
 }

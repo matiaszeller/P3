@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -33,8 +34,13 @@ public class LoginController {
 
     @FXML
     private void initialize() {
+        Session.clearSession();
+
         loginButton.setOnAction(event -> {
             try {
+                String username = usernameField.getText();
+                String apiKey = loginService.getApiKey(username);
+                Session.setApiKey(apiKey);
                 handleLogin();
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -45,6 +51,9 @@ public class LoginController {
             switch (event.getCode()) {
                 case ENTER -> {
                     try {
+                        String username = usernameField.getText();
+                        String apiKey = loginService.getApiKey(username);
+                        Session.setApiKey(apiKey);
                         handleLogin();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
@@ -126,6 +135,11 @@ public class LoginController {
         vbox.setPadding(new Insets(10));
 
         submitButton.setOnAction(event -> handleSubmit(modalStage, passwordField.getText(), modalErrorLabel));
+        passwordField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                handleSubmit(modalStage, passwordField.getText(), modalErrorLabel);
+            }
+        });
         cancelButton.setOnAction(event -> modalStage.close());
 
         Scene modalScene = new Scene(vbox);
