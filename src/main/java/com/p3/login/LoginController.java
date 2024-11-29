@@ -57,15 +57,15 @@ public class LoginController {
     private void handleLogin(){ // TODO ærligt måske bare overvej at lave én method til login DAO så vi ikke laver 4 forskellige kald til db
         String username = usernameField.getText();
         String role = loginService.validateUser(username);
+        String apiKey = loginService.getApiKey(username);
+        Session.setApiKey(apiKey);
 
         if (role == null) {
             errorText.setVisible(true);
         } else {
             int userId = loginService.getUserId(username);
             String fullName = loginService.getUserFullName(username);
-            String apiKey = loginService.getApiKey(username);
 
-            Session.setApiKey(apiKey);
             Session.setCurrentUserRole(role);
             Session.setCurrentUserId(userId);
             Session.setCurrentUserFullName(fullName);
