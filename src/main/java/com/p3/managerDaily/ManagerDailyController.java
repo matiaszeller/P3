@@ -91,19 +91,17 @@ public class ManagerDailyController {
 
 
     public void generateCalendar(YearMonth yearMonth) {
-        // Clear the current grid
         calendarGrid.getChildren().clear();
         calendarGrid.getColumnConstraints().clear();
         calendarGrid.getRowConstraints().clear();
 
-        // Update the month label
         yearMonthLabel.setText(yearMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + yearMonth.getYear());
 
         // Add day-of-week headers
-        String[] daysOfWeek = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}; // Start with Monday
+        String[] daysOfWeek = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
         for (int col = 0; col < daysOfWeek.length; col++) {
             Label dayLabel = new Label(daysOfWeek[col]);
-            calendarGrid.add(dayLabel, col, 0); // Add to the first row
+            calendarGrid.add(dayLabel, col, 0);
         }
 
         // Get the first day of the month and the total number of days
@@ -116,7 +114,7 @@ public class ManagerDailyController {
         // Set grid constraints to ensure equal column widths
         for (int col = 0; col < 7; col++) {
             ColumnConstraints colConstraints = new ColumnConstraints();
-            colConstraints.setPercentWidth(14.2857); // 100% / 7 columns = 14.2857%
+            colConstraints.setPercentWidth(14.2857); // 100% / 7 columns = 14.2857% :DD
             calendarGrid.getColumnConstraints().add(colConstraints);
         }
 
@@ -125,7 +123,7 @@ public class ManagerDailyController {
         int col = startDayOfWeek;
         for (int day = 1; day <= daysInMonth; day++) {
             Button dateButton = new Button(String.valueOf(day));
-            dateButton.setOnAction(this::handleDateClick); // Add click handler
+            dateButton.setOnAction(this::handleDateClick);
             dateButton.setMinSize(40, 40);
             dateButton.getStyleClass().add("dateButton");
 
@@ -138,10 +136,9 @@ public class ManagerDailyController {
             }
         }
 
-        // Set row constraints to ensure equal row heights
         for (int r = 0; r < row; r++) {
             RowConstraints rowConstraints = new RowConstraints();
-            rowConstraints.setVgrow(Priority.ALWAYS); // Make the rows grow evenly
+            rowConstraints.setVgrow(Priority.ALWAYS);
             calendarGrid.getRowConstraints().add(rowConstraints);
         }
     }
@@ -199,36 +196,31 @@ public class ManagerDailyController {
         VBox employeeRows = new VBox();
         employeeRows.setSpacing(15);
 
-        // Iterate over each user_id and their timelogs
         for (Map.Entry<Integer, List<Map<String, Object>>> entry : timelogsByUserId.entrySet()) {
             Integer userId = entry.getKey();
             List<Map<String, Object>> userTimelogs = entry.getValue();
             String fullName = service.getUserFullName(userId);
 
-            // Create a structured employee row
             HBox employeeRow = new HBox();
             employeeRow.getStyleClass().add("managerDailyEmployeeBox");
-            employeeRow.setSpacing(20); // Add spacing between the three parts
-            employeeRow.setAlignment(Pos.CENTER_LEFT); // Align to the left
+            employeeRow.setSpacing(20);
+            employeeRow.setAlignment(Pos.CENTER_LEFT);
 
-            // Box with employee's name
             VBox nameBox = new VBox();
-            nameBox.setAlignment(Pos.CENTER); // Align name to the left
+            nameBox.setAlignment(Pos.CENTER);
             nameBox.setMinSize(125, 100);
             Text fullNameText = new Text(fullName);
             nameBox.getChildren().add(fullNameText);
 
-            // Box with the timelog (hourly shifts)
             VBox timelogBox = new VBox();
-            timelogBox.setSpacing(2);  // Add spacing between hour boxes
-            timelogBox.setAlignment(Pos.CENTER_LEFT); // Align the hourly boxes to the left
+            timelogBox.setSpacing(2);
+            timelogBox.setAlignment(Pos.CENTER_LEFT);
             timelogBox.setMaxWidth(Double.POSITIVE_INFINITY);
 
             // Get start and end times for the user's shift
             int startTime = ManagerDailyService.getEarliestTime(userId);
             int endTime = ManagerDailyService.getLatestTime(userId);
 
-            // Sort timelogs by event time
             userTimelogs.sort(Comparator.comparing(timelog -> {
                 Object eventTimeObj = timelog.get("event_time");
                 if (eventTimeObj instanceof String) {
@@ -243,10 +235,9 @@ public class ManagerDailyController {
                 return LocalDateTime.MIN;
             }));
 
-            // Create an HBox for hourly boxes
             HBox hourlyBoxes = new HBox();
             // Track the current color
-            String currentColor = "#F9F6EE"; // Default color
+            String currentColor = "#28a745";
             Iterator<Map<String, Object>> timelogIterator = userTimelogs.iterator();
             Map<String, Object> nextTimelog = timelogIterator.hasNext() ? timelogIterator.next() : null;
 
@@ -254,15 +245,13 @@ public class ManagerDailyController {
                 StackPane hourBox = new StackPane();
                 hourBox.getStyleClass().add("hourBox");
 
-                // Label to display the time
                 Label timeLabel = new Label(hour + ":00");
                 timeLabel.getStyleClass().add("hourBoxTimeLabel");
                 StackPane.setAlignment(timeLabel, Pos.TOP_LEFT);
 
-                // Create a VBox to stack event type labels
                 VBox eventLabels = new VBox();
-                eventLabels.setSpacing(5);  // Spacing between multiple event labels
-                eventLabels.setAlignment(Pos.CENTER); // Align labels in the center of the hour box
+                eventLabels.setSpacing(5);
+                eventLabels.setAlignment(Pos.CENTER);
 
 
                 // Check if we have a new event in this hour
