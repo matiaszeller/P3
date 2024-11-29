@@ -1,4 +1,4 @@
-package com.p3.infomationPage;
+package com.p3.userEditor;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,7 +17,7 @@ import java.util.Objects;
 
 import static com.p3.login.LoginService.hashPassword;
 
-public class InformationController {
+public class UserEditController {
 
     @FXML
     private ChoiceBox<String> choiceBox;
@@ -51,7 +51,7 @@ public class InformationController {
 
    @FXML Label secPassText;
 
-    private final informationService infoService = new informationService();
+    private final UserEditService infoService = new UserEditService();
     private List<User> users;
     private User selectedUser;
 
@@ -66,7 +66,7 @@ public class InformationController {
 
         choiceBox.setItems(userNames);
 
-        ObservableList<String> roles = FXCollections.observableArrayList("manager", "medarbejder");
+        ObservableList<String> roles = FXCollections.observableArrayList("manager", "medarbejder", "deaktiver");
         roleChoiceBox.setItems(roles);
 
         choiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -113,17 +113,29 @@ public class InformationController {
         if (selectedUser != null) {
 
             selectedUser.setUsername(nameField.getText());
-            if (!passwordField.getText().isEmpty()) {
-                String hashedPassword;
-                if (Objects.equals(passwordField.getText(), secondPasswordField.getText())) {
-                    hashedPassword = passwordField.getText();
-                    hashPassword(hashedPassword);
-                    selectedUser.setPassword(hashedPassword);
+            selectedUser.setFullName(lastNameField.getText());
+            if(passwordField.getText() != null) {
+                if (!passwordField.getText().isEmpty()) {
+                    String hashedPassword;
+                    if (Objects.equals(passwordField.getText(), secondPasswordField.getText())) {
+                        hashedPassword = passwordField.getText();
+                        hashPassword(hashedPassword);
+                        selectedUser.setPassword(hashedPassword);
+                    }
                 }
             }
-            selectedUser.setRole(roleChoiceBox.getSelectionModel().getSelectedItem());
-            selectedUser.setFullName(lastNameField.getText());
+            String selectedRole = roleChoiceBox.getSelectionModel().getSelectedItem();
 
+            switch (selectedRole) {
+                case "deaktiver":
+                    selectedUser.setRole("deaktiverede");
+                    break;
+                case "medarbejder":
+                    selectedUser.setRole("employee");
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + selectedRole);
+            }
 
             boolean success = infoService.updateUser(selectedUser);
 
@@ -235,13 +247,13 @@ public class InformationController {
 
             User newUser = new User(0, username, fullName, false, false, false, password, role);
 
-
             boolean success = infoService.createUser(newUser);
 
             if (success) {
 
                 choiceBox.getItems().add(newUser.getFullName());
                 modalStage.close();
+                initialize();
             } else {
                 errorLabel.setText("Kunne ikke oprette bruger. Prøv igen.");
             }

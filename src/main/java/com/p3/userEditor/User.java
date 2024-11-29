@@ -1,4 +1,4 @@
-package com.p3.infomationPage;
+package com.p3.userEditor;
 import org.json.JSONObject;
 
 
@@ -36,6 +36,8 @@ public class User {
 
     public boolean isClockedIn() { return clockedIn; }
     public void setClockedIn(boolean clockedIn) { this.clockedIn = clockedIn; }
+
+
 
     public boolean isOnBreak() { return onBreak; }
     public void setOnBreak(boolean onBreak) { this.onBreak = onBreak; }

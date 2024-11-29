@@ -10,7 +10,7 @@ public class AppInstanceDAO {
 
     private final ServerApi api = new ServerApi();
 
-    public LocalDateTime getServerTime() {
+    /*public LocalDateTime getServerTime() {
         String url = "time/getTime";
         HttpResponse response = api.get(url, null);
 
@@ -20,5 +20,5 @@ public class AppInstanceDAO {
         } else {
             throw new RuntimeException("Failed to fetch server time: " + response.statusCode());
         }
-    }
-}
+    } */
+        }

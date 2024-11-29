@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.BorderPane?>
 
 <AnchorPane styleClass="root" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.p3.infomationPage.InformationController">
+            fx:controller="com.p3.userEditor.UserEditController">
    <!-- SplitPane occupies the entire AnchorPane -->
    <SplitPane dividerPositions="0.3" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" styleClass="root">

@@ -170,12 +170,12 @@ public class MenuService {
     }
     public static void loadAdminPage(Stage stage) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(MenuService.class.getResource("/com.p3.administration/Administration.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(MenuService.class.getResource("/com.p3.administration/EditUserPage.fxml"));
             double width = stage.getWidth();
             double height = stage.getHeight();
             Scene scene = new Scene(fxmlLoader.load(), width, height);
             stage.setScene(scene);
-            stage.setMaximized(true);
+
         } catch (IOException e) {
             e.printStackTrace();
         }

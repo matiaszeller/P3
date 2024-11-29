@@ -22,6 +22,8 @@ import com.p3.session.Session;
 public class LoginController {
     @FXML
     private Label errorText;
+   @FXML
+    private Label deactivatedText;
     @FXML
     private TextField usernameField;
     @FXML
@@ -60,8 +62,10 @@ public class LoginController {
 
         if (role == null) {
             errorText.setVisible(true);
-        } else {
-            int userId = loginService.getUserId(username);
+        } else if (role.equals("deaktiverede")){
+            deactivatedText.setVisible(true);
+        }
+        {int userId = loginService.getUserId(username);
             String fullName = loginService.getUserFullName(username);
 
             Session.setCurrentUserRole(role);

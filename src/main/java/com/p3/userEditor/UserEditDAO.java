@@ -1,10 +1,10 @@
-package com.p3.infomationPage;
+package com.p3.userEditor;
 
 import com.p3.networking.ServerApi;
 import java.net.http.HttpResponse;
 
 
-public class InformationDAO {
+public class UserEditDAO {
 
     public static String userNames() {
         ServerApi api = new ServerApi();

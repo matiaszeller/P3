@@ -1,4 +1,4 @@
-package com.p3.infomationPage;
+package com.p3.userEditor;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class informationService {
-    private final InformationDAO informationDAO = new InformationDAO();
+public class UserEditService {
+    private final UserEditDAO userEditDAO = new UserEditDAO();
 
     public List<User> getAllUsers() {
-        String jsonResponse = InformationDAO.userNames();
+        String jsonResponse = UserEditDAO.userNames();
 
         if (jsonResponse == null) {
             System.err.println("No valid JSON response from backend.");
@@ -43,11 +43,11 @@ public class informationService {
     }
 
     public boolean updateUser(User user) {
-        return InformationDAO.updateUser(user);
+        return UserEditDAO.updateUser(user);
     }
 
     public boolean createUser(User user) {
-        return InformationDAO.createUser(user);
+        return UserEditDAO.createUser(user);
     }
 
 }
