@@ -190,7 +190,8 @@
 .dayShiftBoxHeader{
     -fx-background-color: transparent;
     -fx-pref-height: 10%;
-    -fx-border-width: 1px;
+    -fx-border-style: solid hidden solid hidden;
+    -fx-border-width: 2px;
     -fx-border-color: grey;
     -fx-font-size: 12pt;
     -fx-padding: 0 0 0 6;
@@ -199,9 +200,7 @@
 .dayHoursHBox{
     -fx-background-color: transparent;
     -fx-padding: 0;
-    -fx-border-style: dotted;
-    -fx-border-width: 1px;
-    -fx-border-color: grey;
+    -fx-border-style: none;
     -fx-pref-height: 100%;
     -fx-pref-width: 100%;
     -fx-alignment: center;
@@ -263,7 +262,7 @@
 
 .hourShiftBox{
     -fx-background-color: transparent;
-    -fx-border-style: dotted;
+    -fx-border-style: hidden dotted hidden dotted;
     -fx-border-color: grey;
     -fx-border-width: 1px;
     -fx-padding: 0;
@@ -305,29 +304,29 @@
 .noteHBox{
     -fx-background-color: transparent;
     -fx-pref-width: 150px;
-    -fx-padding: 8;
+    -fx-padding: 0;
     -fx-border-width: 0 0 0 1px;
     -fx-border-color: grey;
 }
 
-.noteButton{
-    -fx-cursor: hand;
-    -fx-font-size: 12;
+.chevronImage{
+    -fx-fit-height: 30px;
+    -fx-fit-width: 30px;
+}
+
+.chevronButton{
+    -fx-background-color: transparent;
+    -fx-border-style: none;
     -fx-padding: 2;
-    -fx-font-weight: 100;
-    -fx-pref-width: 100;
-    -fx-pref-height: 25;
-    -fx-text-fill: black;
-    -fx-background-color: white;
-    -fx-border-width: 1px;
-    -fx-border-color: grey;
-    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+    -fx-border-radius: 5;
 }
 
-.noteButton:hover{
-    -fx-background-color: #cdcdcd;
-
+.chevronButton:hover{
+    -fx-background-color: lightgray;
 }
+
+
 
 
 

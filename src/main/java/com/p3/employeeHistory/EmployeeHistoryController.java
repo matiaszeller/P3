@@ -1,6 +1,7 @@
 package com.p3.employeeHistory;
 
 import com.p3.session.Session;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -12,6 +13,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.IOException;
@@ -22,13 +26,17 @@ import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class EmployeeHistoryController {
 
     private final EmployeeHistoryService employeeHistoryService = new EmployeeHistoryService();
     private int weeklyMaxAmountSingleShiftHours;
+    private LocalDate date;
+    private int weeklyStartHour;
+    private int weeklyEndHour;
 
     @FXML
     private Button logOutButton;
@@ -45,17 +53,18 @@ public class EmployeeHistoryController {
     @FXML
     private Label weekWorkHoursLabel;
 
-    private LocalDate date;
 
     @FXML
-    private void initialize() {
+    private void initialize(){
         setActionHandlers();
 
         date = LocalDate.now();
         handleWeekTimelogs(date);   // First time will always default to current day, could be stored as session data if this is not preffered
     }
 
-    private void setActionHandlers() {
+    private void setActionHandlers(){
+
+
         logOutButton.setOnAction(event -> handleLogOut());
         goBackButton.setOnAction(event -> loadStage("/com.p3.menu/MenuPage.fxml"));
         prevWeekButton.setOnAction(event -> fetchWeekHistory(-1));
@@ -73,8 +82,10 @@ public class EmployeeHistoryController {
             Stage stage = (Stage) logOutButton.getScene().getWindow();
             double width = stage.getWidth();
             double height = stage.getHeight();
+
             Scene scene = new Scene(fxmlLoader.load(), width, height);
             stage.setScene(scene);
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -87,7 +98,8 @@ public class EmployeeHistoryController {
         weekNumberLabel.setText(String.format("%d | Uge nr: %d", date.getYear(), date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)));
 
         Duration weekWorkHours = Duration.ZERO;
-        weeklyMaxAmountSingleShiftHours = 0;
+
+        calculateWeeklyDayValues(jsonArray);
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONArray dayEvents = jsonArray.getJSONArray(i);
@@ -141,6 +153,8 @@ public class EmployeeHistoryController {
 
     private VBox createDayShiftBox(JSONArray dayTimelogs) {
         JSONObject firstIndexObject = dayTimelogs.getJSONObject(0);
+        LocalDateTime firstTime = LocalDateTime.parse(firstIndexObject.getString("event_time"));
+
 
         // Create VBox for day
         VBox dayVBox = new VBox();
@@ -153,18 +167,16 @@ public class EmployeeHistoryController {
         HBox.setHgrow(dayBoxHeader, Priority.ALWAYS);
         dayBoxHeader.getStyleClass().add("dayShiftBoxHeader");
 
-            // Set label for day name and date
+        // Set label for day name and date
         Label dayLabel = new Label();
         String weekDay = LocalDate.parse(firstIndexObject.getString("shift_date"))
                 .getDayOfWeek()
                 .getDisplayName(TextStyle.SHORT, new Locale("da", "DK"));
         String weekDayCapitalized = weekDay.substring(0, 1).toUpperCase(Locale.ENGLISH) + weekDay.substring(1);
 
-        dayLabel.setText( weekDayCapitalized + " | " + LocalDate.parse(firstIndexObject.getString("shift_date")).toString());
+        dayLabel.setText(weekDayCapitalized + " | " + LocalDate.parse(firstIndexObject.getString("shift_date")));
         dayBoxHeader.getChildren().add(dayLabel);
         dayVBox.getChildren().add(dayBoxHeader);
-
-        System.out.println(weekDay);
 
         // Create HBox for day hours
         HBox dayHoursHBox = new HBox();
@@ -172,120 +184,46 @@ public class EmployeeHistoryController {
         VBox.setVgrow(dayHoursHBox, Priority.ALWAYS);
         dayHoursHBox.getStyleClass().add("dayHoursHBox");
 
+        int shiftSequenceIndex = 0;
+        List<ShiftSequence> shiftSequences = generateShiftSequence(dayTimelogs);
+        String currentStyleClass = shiftSequences.get(shiftSequenceIndex).styleClass;
+        int remainingDuration = shiftSequences.get(shiftSequenceIndex).duration;
 
-        // Default times. Start 07, End 17 - Gets day from object of array
-        LocalDateTime startTime = LocalDateTime.parse(firstIndexObject.getString("event_time"))
-                                                                                    .withHour(7)
-                                                                                    .withMinute(0)
-                                                                                    .withSecond(0)
-                                                                                    .withNano(0);
-        LocalDateTime endTime = LocalDateTime.parse(firstIndexObject.getString("event_time"))
-                                                                                    .withHour(17)
-                                                                                    .withMinute(0)
-                                                                                    .withSecond(0)
-                                                                                    .withNano(0);
-
-        for (int j = 0; j < dayTimelogs.length(); j++) { // Gets amount of objects to add to dayShiftBox
-            JSONObject timelog = dayTimelogs.getJSONObject(j);
-            LocalDateTime eventTime = LocalDateTime.parse(timelog.getString("event_time"));
-
-            // If evenTimes are before or after default times, floor and ceil them and replace default times
-            if(eventTime.isBefore(startTime)) {
-                startTime = eventTime.withMinute(0).withSecond(0).withNano(0);
-            }
-            else if(eventTime.isAfter(endTime)) {
-                endTime = eventTime.withMinute(0).withSecond(0).withNano(0);
-                endTime = endTime.plusHours(1);
-            }
-        }
-
-
-        int duration = (int) Duration.between(startTime, endTime).toHours();
-        if(weeklyMaxAmountSingleShiftHours < duration) weeklyMaxAmountSingleShiftHours = duration;
-
-        int timelogIndex = 0;
-        LocalDateTime currentEventTime = LocalDateTime.parse(dayTimelogs.getJSONObject(timelogIndex).getString("event_time"));
-        String currentEventType = dayTimelogs.getJSONObject(timelogIndex).getString("event_type");
-        String previousEventType = "null";
-        boolean eventHasBeenHit = false;
-        boolean firstHit = true;
-
-        // ADD BOXES
-        // For each hour, out of max hour, add box and children
+// Loop through each hour to create minute boxes
         for (int i = 0; i < weeklyMaxAmountSingleShiftHours; i++) {
-            LocalDateTime workingTime = startTime.plusHours(i);
+            LocalDateTime workingTime = firstTime.withHour(weeklyStartHour).plusHours(i);
 
+            // Hour box, contains stackpane
             HBox hourBox = new HBox();
             HBox.setHgrow(hourBox, Priority.ALWAYS);
             VBox.setVgrow(hourBox, Priority.ALWAYS);
             hourBox.getStyleClass().add("hourShiftBox");
 
+            // Stackpane, contains minute boxes
             StackPane hourBoxContainer = new StackPane();
             HBox.setHgrow(hourBoxContainer, Priority.ALWAYS);
             VBox.setVgrow(hourBoxContainer, Priority.ALWAYS);
 
-            for (int j = 0; j < 30; j++) {
-                LocalDateTime minuteTime = workingTime.plusMinutes(j*2);
+            for (int j = 0; j < 60; j++) {
                 HBox minuteBox = new HBox();
                 HBox.setHgrow(minuteBox, Priority.ALWAYS);
                 VBox.setVgrow(minuteBox, Priority.ALWAYS);
 
-                // Apply the style class based on whether the current minute is before, at, or after an event
-                if (!(minuteTime.isBefore(currentEventTime) && eventHasBeenHit)) {
-                    if(Objects.equals(previousEventType, "null")){
-                        minuteBox.getStyleClass().add("shiftBoxNoneRegistered");
-                    } else {
-                        minuteBox.getStyleClass().add(previousEventType);
-                    }
-                } else {
-                    switch (previousEventType) {
-                        case "check_in", "break_end":
-                            if(firstHit) {
-                                hourBox.getChildren().getLast().getStyleClass().add("shiftBoxRegistered");
-                                minuteBox.getStyleClass().add("shiftBoxRegistered");
-                                firstHit = false;
-                            } else {
-                                minuteBox.getStyleClass().add("shiftBoxRegistered");
-                            }
-                            break;
-                        case "check_out":
-                            if(firstHit) {
-                                hourBox.getChildren().getLast().getStyleClass().add("shiftBoxNoneRegistered");
-                                minuteBox.getStyleClass().add("shiftBoxNoneRegistered");
-                                firstHit = false;
-                            } else {
-                                minuteBox.getStyleClass().add("shiftBoxNoneRegistered");
-                            }
-                            break;
-                        case "break_start":
-                            if(firstHit) {
-                                hourBox.getChildren().getLast().getStyleClass().add("shiftBoxBreak");
-                                minuteBox.getStyleClass().add("shiftBoxBreak");
-                                firstHit = false;
-                            } else {
-                                minuteBox.getStyleClass().add("shiftBoxBreak");
-                            }
-                            break;
-                        case "null":
-                            minuteBox.getStyleClass().add("shiftBoxNoneRegistered");
-                            break;
-                    }
-                }
-
-                // If the minute time matches the current event time, move to the next event
-                if (minuteTime.isEqual(currentEventTime) && timelogIndex < dayTimelogs.length() - 1) {
-                    timelogIndex++;
-                    eventHasBeenHit = true;
-                    firstHit = true;
-                    previousEventType = currentEventType;
-                    currentEventTime = LocalDateTime.parse(dayTimelogs.getJSONObject(timelogIndex).getString("event_time"));
-                    currentEventType = dayTimelogs.getJSONObject(timelogIndex).getString("event_type");
-                }
+                minuteBox.getStyleClass().add(currentStyleClass);
 
                 hourBox.getChildren().add(minuteBox);
+
+                remainingDuration--;
+
+                // Move to the next shift sequence if the current one is complete
+                if (remainingDuration == 0 && shiftSequenceIndex < shiftSequences.size() - 1) {
+                    shiftSequenceIndex++;
+                    currentStyleClass = shiftSequences.get(shiftSequenceIndex).styleClass;
+                    remainingDuration = shiftSequences.get(shiftSequenceIndex).duration;
+                }
             }
 
-            // Add hourBox i to the "list" of hourBoxes
+            // Add hour box to hour container
             hourBoxContainer.getChildren().add(hourBox);
 
             // Label for each hour
@@ -297,11 +235,10 @@ public class EmployeeHistoryController {
             hourBoxContainer.getChildren().add(hourLabel);
             StackPane.setAlignment(hourLabel, Pos.TOP_LEFT);
 
-            // Add container of hourBox and label
+            // Add container of hour box and label to the day hours HBox
             dayHoursHBox.getChildren().add(hourBoxContainer);
-
-
         }
+
         // Add "list" of hourboxes to dayBox
         dayVBox.getChildren().add(dayHoursHBox);
 
@@ -314,9 +251,14 @@ public class EmployeeHistoryController {
 
 
         Button noteButton = new Button();
-        noteButton.getStyleClass().add("noteButton");
-        noteButton.setText("Tilføj Kommentar");
+        noteButton.getStyleClass().add("chevronButton");
 
+        Image noteImage = new Image(getClass().getResourceAsStream("/icons/add-note-svgrepo-com.png"));
+
+        ImageView noteImageView = new ImageView(noteImage);
+        noteImageView.getStyleClass().add("chevronImage");
+
+        noteButton.setGraphic(noteImageView);
         noteBox.getChildren().add(noteButton);
         dayHoursHBox.getChildren().add(noteBox);
 
@@ -375,5 +317,100 @@ public class EmployeeHistoryController {
 
     private LocalDate toMonday(LocalDate date) {
         return date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+    }
+
+    private String getMinuteBoxStyleClassFromEventType(String eventType) {
+        switch (eventType) {
+            case "check_in", "break_end":
+                return "shiftBoxRegistered";
+            case "break_start":
+                return "shiftBoxBreak";
+            case "check_out", "none":
+                return "shiftBoxNoneRegistered";
+        }
+
+        return null;
+    }
+
+    private List<ShiftSequence> generateShiftSequence(JSONArray timelogs) {
+        List<ShiftSequence> shiftSequences = new ArrayList<>();
+
+        // Start with the initial "empty" duration before the first event
+        LocalDateTime firstEventTime = LocalDateTime.parse(timelogs.getJSONObject(0).getString("event_time"));
+        Duration initialEmptyDuration = Duration.between(
+                firstEventTime.withHour(weeklyStartHour).withMinute(0).withSecond(0).withNano(0),
+                firstEventTime.withSecond(0).withNano(0)
+        );
+        if (!initialEmptyDuration.isZero()) {
+            shiftSequences.add(new ShiftSequence("none", (int) initialEmptyDuration.toMinutes()));
+        }
+
+        // Iterate through the timelogs and create shift sequences
+        for (int i = 1; i < timelogs.length(); i++) {
+            LocalDateTime previousTime = LocalDateTime.parse(timelogs.getJSONObject(i - 1).getString("event_time"));
+            LocalDateTime currentTime = LocalDateTime.parse(timelogs.getJSONObject(i).getString("event_time"));
+            String currentEditedTime = timelogs.getJSONObject(i - 1).optString("edited_time", null);
+            String nextEditedTime = timelogs.getJSONObject(i).optString("edited_time", null);
+            String eventType = timelogs.getJSONObject(i - 1).getString("event_type");
+            String nextEventType = timelogs.getJSONObject(i).getString("event_type");
+            Duration duration = Duration.between(previousTime.withSecond(0).withNano(0), currentTime.withSecond(0).withNano(0));
+
+            if (nextEventType.equals("check_out") && nextEditedTime != null) {
+                shiftSequences.add(new ShiftSequence("shiftBoxEdited", (int) duration.toMinutes()));
+            }
+
+            if (currentTime.getHour() == 23 && currentTime.getMinute() == 59) {
+                shiftSequences.add(new ShiftSequence("shiftBoxMissedEvent", (int) duration.toMinutes()));
+            } else {
+                if(currentEditedTime != null) {
+                    shiftSequences.add(new ShiftSequence("shiftBoxEdited", (int) duration.toMinutes()));
+                } else {
+                    shiftSequences.add(new ShiftSequence(getMinuteBoxStyleClassFromEventType(eventType), (int) duration.toMinutes()));
+                }
+            }
+        }
+
+        // Handle the final event in the day
+        JSONObject lastTimelog = timelogs.getJSONObject(timelogs.length() - 1);
+        LocalDateTime lastEventTime = LocalDateTime.parse(lastTimelog.getString("event_time"));
+        String lastEventType = lastTimelog.getString("event_type");
+        String lastEditedTime = lastTimelog.optString("edited_time", null);
+
+        Duration finalEmptyDuration = Duration.between(
+                lastEventTime.withSecond(0).withNano(0),
+                lastEventTime.withHour(weeklyEndHour).withMinute(0).withSecond(0).withNano(0)
+        );
+        if (lastEventType.equals("check_out") && lastEditedTime != null) {
+            shiftSequences.add(new ShiftSequence("shiftBoxEdited", (int) finalEmptyDuration.toMinutes()));
+        } else if (!finalEmptyDuration.isZero()) {
+            shiftSequences.add(new ShiftSequence("none", (int) finalEmptyDuration.toMinutes()));
+        }
+
+        return shiftSequences;
+    }
+
+    private void calculateWeeklyDayValues(JSONArray weekTimelogs) {
+        // Default values of hours
+        weeklyStartHour = 7;
+        weeklyEndHour = 17;
+
+        for(int i = 0; i < weekTimelogs.length(); i++){
+            JSONArray dayTimelogs = weekTimelogs.getJSONArray(i);
+
+            if(dayTimelogs.isEmpty()) continue;
+
+            LocalDateTime startTime = LocalDateTime.parse(dayTimelogs.getJSONObject(0).getString("event_time"));
+            LocalDateTime endTime = LocalDateTime.parse(dayTimelogs.getJSONObject(dayTimelogs.length() - 1).getString("event_time"));
+
+            if(startTime.getHour() < weeklyStartHour){
+                weeklyStartHour = startTime.getHour();
+            }
+            if (endTime.getHour() > weeklyEndHour && !(endTime.getHour() == 23 && endTime.getMinute() == 59)){
+                weeklyEndHour = endTime.getHour();
+            }
+
+            // So empty box with the next hour marker is always shown
+            weeklyMaxAmountSingleShiftHours = weeklyEndHour - weeklyStartHour + 1;
+        }
     }
 }

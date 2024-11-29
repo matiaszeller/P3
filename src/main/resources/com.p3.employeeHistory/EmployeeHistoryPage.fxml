@@ -3,6 +3,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.shape.Rectangle?>
 <AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.employeeHistory.EmployeeHistoryController" stylesheets="@../style.css" styleClass="root">
 
     <VBox alignment="TOP_CENTER" styleClass="empHisLeftContainer" prefWidth="400" maxHeight="600" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0">
@@ -17,6 +20,7 @@
 
         <VBox spacing="10" alignment="CENTER" styleClass="empHisButtonContainer" AnchorPane.bottomAnchor="10.0">
             <Button fx:id="goBackButton" styleClass="defaultButton" text="Tilbage"/>
+            <Region style="-fx-pref-height: 10px"/>
             <Button fx:id="logOutButton" styleClass="defaultButton" text="Log Ud"/>
         </VBox>
     </VBox>
@@ -24,9 +28,21 @@
 
     <VBox alignment="TOP_CENTER" styleClass="empHisCenterContainer" AnchorPane.leftAnchor="400.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0">
         <HBox spacing="10" alignment="CENTER" styleClass="empHisWeekNumberContainer" AnchorPane.topAnchor="10.0">
-            <Button fx:id="prevWeekButton" styleClass="weekButton" text="Tidligere uge"/>
-            <Label fx:id="weekNumberLabel" styleClass="modalText" style="-fx-pref-width: 220; -fx-font-size: 25; -fx-font-weight: bold;">TEMP_WEEK_NUMBER</Label>
-            <Button fx:id="nextWeekButton" styleClass="weekButton" text="Næste uge"/>
+            <Button fx:id="prevWeekButton" styleClass="chevronButton">
+                <graphic>
+                    <ImageView styleClass="chevronImage">
+                        <Image url="@/icons/chevron-left-svgrepo-com.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Label fx:id="weekNumberLabel" styleClass="modalText" style="-fx-pref-width: 220; -fx-font-size: 25; -fx-font-weight: bold;"/>
+            <Button fx:id="nextWeekButton" styleClass="chevronButton">
+                <graphic>
+                    <ImageView styleClass="chevronImage">
+                        <Image url="@/icons/chevron-right-svgrepo-com.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
         </HBox>
         <VBox fx:id="contentContainer" styleClass="contentContainer" VBox.vgrow="ALWAYS">
 
