@@ -1,6 +1,5 @@
 package com.p3.login;
 
-import com.p3.menu.MenuService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -14,7 +13,6 @@ import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import java.io.IOException;
 import java.util.Objects;
-
 import javafx.util.Duration;
 import javafx.scene.control.ProgressBar;
 import javafx.geometry.Insets;
@@ -120,7 +118,7 @@ public class LoginController {
         Stage modalStage = new Stage();
         modalStage.initModality(Modality.APPLICATION_MODAL);
         modalStage.setTitle("");
-        modalStage.getIcons().add(new Image(Objects.requireNonNull(MenuService.class.getResourceAsStream("/icons/favicon.png"))));
+        modalStage.getIcons().add(new Image(Objects.requireNonNull(LoginController.class.getResourceAsStream("/icons/favicon.png"))));
 
         // Disable window resizing
         modalStage.setResizable(false);
