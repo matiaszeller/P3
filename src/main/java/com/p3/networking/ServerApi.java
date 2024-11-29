@@ -10,18 +10,24 @@ import java.util.Map;
 public class ServerApi {
     private final String BASE_URL = "http://localhost:8080/api/";
 
-    public HttpResponse<String> get(String path, Map<String, String> headers) {
+    public HttpResponse<String> get(String path, Map<String, String> headers, boolean includeApiKey) {
+        if (headers == null) headers = new HashMap<>();
+        if (includeApiKey) {
+            String apiKey = Session.getApiKey();
+            if (apiKey != null) {
+                headers.put("API-Key", apiKey);
+            }
+        }
+
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + path))
                 .GET();
 
-        if (headers != null) {
-            headers.forEach((key, value) -> {
-                if (key != null && value != null) {
-                    builder.header(key, value);
-                }
-            });
-        }
+        headers.forEach((key, value) -> {
+            if (key != null && value != null) {
+                builder.header(key, value);
+            }
+        });
 
         return ServerApiUtil.execReq(builder.build());
     }

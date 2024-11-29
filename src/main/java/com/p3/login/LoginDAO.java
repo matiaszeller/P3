@@ -8,36 +8,41 @@ public class LoginDAO {
 
     public String getUserRole(String username) {
         String url = "user/role/" + username;
-        HttpResponse response = api.get(url, null);
+        HttpResponse<String> response = api.get(url, null, true);
 
-        org.json.JSONObject json = new org.json.JSONObject((String) response.body());
-        return json.getString("role"); // Works for this method, but all repsonses from server should return json
+        if (response.statusCode() == 200) {
+            String jsonResponse = response.body();
+            org.json.JSONObject json = new org.json.JSONObject(jsonResponse);
+            return json.getString("role");
+        } else {
+            throw new RuntimeException("Failed to get user role: " + response.statusCode());
+        }
     }
 
     public String getManagerPassword(String username) { // TODO Prob not correct way to secure password
         String url = "user/pass/" + username;
-        HttpResponse response = api.get(url, null);
+        HttpResponse response = api.get(url, null, true);
 
         return (String) response.body();        // TODO har ikke lige testet om den decrypter ordentligt på service men burde virke
     }
 
     public String getUserId(String username) {
         String url = "user/id/" + username;
-        HttpResponse response = api.get(url, null);
+        HttpResponse response = api.get(url, null, true);
 
         return (String) response.body();
     }
 
     public String getUserFullName(String username) {
         String url = "user/name/" + username;
-        HttpResponse response = api.get(url, null);
+        HttpResponse response = api.get(url, null, true);
 
         return (String) response.body();
     }
 
     public String getClockedInStatus(String username) {
         String url = "user/clockInStatus/" + username;
-        HttpResponse response = api.get(url, null);
+        HttpResponse response = api.get(url, null, true);
 
         return (String) response.body();
     }
@@ -68,7 +73,7 @@ public class LoginDAO {
 
     public String getApiKey(String username) {
         String url = "user/apiKey/" + username;
-        HttpResponse response = api.get(url, null);
+        HttpResponse response = api.get(url, null, false);
         return (String) response.body();
     }
 }
