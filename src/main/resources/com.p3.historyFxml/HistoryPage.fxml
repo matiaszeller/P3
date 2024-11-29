@@ -1,24 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.control.Label?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.p3.history.HistoryController">
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-    <children>
-        <!-- Button to load the gridpane -->
-        <Button fx:id="historyButton" layoutX="10" layoutY="10" text="Load History" />
+<BorderPane stylesheets="@../style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.history.HistoryController">
 
-        <!-- Placeholder for dynamic gridpane content -->
-        <AnchorPane fx:id="contentPane" layoutX="10" layoutY="50" prefWidth="600" prefHeight="400">
-            <!-- The gridpane will be added here when the historyButton is clicked -->
-        </AnchorPane>
+    <!-- VBox for controls on the left -->
+    <left>
+        <VBox alignment="CENTER" prefWidth="200" spacing="10" style="-fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 0; -fx-padding: 10; -fx-background-color: #FFFFFF;" BorderPane.alignment="CENTER">
+            <children>
+                <Button fx:id="historyButton" text="Load History" />
+            <Region prefHeight="87.0" prefWidth="200.0" />
+                <Label fx:id="totalHoursLabel" alignment="CENTER" style="-fx-alignment: center; -fx-text-alignment: center; -fx-font-weight: bold;" text="Total Weekly Hours Worked: 0:00" />
+            <Region prefHeight="33.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                <Button fx:id="returnButton" styleClass="defaultButton" text="Tilbage" />
+                <Button fx:id="logutButton" styleClass="defaultButton" text="Log out" />
+            <Region prefHeight="67.0" prefWidth="200.0" />
+            </children>
+        </VBox>
+    </left>
 
-        <!-- Label to display total weekly hours worked -->
-        <Label fx:id="totalHoursLabel" layoutX="10" layoutY="450" text="Total Weekly Hours Worked: 0:00" />
-
-        <!-- Return button -->
-        <Button fx:id="returnButton" layoutX="10" layoutY="500" text="Tilbage" />
-
-    </children>
-</AnchorPane>
+    <!-- VBox for centering the GridPane -->
+    <center>
+        <VBox alignment="CENTER" BorderPane.alignment="CENTER">
+            <children>
+                <HBox fx:id="gridPaneContainer" alignment="CENTER">
+                    <!-- The GridPane will be dynamically added here -->
+                </HBox>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

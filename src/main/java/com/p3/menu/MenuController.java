@@ -116,16 +116,16 @@ public class MenuController {
 
     @FXML
     private void handleHistoryButton() {
+        System.out.println("History button clicked!");
         try {
-            // Get the current stage
             Stage stage = (Stage) historyButton.getScene().getWindow();
-
-            // Call HistoryController to show the HistoryPage
             HistoryController.showHistoryPage(stage);
         } catch (Exception e) {
+            System.out.println("Error in handleHistoryButton:");
             e.printStackTrace();
         }
     }
+
 
 
     private void loadDailyEvents() {
