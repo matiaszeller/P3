@@ -13,7 +13,7 @@
             <DatePicker fx:id="calendar" showWeekNumbers="true"/>
         </VBox>
 
-        <Label styleClass="empHisWorkHoursLabel" text="Total Ugentlig Arbejdstid"/>
+        <Label styleClass="empHisWorkHoursLabel" text="Samlet Arbejdstid For Ugen "/>
         <Label fx:id="weekWorkHoursLabel" style="-fx-font-size: 14pt;" text="TEMP_TID"/>
 
         <Region VBox.vgrow="ALWAYS"/>

@@ -5,7 +5,7 @@ import java.net.http.*;
 import java.util.Map;
 
 public class ServerApi {
-    private final String BASE_URL = "http://localhost:8080/api/";  // TODO ændrer til server ip
+    private final String BASE_URL = "http://85.218.178.119:8080/api/";
 
     /*
     * Requests take path efter BASE_URL

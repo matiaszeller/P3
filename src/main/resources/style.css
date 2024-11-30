@@ -208,7 +208,6 @@
 }
 
 
-
 .weekButton {
     -fx-background-color: #e0e0e0;
     -fx-text-fill: #333;
@@ -324,6 +323,15 @@
 
 .chevronButton:hover{
     -fx-background-color: lightgray;
+}
+
+.shiftSequenceLabel{
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-border-style: none;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-font-weight: bold;
 }
 
 
