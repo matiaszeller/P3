@@ -2,6 +2,7 @@ package com.p3.managerDaily;
 
 import com.p3.session.Session;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -10,14 +11,13 @@ import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
-import java.util.Comparator;
-import java.util.Locale;
-import java.util.Iterator;
+import java.util.*;
+
 import javafx.event.ActionEvent;
 import javafx.scene.text.Text;
-import java.util.Map;
-import java.util.List;
+
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
@@ -26,7 +26,11 @@ import javafx.scene.shape.Rectangle;
 
 public class ManagerDailyController {
 
-    ManagerDailyService service = new ManagerDailyService();
+    private static final ManagerDailyService service = new ManagerDailyService();
+
+    private Map<LocalDate, TitledPane> dayPaneMap = new HashMap<>();
+
+    private ScrollPane scrollPane;
 
     @FXML
     private VBox managerDailyRoot;
@@ -63,6 +67,7 @@ public class ManagerDailyController {
     @FXML
     private BorderPane BorderPaneOuter;
 
+    private YearMonth YearMonth;
 
     private YearMonth currentMonth;
 
@@ -145,7 +150,10 @@ public class ManagerDailyController {
 
     public void generateTimelogBoxes(LocalDate startDate, int daysCount) {
         centerPanel.getChildren().clear();
-        ScrollPane scrollPane = new ScrollPane();
+
+        if (scrollPane == null) {
+            scrollPane = new ScrollPane(); // Initialize only if it's not already initialized
+        }
         scrollPane.setContent(centerPanel);
         scrollPane.setFitToWidth(true);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -185,6 +193,7 @@ public class ManagerDailyController {
                 })
                 .collect(Collectors.groupingBy(timelog -> (Integer) timelog.getOrDefault("user_id", 0)));
 
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH);
         String formattedDate = date.format(formatter);
 
@@ -208,8 +217,9 @@ public class ManagerDailyController {
 
             VBox nameBox = new VBox();
             nameBox.setAlignment(Pos.CENTER);
-            nameBox.setMinSize(125, 100);
+            nameBox.setMinSize(175, 150);
             Text fullNameText = new Text(fullName);
+            fullNameText.getStyleClass().add("managerDailyFullName");
             nameBox.getChildren().add(fullNameText);
 
             VBox timelogBox = new VBox();
@@ -218,8 +228,8 @@ public class ManagerDailyController {
             timelogBox.setMaxWidth(Double.POSITIVE_INFINITY);
 
             // Get start and end times for the user's shift
-            int startTime = ManagerDailyService.getEarliestTime(userId);
-            int endTime = ManagerDailyService.getLatestTime(userId);
+            int startTime = service.getEarliestTime(userId, date);
+            int endTime = service.getLatestTime(userId, date);
 
             userTimelogs.sort(Comparator.comparing(timelog -> {
                 Object eventTimeObj = timelog.get("event_time");
@@ -238,73 +248,141 @@ public class ManagerDailyController {
             HBox hourlyBoxes = new HBox();
             // Track the current color
             String currentColor = "#28a745";
-            Iterator<Map<String, Object>> timelogIterator = userTimelogs.iterator();
-            Map<String, Object> nextTimelog = timelogIterator.hasNext() ? timelogIterator.next() : null;
+            int index = 0;
 
-            for (int hour = startTime; hour < endTime; hour++) {
-                StackPane hourBox = new StackPane();
-                hourBox.getStyleClass().add("hourBox");
+            while (index < userTimelogs.size()) {
+                Map<String, Object> currentTimelog = userTimelogs.get(index);
+                Map<String, Object> nextTimelog = (index + 1 < userTimelogs.size()) ? userTimelogs.get(index + 1) : null;
 
-                Label timeLabel = new Label(hour + ":00");
-                timeLabel.getStyleClass().add("hourBoxTimeLabel");
-                StackPane.setAlignment(timeLabel, Pos.TOP_LEFT);
+                for (int hour = startTime; hour < endTime; hour++) {
+                    StackPane hourBox = new StackPane();
+                    hourBox.getStyleClass().add("hourBox");
 
-                VBox eventLabels = new VBox();
-                eventLabels.setSpacing(5);
-                eventLabels.setAlignment(Pos.CENTER);
+                    Label timeLabel = new Label(hour + ":00");
+                    timeLabel.getStyleClass().add("hourBoxTimeLabel");
+                    StackPane.setAlignment(timeLabel, Pos.TOP_LEFT);
 
+                    VBox eventLabels = new VBox();
+                    eventLabels.setSpacing(5);
+                    eventLabels.setAlignment(Pos.CENTER);
 
-                // Check if we have a new event in this hour
-                while (nextTimelog != null) {
-                    Object eventTimeObj = nextTimelog.get("event_time");
-                    LocalDateTime eventTime = null;
+                    // Create the minute-level division
+                    HBox minuteBoxes = new HBox();
+                    minuteBoxes.setSpacing(0);
+                    minuteBoxes.setAlignment(Pos.CENTER_LEFT);
+                    minuteBoxes.setPrefWidth(150);
 
-                    // Parse the event_time to LocalDateTime
-                    if (eventTimeObj instanceof String) {
-                        eventTime = LocalDateTime.parse((String) eventTimeObj, DateTimeFormatter.ISO_DATE_TIME);
-                    } else if (eventTimeObj instanceof LocalDateTime) {
-                        eventTime = (LocalDateTime) eventTimeObj;
-                    }
+                    // Initialize minute colors
+                    String[] minuteColors = new String[60];
+                    Arrays.fill(minuteColors, currentColor);
 
-                    if (eventTime != null && eventTime.getHour() == hour) {
-                        // Handle event_type processing
-                        Object eventTypeObj = nextTimelog.get("event_type");
-                        String eventType = null;
+                    // Process events for the current hour
+                    while (currentTimelog != null) {
+                        Object eventTimeObj = currentTimelog.get("event_time");
+                        LocalDateTime eventTime = null;
 
-                        if (eventTypeObj instanceof String) {
-                            try {
-                                String eventTypeStr = ((String) eventTypeObj).toUpperCase().replace("_", "_");
-                                EventType eventTypeEnum = EventType.valueOf(eventTypeStr); // Parse the Enum
-                                eventType = eventTypeEnum.name(); // Get the Enum's name as a String
-                            } catch (IllegalArgumentException e) {
-                                System.err.println("Unknown event_type: " + eventTypeObj);
+                        // Parse the event_time to LocalDateTime
+                        if (eventTimeObj instanceof String) {
+                            eventTime = LocalDateTime.parse((String) eventTimeObj, DateTimeFormatter.ISO_DATE_TIME);
+                        } else if (eventTimeObj instanceof LocalDateTime) {
+                            eventTime = (LocalDateTime) eventTimeObj;
+                        }
+
+                        if (eventTime != null && eventTime.getHour() == hour) {
+                            // Handle event_type processing
+                            Object eventTypeObj = currentTimelog.get("event_type");
+                            String eventType = null;
+
+                            if (eventTypeObj instanceof String) {
+                                eventType = (String) eventTypeObj; // The event type should already be lowercase from the DB
+                            }
+                            if (nextTimelog != null) {
+                                Object nextEventTypeObj = nextTimelog.get("event_type");
+                                String nextEventType = null;
+
+                                if (nextEventTypeObj instanceof String) {
+                                    nextEventType = (String) nextEventTypeObj;
+                                }
+
+                                Object nextEventTimeObj = nextTimelog.get("event_time");
+                                LocalDateTime nextEventTime = null;
+
+                                if (nextEventTimeObj instanceof String) {
+                                    nextEventTime = LocalDateTime.parse((String) nextEventTimeObj, DateTimeFormatter.ISO_DATE_TIME);
+                                } else if (nextEventTimeObj instanceof LocalDateTime) {
+                                    nextEventTime = (LocalDateTime) nextEventTimeObj;
+                                }
+
+                                // Check for the condition where nextTimelog is a 23:59 check_out
+                                if (nextEventType != null && nextEventType.equals("check_out")
+                                        && nextEventTime != null && nextEventTime.getHour() == 23 && nextEventTime.getMinute() == 59) {
+                                    // If it's the case, update current eventType to missing_check_out
+                                    eventType = "missing_check_out";
+                                }
+                            }
+
+                            if (eventType != null) {
+                               String customMessage = getEventLabelForEventType(eventType);
+                                String displayMessage;
+                                if ("missing_check_out".equals(eventType)) {
+                                    // Exclude the time for "missing_check_out"
+                                    displayMessage = customMessage;
+                                } else {
+                                    // Include the time for other event types
+                                    String formattedTime = String.format("%02d:%02d", eventTime.getHour(), eventTime.getMinute());
+                                    displayMessage = customMessage + "\n" + formattedTime;
+                                }
+
+                                // Create the event label
+                                Label eventLabel = new Label(displayMessage);
+                                eventLabel.getStyleClass().add("eventTypeLabel");
+                                eventLabels.getChildren().add(eventLabel);
+
+                                // Update the color for the event's minutes
+                                currentColor = getColorForEventType(eventType);
+                                int startMinute = eventTime.getMinute();
+                                int endMinute = (nextTimelog != null
+                                        && LocalDateTime.parse((String) nextTimelog.get("event_time"), DateTimeFormatter.ISO_DATE_TIME).getHour() == hour)
+                                        ? LocalDateTime.parse((String) nextTimelog.get("event_time"), DateTimeFormatter.ISO_DATE_TIME).getMinute() - 1
+                                        : 59;
+                                for (int minute = startMinute; minute <= endMinute; minute++) {
+                                    minuteColors[minute] = currentColor;
+                                }
                             }
                         }
 
-                        if (eventType != null) {
-                            // Display event time and event type
-                            Label eventLabel = new Label(eventTime.getMinute() + " - " + eventType);
-                            eventLabel.getStyleClass().add("eventTypeLabel");
-
-                            // Add the event label to the VBox
-                            eventLabels.getChildren().add(eventLabel);
-
-                            // Determine the color of the event
-                            currentColor = getColorForEventType(eventType); // Update the current color
+                        // Move to the next timelog if it's still within the same hour
+                        if (nextTimelog != null && eventTime != null && eventTime.getHour() == hour) {
+                            index++;
+                            currentTimelog = nextTimelog;
+                            nextTimelog = (index + 1 < userTimelogs.size()) ? userTimelogs.get(index + 1) : null;
+                        } else {
+                            break; // Stop processing events for this hour
                         }
-
-                        nextTimelog = timelogIterator.hasNext() ? timelogIterator.next() : null; // Move to the next event
-                    } else {
-                        break; // No more events in this hour
                     }
+
+                    // Create minute boxes with the corresponding colors
+                    for (int minute = 0; minute < 60; minute++) {
+                        StackPane minuteBox = new StackPane();
+                        minuteBox.setPrefHeight(150);
+                        HBox.setHgrow(minuteBox, Priority.ALWAYS);
+
+                        minuteBox.getStyleClass().add("minuteBox");
+                        minuteBox.setStyle("-fx-background-color: " + minuteColors[minute] + ";");
+                        minuteBoxes.getChildren().add(minuteBox);
+                    }
+
+                    hourBox.getChildren().add(minuteBoxes);
+                    hourBox.getChildren().add(timeLabel);
+                    hourBox.getChildren().add(eventLabels);
+
+                    hourlyBoxes.getChildren().add(hourBox);
                 }
 
-                hourBox.setStyle("-fx-background-color: " + currentColor + "; -fx-border-color: #000000;");
-                hourBox.getChildren().add(timeLabel);
-                hourBox.getChildren().add(eventLabels); // Add event labels
-
-                hourlyBoxes.getChildren().add(hourBox);
+                // Increment index to move to the next timelog
+                index++;
             }
+
 
             // Add hourly boxes to the timelogBox
             timelogBox.getChildren().add(hourlyBoxes);
@@ -313,7 +391,7 @@ public class ManagerDailyController {
             VBox buttonBox = new VBox();
             buttonBox.setSpacing(10);  // Add spacing between the buttons
             buttonBox.setAlignment(Pos.CENTER); // Center the buttons
-            buttonBox.setMinSize(100, 100);
+            buttonBox.setMinSize(120, 150);
 
             // Edit Button
             Button editButton = new Button("Edit");
@@ -333,6 +411,8 @@ public class ManagerDailyController {
         HBox.setHgrow(employeeRows, Priority.ALWAYS);
         employeeRows.prefWidthProperty().bind(dayPane.widthProperty());
 
+        dayPaneMap.put(date, dayPane);
+
         dayPane.setContent(employeeRows);
         centerPanel.getChildren().add(dayPane);
     }
@@ -346,24 +426,47 @@ public class ManagerDailyController {
             return "#F9F6EE"; // Default white
         }
         switch (eventType) {
-            case "CHECK_IN":
+            case "check_in", "break_end", "check_out":
                 return "#28a745"; // Green
-            case "CHECK_OUT":
-                return "#28a745"; // Green
-            case "BREAK_START":
-                return "#ffc107"; // Yellow
-            case "BREAK_END":
-                return "#28a745"; // Green
+            case "break_start":
+                return "yellow"; // Yellow
+            case "missing_check_out":
+                return "#ff0000"; // Red
             default:
                 return "#F9F6EE"; // Default white
         }
     }
 
+   private String getEventLabelForEventType(String eventType) {
+       String customMessage = "";
+       switch (eventType) {
+           case "check_in":
+               customMessage = "Start: ";
+               break;
+           case "break_start":
+               customMessage = "Pause: ";
+               break;
+           case "break_end":
+               customMessage = " - ";
+               break;
+           case "check_out":
+               customMessage = "Slut: ";
+               break;
+           default:
+               break;
+       }
+       return customMessage;
+   }
     public enum EventType {
-        CHECK_IN,
-        CHECK_OUT,
-        BREAK_START,
-        BREAK_END,
+        check_in, check_out, break_start, break_end, missing_check_out;
+            public static EventType fromString(String eventTypeStr) {
+            try {
+                return EventType.valueOf(eventTypeStr.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                System.err.println("Unknown event_type: " + eventTypeStr);
+                return null;
+            }
+        }
     }
 
 
@@ -381,10 +484,43 @@ public class ManagerDailyController {
     private void handleDateClick(ActionEvent event) {
         Button clickedButton = (Button) event.getSource();
         String day = clickedButton.getText();
+        System.out.println("Clicked: " + day);
+        try {
+            // Convert the day (String) into an integer
+            int dayOfMonth = Integer.parseInt(day.trim()); // Ensure the day is parsed correctly
 
-        // Den skal highlighte dagen som bliver clicket på i center delen og expand dagen's ting, hvad end man kalder de der udfolder ting ya know..
+            // Use the YearMonth variable to construct the LocalDate
+            LocalDate selectedDate = currentMonth.atDay(dayOfMonth);
 
+            // Retrieve the corresponding TitledPane
+            TitledPane dayPane = dayPaneMap.get(selectedDate);
+
+            if (dayPane != null) {
+                // Expand the pane if it's collapsed
+                dayPane.setExpanded(true);
+
+                Bounds dayPaneBounds = dayPane.localToScene(dayPane.getBoundsInLocal());
+                double yOffset = dayPaneBounds.getMinY();
+
+                // Get the height of the visible area of the ScrollPane
+                double viewportHeight = scrollPane.getViewportBounds().getHeight();
+
+                // Calculate the amount to scroll to center the dayPane vertically
+                double targetVValue = (yOffset - (viewportHeight / 2)) / (centerPanel.getHeight() - viewportHeight);
+
+                // Ensure targetVValue is between 0 and 1 (valid scroll range)
+                targetVValue = Math.max(0, Math.min(targetVValue, 1));
+
+                // Set the vertical scroll value to scroll to the center
+                scrollPane.setVvalue(targetVValue);
+            } else {
+                System.out.println("DayPane not found for date: " + selectedDate);
+            }
+        } catch (DateTimeParseException e) {
+            System.err.println("Invalid date format: " + day);
+        }
     }
+
 
     private void handleLogOut() {
         Session.clearSession();

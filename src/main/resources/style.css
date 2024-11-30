@@ -216,8 +216,8 @@
     -fx-border-color: #000000;
     -fx-border-style: dashed;
     -fx-border-width: 2px;
-    -fx-pref-height: 100px;
-    -fx-pref-width: 100px;
+    -fx-pref-height: 150px;
+    -fx-pref-width: 150px;
 }
 
 .hourBoxTimeLabel {
@@ -229,19 +229,25 @@
 .eventTypeLabel {
     -fx-text-fill: black;
     -fx-font-family: 'Lato Bold';
-    -fx-font-size: 8px;
+    -fx-font-size: 14px;
     -fx-padding: 1px;
 }
 
 .managerDailyButtons {
-    -fx-pref-width: 70px;
-    -fx-pref-height: 40px;
+    -fx-pref-width: 80px;
+    -fx-pref-height: 50px;
     -fx-font-weight: bold;
     -fx-font-family: 'Lato Bold';
-    -fx-font-size: 12pt;
+    -fx-font-size: 14pt;
     -fx-cursor: hand;
     -fx-background-color: #d1d1d1;
     -fx-text-fill: black;
+}
+.managerDailyFullName {
+    -fx-font-size: 14pt;
+    -fx-font-family: "Lato Bold";
+    -fx-text-fill: black;
+
 }
 
 .managerDailyButtons:hover{
@@ -251,3 +257,4 @@
 .managerDailyButtons:pressed {
     -fx-background-color: #8e8e8e;
 }
+
