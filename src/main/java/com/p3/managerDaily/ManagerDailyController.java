@@ -217,7 +217,7 @@ public class ManagerDailyController {
 
             VBox nameBox = new VBox();
             nameBox.setAlignment(Pos.CENTER);
-            nameBox.setMinSize(175, 150);
+            nameBox.setMinSize(150, 150);
             Text fullNameText = new Text(fullName);
             fullNameText.getStyleClass().add("managerDailyFullName");
             nameBox.getChildren().add(fullNameText);
@@ -254,6 +254,12 @@ public class ManagerDailyController {
                 Map<String, Object> currentTimelog = userTimelogs.get(index);
                 Map<String, Object> nextTimelog = (index + 1 < userTimelogs.size()) ? userTimelogs.get(index + 1) : null;
 
+                // Keep track of the last created hourBox and deferred checkout label
+                StackPane lastHourBox = null;
+                Label deferredCheckOutLabel = null;
+                Label missingCheckOutLabel = null;
+
+// Iterate through hours in the time range
                 for (int hour = startTime; hour < endTime; hour++) {
                     StackPane hourBox = new StackPane();
                     hourBox.getStyleClass().add("hourBox");
@@ -263,10 +269,9 @@ public class ManagerDailyController {
                     StackPane.setAlignment(timeLabel, Pos.TOP_LEFT);
 
                     VBox eventLabels = new VBox();
-                    eventLabels.setSpacing(5);
+                    eventLabels.setSpacing(3);
                     eventLabels.setAlignment(Pos.CENTER);
 
-                    // Create the minute-level division
                     HBox minuteBoxes = new HBox();
                     minuteBoxes.setSpacing(0);
                     minuteBoxes.setAlignment(Pos.CENTER_LEFT);
@@ -281,7 +286,7 @@ public class ManagerDailyController {
                         Object eventTimeObj = currentTimelog.get("event_time");
                         LocalDateTime eventTime = null;
 
-                        // Parse the event_time to LocalDateTime
+                        // Parse event_time to LocalDateTime
                         if (eventTimeObj instanceof String) {
                             eventTime = LocalDateTime.parse((String) eventTimeObj, DateTimeFormatter.ISO_DATE_TIME);
                         } else if (eventTimeObj instanceof LocalDateTime) {
@@ -289,20 +294,12 @@ public class ManagerDailyController {
                         }
 
                         if (eventTime != null && eventTime.getHour() == hour) {
-                            // Handle event_type processing
                             Object eventTypeObj = currentTimelog.get("event_type");
-                            String eventType = null;
+                            String eventType = eventTypeObj instanceof String ? (String) eventTypeObj : null;
 
-                            if (eventTypeObj instanceof String) {
-                                eventType = (String) eventTypeObj; // The event type should already be lowercase from the DB
-                            }
                             if (nextTimelog != null) {
                                 Object nextEventTypeObj = nextTimelog.get("event_type");
-                                String nextEventType = null;
-
-                                if (nextEventTypeObj instanceof String) {
-                                    nextEventType = (String) nextEventTypeObj;
-                                }
+                                String nextEventType = nextEventTypeObj instanceof String ? (String) nextEventTypeObj : null;
 
                                 Object nextEventTimeObj = nextTimelog.get("event_time");
                                 LocalDateTime nextEventTime = null;
@@ -313,55 +310,64 @@ public class ManagerDailyController {
                                     nextEventTime = (LocalDateTime) nextEventTimeObj;
                                 }
 
-                                // Check for the condition where nextTimelog is a 23:59 check_out
-                                if (nextEventType != null && nextEventType.equals("check_out")
-                                        && nextEventTime != null && nextEventTime.getHour() == 23 && nextEventTime.getMinute() == 59) {
-                                    // If it's the case, update current eventType to missing_check_out
-                                    eventType = "missing_check_out";
+                                if ("check_out".equals(nextEventType) && nextEventTime != null) {
+                                    String customMessage = getEventLabelForEventType(nextEventType);
+                                    String displayMessage = customMessage + String.format("%02d:%02d", nextEventTime.getHour(), nextEventTime.getMinute());
+
+                                    // Store the deferred checkOutLabel
+                                    deferredCheckOutLabel = new Label(displayMessage);
+                                    deferredCheckOutLabel.getStyleClass().add("eventTypeLabel");
+
+                                    // Check for the condition where nextTimelog is a 23:59 check_out
+                                    if (nextEventTime.getHour() == 23 && nextEventTime.getMinute() == 59) {
+                                        eventType = "missing_check_out";
+                                        String missingCheckOutCustomMessage = getEventLabelForEventType("missing_check_out"); // Use "missing_check_out"
+
+                                        // Store the missingCheckOutLabel for later
+                                        missingCheckOutLabel = new Label(missingCheckOutCustomMessage);
+                                        missingCheckOutLabel.getStyleClass().add("eventTypeLabel");
+                                    }
                                 }
                             }
 
                             if (eventType != null) {
-                               String customMessage = getEventLabelForEventType(eventType);
+                                String customMessage = getEventLabelForEventType(eventType);
                                 String displayMessage;
-                                if ("missing_check_out".equals(eventType)) {
-                                    // Exclude the time for "missing_check_out"
-                                    displayMessage = customMessage;
-                                } else {
-                                    // Include the time for other event types
                                     String formattedTime = String.format("%02d:%02d", eventTime.getHour(), eventTime.getMinute());
-                                    displayMessage = customMessage + "\n" + formattedTime;
+                                    displayMessage = customMessage + formattedTime;
+
+                                if ("missing_check_out".equals(eventType)) {
+                                    displayMessage = "-\n" + formattedTime;
                                 }
 
-                                // Create the event label
                                 Label eventLabel = new Label(displayMessage);
                                 eventLabel.getStyleClass().add("eventTypeLabel");
                                 eventLabels.getChildren().add(eventLabel);
 
-                                // Update the color for the event's minutes
                                 currentColor = getColorForEventType(eventType);
                                 int startMinute = eventTime.getMinute();
                                 int endMinute = (nextTimelog != null
                                         && LocalDateTime.parse((String) nextTimelog.get("event_time"), DateTimeFormatter.ISO_DATE_TIME).getHour() == hour)
                                         ? LocalDateTime.parse((String) nextTimelog.get("event_time"), DateTimeFormatter.ISO_DATE_TIME).getMinute() - 1
                                         : 59;
+
                                 for (int minute = startMinute; minute <= endMinute; minute++) {
                                     minuteColors[minute] = currentColor;
                                 }
                             }
                         }
 
-                        // Move to the next timelog if it's still within the same hour
+                        // Move to the next timelog
                         if (nextTimelog != null && eventTime != null && eventTime.getHour() == hour) {
                             index++;
                             currentTimelog = nextTimelog;
                             nextTimelog = (index + 1 < userTimelogs.size()) ? userTimelogs.get(index + 1) : null;
                         } else {
-                            break; // Stop processing events for this hour
+                            break;
                         }
                     }
 
-                    // Create minute boxes with the corresponding colors
+                    // Create minute boxes
                     for (int minute = 0; minute < 60; minute++) {
                         StackPane minuteBox = new StackPane();
                         minuteBox.setPrefHeight(150);
@@ -377,7 +383,27 @@ public class ManagerDailyController {
                     hourBox.getChildren().add(eventLabels);
 
                     hourlyBoxes.getChildren().add(hourBox);
+                    lastHourBox = hourBox; // Update last hour box reference
                 }
+
+                    // Add the deferred checkOutLabel and missingCheckOutLabel to the last hour box
+                if (lastHourBox != null) {
+                    VBox eventLabelsForLastHour = new VBox();
+                    eventLabelsForLastHour.setSpacing(3);
+                    eventLabelsForLastHour.setAlignment(Pos.CENTER);
+
+                    if (deferredCheckOutLabel != null) {
+                        eventLabelsForLastHour.getChildren().add(deferredCheckOutLabel);
+                    }
+
+                    if (missingCheckOutLabel != null) {
+                        eventLabelsForLastHour.getChildren().add(missingCheckOutLabel);
+                    }
+
+                    lastHourBox.getChildren().add(eventLabelsForLastHour);
+                }
+
+
 
                 // Increment index to move to the next timelog
                 index++;
@@ -441,16 +467,19 @@ public class ManagerDailyController {
        String customMessage = "";
        switch (eventType) {
            case "check_in":
-               customMessage = "Start: ";
+               customMessage = "Start: \n";
                break;
            case "break_start":
-               customMessage = "Pause: ";
+               customMessage = "Pause: \n";
                break;
            case "break_end":
-               customMessage = " - ";
+               customMessage = "-\n";
                break;
            case "check_out":
-               customMessage = "Slut: ";
+               customMessage = "Slut: \n";
+               break;
+           case "missing_check_out":
+               customMessage = "Mangler\n check-ud";
                break;
            default:
                break;
