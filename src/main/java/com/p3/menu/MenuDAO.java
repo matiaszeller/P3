@@ -2,7 +2,6 @@ package com.p3.menu;
 
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import com.p3.networking.ServerApi;
 import com.p3.session.Session;
 import org.json.JSONObject;
@@ -11,10 +10,9 @@ public class MenuDAO {
 
     private final ServerApi api = new ServerApi();
 
-
     public String getOnBreakStatus(int userId) {
         String url = "user/breakStatus/" + userId;
-        HttpResponse response = api.get(url, null);
+        HttpResponse response = api.get(url, null, true);
 
         return (String) response.body();
     }
@@ -57,27 +55,9 @@ public class MenuDAO {
 
     public String getTodaysEventsForUser(int userId, LocalDate today) {
         String url = "timelog/ALL?user_id=" + userId + "&date=" + today;
-        HttpResponse response = api.get(url, null);
+        HttpResponse response = api.get(url, null, true);
 
         return (String) response.body();
-    }
-
-    public static class Event {     // TODO Lav class i sin egen fil
-        private LocalDateTime eventTime;
-        private String eventType;
-
-        public Event(LocalDateTime eventTime, String eventType) {
-            this.eventTime = eventTime;
-            this.eventType = eventType;
-        }
-
-        public LocalDateTime getEventTime() {
-            return eventTime;
-        }
-
-        public String getEventType() {
-            return eventType;
-        }
     }
 
     public void postCheckOutEvent(int userId) {
@@ -104,7 +84,13 @@ public class MenuDAO {
 
     public String getLastCheckOutEvent(int userId) {
         String url = "timelog/lastCheckOut?user_id=" + userId;
-        HttpResponse response = api.get(url, null);
+        HttpResponse response = api.get(url, null, true);
+
+        // Check if the response status is 204 No Content
+        if (response.statusCode() == 204) {
+            return null;
+        }
+
         return (String) response.body();
     }
 
@@ -126,7 +112,7 @@ public class MenuDAO {
 
     public String noteExistsForDate(int userId, LocalDate noteDate) {
         String url = "note/exists?userId=" + userId + "&noteDate=" + noteDate;
-        HttpResponse response = api.get(url, null);
+        HttpResponse response = api.get(url, null, true);
         return (String) response.body();
     }
 }

@@ -1,66 +1,74 @@
 package com.p3.networking;
 
+import com.p3.session.Session;
 import java.net.URI;
-import java.net.http.*;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.HashMap;
 import java.util.Map;
 
-public class ServerApi {
-    private final String BASE_URL = "http://85.218.178.119:8080/api/";
 
-    /*
-    * Requests take path efter BASE_URL
-    * */
-    public HttpResponse<String> get(String path, Map<String, String> headers) {     // Can take headers but for now we dont have any paths with them
+    private final String BASE_URL = "http://localhost:8080/api/";
+
+    public HttpResponse<String> get(String path, Map<String, String> headers, boolean includeApiKey) {
+        if (headers == null) headers = new HashMap<>();
+        if (includeApiKey) {
+            String apiKey = Session.getApiKey();
+            if (apiKey != null) {
+                headers.put("API-Key", apiKey);
+            }
+        }
+
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + path))
                 .GET();
 
-        if (headers != null){
-            headers.forEach(builder::header);   // For each optional header argument, add to url
-        }
+        headers.forEach((key, value) -> {
+            if (key != null && value != null) {
+                builder.header(key, value);
+            }
+        });
+
         return ServerApiUtil.execReq(builder.build());
     }
 
     public HttpResponse<String> post(String path, Map<String, String> headers, String body) throws Exception {
+        if (headers == null) headers = new HashMap<>();
+        headers.put("API-Key", Session.getApiKey());
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + path))
-                .header("Content-Type", "application/json") // Set content type so server know types of
+                .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(body));
 
-        if (headers != null){
-            headers.forEach(builder::header);
-        }
-
+        headers.forEach(builder::header);
         return ServerApiUtil.execReq(builder.build());
     }
 
     public HttpResponse<String> put(String path, Map<String, String> headers, String body) throws Exception {
+        if (headers == null) headers = new HashMap<>();
+        headers.put("API-Key", Session.getApiKey());
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + path))
                 .header("Content-Type", "application/json");
 
-        if (headers != null){
-            headers.forEach(builder::header);
-        }
-
-        if (body != null && !body.isEmpty()){
+        if (body != null && !body.isEmpty()) {
             builder.PUT(HttpRequest.BodyPublishers.ofString(body));
         } else {
             builder.PUT(HttpRequest.BodyPublishers.noBody());
         }
 
+        headers.forEach(builder::header);
         return ServerApiUtil.execReq(builder.build());
     }
 
     public HttpResponse<String> delete(String path, Map<String, String> headers) throws Exception {
+        if (headers == null) headers = new HashMap<>();
+        headers.put("API-Key", Session.getApiKey());
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + path))
                 .DELETE();
 
-        if (headers != null){
-            headers.forEach(builder::header);
-        }
-
+        headers.forEach(builder::header);
         return ServerApiUtil.execReq(builder.build());
     }
 }

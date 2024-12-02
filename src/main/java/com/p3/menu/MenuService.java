@@ -1,5 +1,6 @@
 package com.p3.menu;
 
+import com.p3.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -78,53 +79,44 @@ public class MenuService {
         menuDao.postBreakEndEvent(userId);
     }
 
-    public List<MenuDAO.Event> getTodaysEventsForUser(int userId){
+    public List<Event> getTodaysEventsForUser(int userId){
         LocalDate today = LocalDate.now();
 
         JSONObject jsonResponse = new JSONObject(menuDao.getTodaysEventsForUser(userId, today));
         JSONArray timelogs = jsonResponse.getJSONArray("timelogs");
 
-        List<MenuDAO.Event> events = new ArrayList<>();
+        List<Event> events = new ArrayList<>();
 
         for(int i = 0; i < timelogs.length(); i++){     // For each object in array, we take the eventTime and eventType and create a new event object, adding it to the return list
             JSONObject timelog = timelogs.getJSONObject(i);
             LocalDateTime eventTime = LocalDateTime.parse(timelog.getString("event_time"));
             String eventType = timelog.getString("event_type");
-            MenuDAO.Event event = new MenuDAO.Event(eventTime, eventType);
+            Event event = new Event(eventTime, eventType);
 
             events.add(event);
         }
         return events;
     }
 
-    public void postCheckOutEvent(int user_id){
-        menuDao.postCheckOutEvent(user_id);
+    public void postCheckOutEvent(int userId){
+        menuDao.postCheckOutEvent(userId);
     }
 
     public void putClockedInStatusById(int userId, boolean status){
         menuDao.putClockedInStatusById(userId, status);
     }
 
-    public MenuDAO.Event getLastCheckOutEvent(int userId) {
+    public Event getLastCheckOutEvent(int userId) {
         String jsonResponse = menuDao.getLastCheckOutEvent(userId);
-        //this is just here to identify errors
-        System.out.println("Server Response: " + jsonResponse);
 
-        if (jsonResponse == null || jsonResponse.trim().isEmpty()) {
-            System.out.println("Received empty or null response from server for last check-out event.");
+        if (jsonResponse == null || jsonResponse.isEmpty() || jsonResponse.equals("null")) {
             return null;
         }
-        //
+
         JSONObject jsonObject = new JSONObject(jsonResponse);
-        //more manual error detection
-        if (!jsonObject.has("event_time")) {
-            System.out.println("JSON response does not contain 'event_time'. Response: " + jsonResponse);
-            return null;
-        }
-
         LocalDateTime eventTime = LocalDateTime.parse(jsonObject.getString("event_time"));
         String eventType = jsonObject.getString("event_type");
-        MenuDAO.Event event = new MenuDAO.Event(eventTime, eventType);
+        Event event = new Event(eventTime, eventType);
 
         return event;
     }

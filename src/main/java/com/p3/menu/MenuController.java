@@ -1,6 +1,7 @@
 package com.p3.menu;
 
-import com.p3.menu.MenuDAO.Event;
+import com.p3.event.Event;
+import com.p3.instance.AppInstance;
 import com.p3.session.Session;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -36,8 +37,12 @@ public class MenuController {
     private Label welcomeText;
     @FXML
     private VBox notificationBox;
+    @FXML
+    private Button managerButton;
 
     private final MenuService menuService = new MenuService();
+
+    private LocalDateTime currentDateTime;
 
     @FXML
     public void initialize() {
@@ -46,37 +51,62 @@ public class MenuController {
         breakButton.setOnAction(event -> handleBreakButton());
         historyButton.setOnAction(event -> loadEmployeeHistoryPage());
 
-        startClock();
+        initializeClock();
         loadDailyEvents();
         initializeWelcomeText();
         initializeBreakButton();
         getMissedCheckout();
+        hideManagerButton();
+    }
+
+    private void initializeClock() {
+        currentDateTime = AppInstance.getServerStartTime();
+        updateClockLabel(currentDateTime);
+        startClock();
     }
 
     private void startClock() {
-        KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), event -> updateClock());
+        KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), event -> {
+            if (currentDateTime != null) {
+                currentDateTime = currentDateTime.plusSeconds(1);
+                updateClockLabel(currentDateTime);
+            }
+        });
         Timeline clockTimeline = new Timeline(keyFrame);
         clockTimeline.setCycleCount(Timeline.INDEFINITE);
         clockTimeline.play();
     }
 
-    private void updateClock() {
-        LocalTime currentTime = LocalTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        String formattedTime = currentTime.format(formatter);
+    private void updateClockLabel(LocalDateTime dateTime) {
+        if (dateTime != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            String formattedTime = dateTime.toLocalTime().format(formatter);
+            clock.setText(formattedTime);
+        }
+    }
 
-        clock.setText(formattedTime);
+    private void hideManagerButton() {
+        String role = Session.getCurrentUserRole();
+
+        if ("employee".equalsIgnoreCase(role)) {
+            managerButton.setDisable(true);
+            managerButton.setVisible(false);
+        }
     }
 
     private void handleEndShift() {
         boolean confirmed = MenuService.showEndShiftConfirmation();
         if (confirmed) {
             int userId = Session.getCurrentUserId();
-            LocalDateTime currentTime = LocalDateTime.now();
+
+            boolean onBreak = menuService.getOnBreakStatus(userId);
+            if (onBreak) {
+                menuService.postBreakEndEvent(userId);
+                menuService.setOnBreakStatus(userId, false);
+            }
 
             menuService.postCheckOutEvent(userId);
             menuService.putClockedInStatusById(userId, false);
-            menuService.setOnBreakStatus(userId, false);
 
             Session.clearSession();
 
@@ -108,7 +138,6 @@ public class MenuController {
     private void handleBreakButton() {
         int userId = Session.getCurrentUserId();
         boolean onBreak = menuService.getOnBreakStatus(userId);
-        LocalDateTime currentTime = LocalDateTime.now();
 
         if (onBreak) {
             menuService.postBreakEndEvent(userId);
@@ -139,28 +168,37 @@ public class MenuController {
         for (Event event : events) {
             String formattedTime = event.getEventTime().format(formatter);
             String eventType = event.getEventType();
+            String eventDisplay;
+            String styleClass;
 
-            String eventDisplay = formatEventType(eventType);
+            switch (eventType) {
+                case "check_in":
+                    eventDisplay = "Check ind";
+                    styleClass = "checkInNotification";
+                    break;
+                case "check_out":
+                    eventDisplay = "Check ud";
+                    styleClass = "checkOutNotification";
+                    break;
+                case "break_start":
+                    eventDisplay = "Pause start";
+                    styleClass = "breakStartNotification";
+                    break;
+                case "break_end":
+                    eventDisplay = "Pause slut";
+                    styleClass = "breakEndNotification";
+                    break;
+                default:
+                    eventDisplay = eventType;
+                    styleClass = "defaultNotification";
+                    break;
+            }
 
-            Label eventLabel = new Label(eventDisplay + " klokken " + formattedTime);
+            Label eventLabel = new Label(eventDisplay + ": " + formattedTime);
             eventLabel.getStyleClass().add("eventLabel");
+            eventLabel.getStyleClass().add(styleClass);
 
             notificationBox.getChildren().add(eventLabel);
-        }
-    }
-
-    private String formatEventType(String eventType) {
-        switch (eventType) {
-            case "check_in":
-                return "Check-ind";
-            case "check_out":
-                return "Check-ud";
-            case "break_start":
-                return "Pause start";
-            case "break_end":
-                return "Pause slut";
-            default:
-                return eventType;
         }
     }
 
@@ -185,7 +223,7 @@ public class MenuController {
 
     private void getMissedCheckout() {
         int userId = Session.getCurrentUserId();
-        MenuDAO.Event lastCheckOutEvent = menuService.getLastCheckOutEvent(userId);
+        Event lastCheckOutEvent = menuService.getLastCheckOutEvent(userId);
 
         if (lastCheckOutEvent != null) {
             LocalTime key = LocalTime.of(23, 59, 0); // key = 23:59:00
