@@ -254,12 +254,23 @@ public class ManagerDailyController {
                 Map<String, Object> currentTimelog = userTimelogs.get(index);
                 Map<String, Object> nextTimelog = (index + 1 < userTimelogs.size()) ? userTimelogs.get(index + 1) : null;
 
-                // Keep track of the last created hourBox and deferred checkout label
+                Object editedTimeObj = currentTimelog.get("edited_time");
+                LocalDateTime editedTime = null;
+                if (editedTimeObj instanceof String) {
+                    editedTime = LocalDateTime.parse((String) editedTimeObj, DateTimeFormatter.ISO_DATE_TIME);
+                } else if (editedTimeObj instanceof LocalDateTime) {
+                    editedTime = (LocalDateTime) editedTimeObj;
+                }
+
+                if (editedTime != null) {
+                    startTime = editedTime.getHour();
+                }
+
                 StackPane lastHourBox = null;
                 Label deferredCheckOutLabel = null;
                 Label missingCheckOutLabel = null;
-
-// Iterate through hours in the time range
+                boolean editedOnce = false;
+                // Iterate through hours in the time range
                 for (int hour = startTime; hour < endTime; hour++) {
                     StackPane hourBox = new StackPane();
                     hourBox.getStyleClass().add("hourBox");
@@ -277,7 +288,6 @@ public class ManagerDailyController {
                     minuteBoxes.setAlignment(Pos.CENTER_LEFT);
                     minuteBoxes.setPrefWidth(150);
 
-                    // Initialize minute colors
                     String[] minuteColors = new String[60];
                     Arrays.fill(minuteColors, currentColor);
 
@@ -285,18 +295,25 @@ public class ManagerDailyController {
                     while (currentTimelog != null) {
                         Object eventTimeObj = currentTimelog.get("event_time");
                         LocalDateTime eventTime = null;
-
+                        LocalDateTime originalTime = null;
                         // Parse event_time to LocalDateTime
                         if (eventTimeObj instanceof String) {
                             eventTime = LocalDateTime.parse((String) eventTimeObj, DateTimeFormatter.ISO_DATE_TIME);
                         } else if (eventTimeObj instanceof LocalDateTime) {
                             eventTime = (LocalDateTime) eventTimeObj;
                         }
+                        Object eventTypeObj = currentTimelog.get("event_type");
+                        String eventType = eventTypeObj instanceof String ? (String) eventTypeObj : null;
+                        if (editedTime != null && !editedOnce) {
+                            eventTime = originalTime;
+                            eventTime = editedTime;
+                            System.out.println("Controller: Time and Type" + eventTime);
+                            eventType = "edited_" + eventType;
+                            editedOnce = true;
+
+                        }
 
                         if (eventTime != null && eventTime.getHour() == hour) {
-                            Object eventTypeObj = currentTimelog.get("event_type");
-                            String eventType = eventTypeObj instanceof String ? (String) eventTypeObj : null;
-
                             if (nextTimelog != null) {
                                 Object nextEventTypeObj = nextTimelog.get("event_type");
                                 String nextEventType = nextEventTypeObj instanceof String ? (String) nextEventTypeObj : null;
@@ -331,6 +348,7 @@ public class ManagerDailyController {
                             }
 
                             if (eventType != null) {
+
                                 String customMessage = getEventLabelForEventType(eventType);
                                 String displayMessage;
                                     String formattedTime = String.format("%02d:%02d", eventTime.getHour(), eventTime.getMinute());
@@ -343,6 +361,7 @@ public class ManagerDailyController {
                                 Label eventLabel = new Label(displayMessage);
                                 eventLabel.getStyleClass().add("eventTypeLabel");
                                 eventLabels.getChildren().add(eventLabel);
+
 
                                 currentColor = getColorForEventType(eventType);
                                 int startMinute = eventTime.getMinute();
@@ -445,7 +464,6 @@ public class ManagerDailyController {
 
 
 
-
     // Helper method to determine color based on event type
     public String getColorForEventType(String eventType) {
         if (eventType == null) {
@@ -458,6 +476,8 @@ public class ManagerDailyController {
                 return "yellow"; // Yellow
             case "missing_check_out":
                 return "#ff0000"; // Red
+            case "edited_check_in", "edited_check_out", "edited_break_start", "edited_break_end":
+                return "#fdbb3c";
             default:
                 return "#F9F6EE"; // Default white
         }
@@ -473,13 +493,25 @@ public class ManagerDailyController {
                customMessage = "Pause: \n";
                break;
            case "break_end":
-               customMessage = "-\n";
+               customMessage = "";
                break;
            case "check_out":
                customMessage = "Slut: \n";
                break;
            case "missing_check_out":
                customMessage = "Mangler\n check-ud";
+               break;
+           case "edited_check_in":
+               customMessage = "Redigeret \nStart: \n";
+               break;
+           case "edited_break_start":
+               customMessage = "Redigeret \nPause: \n";
+               break;
+           case "edited_break_end":
+               customMessage = "Redigeret \n";
+               break;
+           case "edited_check_out":
+               customMessage = "Redigeret \nSlut: \n";
                break;
            default:
                break;
