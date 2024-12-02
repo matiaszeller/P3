@@ -121,6 +121,9 @@ public class ManagerDailyService {
                         if (eventTime.toLocalDate().equals(date) && "check_out".equalsIgnoreCase(eventType)) {
                             int logHour = eventTime.getHour();
                             latestCheckOutHour = Math.max(latestCheckOutHour, logHour);
+                            if (eventTime.getHour() == 23 && eventTime.getMinute() == 59) {
+                                latestCheckOutHour = 18;
+                            }
                         }
                     } catch (DateTimeParseException e) {
                         System.err.println("Invalid event_time format: " + eventTimeStr);

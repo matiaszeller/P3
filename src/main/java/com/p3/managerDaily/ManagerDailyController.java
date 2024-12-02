@@ -71,6 +71,8 @@ public class ManagerDailyController {
 
     private YearMonth currentMonth;
 
+    private LocalDateTime originalTime = null;
+
     @FXML
     public void initialize() {
         managerLogOutButton.setOnAction(event -> handleLogOut());
@@ -270,6 +272,7 @@ public class ManagerDailyController {
                 Label deferredCheckOutLabel = null;
                 Label missingCheckOutLabel = null;
                 boolean editedOnce = false;
+                originalTime = null;
                 // Iterate through hours in the time range
                 for (int hour = startTime; hour < endTime; hour++) {
                     StackPane hourBox = new StackPane();
@@ -296,7 +299,7 @@ public class ManagerDailyController {
                         Object eventTimeObj = currentTimelog.get("event_time");
                         LocalDateTime eventTime = null;
                         LocalDateTime originalTime = null;
-                        // Parse event_time to LocalDateTime
+
                         if (eventTimeObj instanceof String) {
                             eventTime = LocalDateTime.parse((String) eventTimeObj, DateTimeFormatter.ISO_DATE_TIME);
                         } else if (eventTimeObj instanceof LocalDateTime) {
@@ -305,12 +308,10 @@ public class ManagerDailyController {
                         Object eventTypeObj = currentTimelog.get("event_type");
                         String eventType = eventTypeObj instanceof String ? (String) eventTypeObj : null;
                         if (editedTime != null && !editedOnce) {
-                            eventTime = originalTime;
+                            originalTime = eventTime;
                             eventTime = editedTime;
-                            System.out.println("Controller: Time and Type" + eventTime);
                             eventType = "edited_" + eventType;
                             editedOnce = true;
-
                         }
 
                         if (eventTime != null && eventTime.getHour() == hour) {
@@ -326,7 +327,6 @@ public class ManagerDailyController {
                                 } else if (nextEventTimeObj instanceof LocalDateTime) {
                                     nextEventTime = (LocalDateTime) nextEventTimeObj;
                                 }
-
                                 if ("check_out".equals(nextEventType) && nextEventTime != null) {
                                     String customMessage = getEventLabelForEventType(nextEventType);
                                     String displayMessage = customMessage + String.format("%02d:%02d", nextEventTime.getHour(), nextEventTime.getMinute());
@@ -344,15 +344,23 @@ public class ManagerDailyController {
                                         missingCheckOutLabel = new Label(missingCheckOutCustomMessage);
                                         missingCheckOutLabel.getStyleClass().add("eventTypeLabel");
                                     }
+                                    int nextHour = hour + 1;
+                                    if (nextEventTime.getHour() == nextHour && nextEventTime.getMinute() > 0) {
+                                        endTime = endTime + 1;
+                                    }
                                 }
                             }
 
                             if (eventType != null) {
-
                                 String customMessage = getEventLabelForEventType(eventType);
                                 String displayMessage;
                                     String formattedTime = String.format("%02d:%02d", eventTime.getHour(), eventTime.getMinute());
                                     displayMessage = customMessage + formattedTime;
+
+                                if (originalTime != null && !originalTime.equals(eventTime)) {
+                                    String formattedOriginalTime = String.format("%02d:%02d", originalTime.getHour(), originalTime.getMinute());
+                                    displayMessage += "\nOriginal: " + formattedOriginalTime;
+                                }
 
                                 if ("missing_check_out".equals(eventType)) {
                                     displayMessage = "-\n" + formattedTime;
@@ -361,7 +369,6 @@ public class ManagerDailyController {
                                 Label eventLabel = new Label(displayMessage);
                                 eventLabel.getStyleClass().add("eventTypeLabel");
                                 eventLabels.getChildren().add(eventLabel);
-
 
                                 currentColor = getColorForEventType(eventType);
                                 int startMinute = eventTime.getMinute();
@@ -375,7 +382,6 @@ public class ManagerDailyController {
                                 }
                             }
                         }
-
                         // Move to the next timelog
                         if (nextTimelog != null && eventTime != null && eventTime.getHour() == hour) {
                             index++;
@@ -386,7 +392,6 @@ public class ManagerDailyController {
                         }
                     }
 
-                    // Create minute boxes
                     for (int minute = 0; minute < 60; minute++) {
                         StackPane minuteBox = new StackPane();
                         minuteBox.setPrefHeight(150);
@@ -427,8 +432,6 @@ public class ManagerDailyController {
                 // Increment index to move to the next timelog
                 index++;
             }
-
-
             // Add hourly boxes to the timelogBox
             timelogBox.getChildren().add(hourlyBoxes);
 
@@ -487,31 +490,31 @@ public class ManagerDailyController {
        String customMessage = "";
        switch (eventType) {
            case "check_in":
-               customMessage = "Start: \n";
+               customMessage = "Start: ";
                break;
            case "break_start":
-               customMessage = "Pause: \n";
+               customMessage = "Pause:\n";
                break;
            case "break_end":
-               customMessage = "";
+               customMessage = "-\n";
                break;
            case "check_out":
-               customMessage = "Slut: \n";
+               customMessage = "Slut: ";
                break;
            case "missing_check_out":
                customMessage = "Mangler\n check-ud";
                break;
            case "edited_check_in":
-               customMessage = "Redigeret \nStart: \n";
+               customMessage = "Redigeret \nStart: ";
                break;
            case "edited_break_start":
-               customMessage = "Redigeret \nPause: \n";
+               customMessage = "Redigeret \nPause: ";
                break;
            case "edited_break_end":
                customMessage = "Redigeret \n";
                break;
            case "edited_check_out":
-               customMessage = "Redigeret \nSlut: \n";
+               customMessage = "Redigeret \nSlut: ";
                break;
            default:
                break;
