@@ -294,6 +294,7 @@
 
 .shiftBoxEdited{
     -fx-background-color: #fdbb3c;
+    -fx-padding: 0;
 }
 
 .shiftBoxNoneRegistered{
@@ -328,6 +329,7 @@
 .shiftSequenceLabel{
     -fx-background-color: transparent;
     -fx-padding: 0;
+    -fx-margin: 0;
     -fx-border-style: none;
     -fx-alignment: center;
     -fx-text-alignment: center;

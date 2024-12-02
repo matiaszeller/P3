@@ -2,9 +2,12 @@ package com.p3.employeeHistory;
 
 import com.p3.session.Session;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -191,18 +194,23 @@ public class EmployeeHistoryController {
 
             for (int j = 0; j < 60; j++) {
                 HBox minuteBox = createHBox(currentStyleClass, true, true);
-
-                if (remainingDuration == shiftSequences.get(shiftSequenceIndex).duration) {
-                    StackPane sequenceStackPane = createStackPane(currentStyleClass, false, false);
-                    Label label = createLabel("shiftSequenceLabel", employeeHistoryService.setStringForShiftSequenceLabel(shiftSequences.get(shiftSequenceIndex), editedTimelogs));
-                    sequenceStackPane.getChildren().add(label);
-                    StackPane.setAlignment(label, Pos.CENTER);
-                    hourBox.getChildren().add(sequenceStackPane);
-                } else {
-                    hourBox.getChildren().add(minuteBox);
-                }
-
+                hourBox.getChildren().add(minuteBox);
                 remainingDuration--;
+
+                switch (shiftSequences.get(shiftSequenceIndex).getSequenceType()) {
+                    case "check_in" -> {
+                        if (remainingDuration == shiftSequences.get(shiftSequenceIndex).getDuration() - 1) {
+                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs);
+                        }
+                    }
+                    case "break_end" -> {
+                        if (remainingDuration == 2) {
+                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs);
+                        }
+                    }
+                    case "break_start" ->
+                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs);
+                }
 
                 if (remainingDuration == 0 && shiftSequenceIndex < shiftSequences.size() - 1) {
                     shiftSequenceIndex++;
@@ -210,12 +218,25 @@ public class EmployeeHistoryController {
                     remainingDuration = shiftSequences.get(shiftSequenceIndex).duration;
                 }
             }
-
             hourBoxContainer.getChildren().add(hourBox);
 
             Label hourLabel = createLabel("hourShiftBoxLabel", String.format("%02d:00", workingTime.getHour()));
             hourBoxContainer.getChildren().add(hourLabel);
             StackPane.setAlignment(hourLabel, Pos.TOP_LEFT);
+
+            ObservableList<Node> children = hourBoxContainer.getChildren();
+            Node targetNode = null;
+            for(Node child : children) {
+                if ("shiftSequenceLabel".equals(child.getId())){
+                    targetNode = child;
+                    break;
+                }
+            }
+
+            if (targetNode != null) {
+                children.remove(targetNode);
+                children.add(targetNode);
+            }
 
             dayHoursHBox.getChildren().add(hourBoxContainer);
         }
@@ -232,6 +253,7 @@ public class EmployeeHistoryController {
         noteButton.setGraphic(noteImageView);
         noteBox.getChildren().add(noteButton);
         dayHoursHBox.getChildren().add(noteBox);
+
 
         return dayVBox;
     }
@@ -322,6 +344,17 @@ public class EmployeeHistoryController {
 
             weeklyMaxAmountSingleShiftHours = weeklyEndHour - weeklyStartHour + 1;
         }
+    }
+
+    private void createSequenceLabel(StackPane hourBoxContainer, ShiftSequence shiftSequence, List<String> editedTimelogs) {
+        Label label = createLabel("shiftSequenceLabel", employeeHistoryService.setStringForShiftSequenceLabel(shiftSequence, editedTimelogs));
+        label.setId("shiftSequenceLabel");
+        label.setWrapText(true);
+        hourBoxContainer.getChildren().add(label);
+        hourBoxContainer.setPadding(new Insets(0, 0, 0, 0));
+        hourBoxContainer.setMaxWidth(120);
+        label.setPadding(new Insets(0, 0, 0, 0));
+        StackPane.setAlignment(label, Pos.CENTER);
     }
 
 }
