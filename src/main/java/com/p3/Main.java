@@ -12,6 +12,8 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
         appInstance = new AppInstance(stage);
         appInstance.startApp();
+        stage.setMinWidth(1280);
+        stage.setMinHeight(720);
     }
 
     public static void main(String[] args) {
