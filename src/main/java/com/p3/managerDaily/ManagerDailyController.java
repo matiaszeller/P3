@@ -77,6 +77,8 @@ public class ManagerDailyController {
 
     private LocalDateTime originalTime = null;
 
+
+
     @FXML
     public void initialize() {
         managerLogOutButton.setOnAction(event -> handleLogOut());
@@ -276,6 +278,7 @@ public class ManagerDailyController {
                 Label missingCheckOutLabel = null;
                 boolean editedOnce = false;
                 originalTime = null;
+                Set<String> addedLabels = new HashSet<>();
                 // Iterate through hours in the time range
                 for (int hour = startTime; hour < endTime; hour++) {
                     StackPane hourBox = new StackPane();
@@ -365,7 +368,7 @@ public class ManagerDailyController {
 
                                 Label eventLabel = new Label(displayMessage);
                                 eventLabel.getStyleClass().add("eventTypeLabel");
-                                eventLabels.getChildren().add(eventLabel);
+                                addUniqueLabel(eventLabels, eventLabel, addedLabels);
 
                                 currentColor = getColorForEventType(eventType);
                                 int startMinute = eventTime.getMinute();
@@ -413,13 +416,8 @@ public class ManagerDailyController {
                     eventLabelsForLastHour.setSpacing(3);
                     eventLabelsForLastHour.setAlignment(Pos.CENTER);
 
-                    if (deferredCheckOutLabel != null) {
-                        eventLabelsForLastHour.getChildren().add(deferredCheckOutLabel);
-                    }
-
-                    if (missingCheckOutLabel != null) {
-                        eventLabelsForLastHour.getChildren().add(missingCheckOutLabel);
-                    }
+                    addUniqueLabel(eventLabelsForLastHour, deferredCheckOutLabel, addedLabels);
+                    addUniqueLabel(eventLabelsForLastHour, missingCheckOutLabel, addedLabels);
 
                     lastHourBox.getChildren().add(eventLabelsForLastHour);
                 }
@@ -514,6 +512,24 @@ public class ManagerDailyController {
    }
     public enum EventType {
         check_in, check_out, break_start, break_end, missing_check_out;
+    }
+
+    private void addUniqueLabel(VBox container, Label labelToAdd, Set<String> addedLabels) {
+        if (labelToAdd == null || addedLabels.contains(labelToAdd.getText())) {
+            return;
+        }
+        addedLabels.add(labelToAdd.getText());
+        container.getChildren().add(labelToAdd);
+        // Check if a label with the same text already exists
+        boolean exists = container.getChildren().stream()
+                .filter(node -> node instanceof Label)
+                .map(node -> (Label) node)
+                .anyMatch(existingLabel -> existingLabel.getText().equals(labelToAdd.getText()));
+
+        // Add the label only if it doesn't exist
+        if (!exists) {
+            container.getChildren().add(labelToAdd);
+        }
     }
 
 
