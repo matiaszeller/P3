@@ -48,6 +48,10 @@ public class ManagerDailyService {
             return timelogs;
         }
 
+        public List<Map<String, Object>> fetchTimelogs(LocalDate date) {
+
+        return dao.getTimelogsForDate(date);
+    }
 
         public static String getEventForHour(Integer userId, int hour) {
             for (Map<String, Object> log : timelogs) {
@@ -70,30 +74,27 @@ public class ManagerDailyService {
             return "No Event";
         }
 
-    public int getEarliestTime(Integer userId, LocalDate date) {
+    public int getEarliestTime(LocalDate date) {
         int earliestCheckInHour = Integer.MAX_VALUE;
 
         for (Map<String, Object> log : timelogs) {
-            Integer logUserId = (Integer) log.get("user_id");
-            if (logUserId != null && logUserId.equals(userId)) {
-                String eventTimeStr = (String) log.get("event_time");
-                String eventType = (String) log.get("event_type");
+            String eventTimeStr = (String) log.get("event_time");
+            String eventType = (String) log.get("event_type");
 
-                if (eventTimeStr != null && eventType != null) {
-                    try {
-                        // Parse event time
-                        LocalDateTime eventTime = LocalDateTime.parse(eventTimeStr);
+            if (eventTimeStr != null && eventType != null) {
+                try {
+                    // Parse event time
+                    LocalDateTime eventTime = LocalDateTime.parse(eventTimeStr);
 
-                        // Check if the event matches the specified date and type (check-in)
-                        if (eventTime.toLocalDate().equals(date) && "check_in".equalsIgnoreCase(eventType)) {
-                            int logHour = eventTime.getHour();
-                            earliestCheckInHour = Math.min(earliestCheckInHour, logHour);
-                        }
-                    } catch (DateTimeParseException e) {
-                        System.err.println("Invalid event_time format: " + eventTimeStr);
-                    } catch (Exception e) {
-                        System.err.println("Unexpected error processing log: " + log);
+                    // Check if the event matches the specified date and type (check-in)
+                    if (eventTime.toLocalDate().equals(date) && "check_in".equalsIgnoreCase(eventType)) {
+                        int logHour = eventTime.getHour();
+                        earliestCheckInHour = Math.min(earliestCheckInHour, logHour);
                     }
+                } catch (DateTimeParseException e) {
+                    System.err.println("Invalid event_time format: " + eventTimeStr);
+                } catch (Exception e) {
+                    System.err.println("Unexpected error processing log: " + log);
                 }
             }
         }
@@ -102,34 +103,32 @@ public class ManagerDailyService {
         return earliestCheckInHour == Integer.MAX_VALUE ? 0 : earliestCheckInHour;
     }
 
-
-    public int getLatestTime(Integer userId, LocalDate date) {
+    public int getLatestTime(LocalDate date) {
         int latestCheckOutHour = Integer.MIN_VALUE;
 
         for (Map<String, Object> log : timelogs) {
-            Integer logUserId = (Integer) log.get("user_id");
-            if (logUserId != null && logUserId.equals(userId)) {
-                String eventTimeStr = (String) log.get("event_time");
-                String eventType = (String) log.get("event_type");
+            String eventTimeStr = (String) log.get("event_time");
+            String eventType = (String) log.get("event_type");
 
-                if (eventTimeStr != null && eventType != null) {
-                    try {
-                        // Parse event time
-                        LocalDateTime eventTime = LocalDateTime.parse(eventTimeStr);
+            if (eventTimeStr != null && eventType != null) {
+                try {
+                    // Parse event time
+                    LocalDateTime eventTime = LocalDateTime.parse(eventTimeStr);
 
-                        // Check if the event matches the specified date
-                        if (eventTime.toLocalDate().equals(date) && "check_out".equalsIgnoreCase(eventType)) {
-                            int logHour = eventTime.getHour();
-                            latestCheckOutHour = Math.max(latestCheckOutHour, logHour);
-                            if (eventTime.getHour() == 23 && eventTime.getMinute() == 59) {
-                                latestCheckOutHour = 18;
-                            }
+                    // Check if the event matches the specified date and type (check-out)
+                    if (eventTime.toLocalDate().equals(date) && "check_out".equalsIgnoreCase(eventType)) {
+                        int logHour = eventTime.getHour();
+                        latestCheckOutHour = Math.max(latestCheckOutHour, logHour);
+
+                        // Special case: check-out at 23:59
+                        if (eventTime.getHour() == 23 && eventTime.getMinute() == 59) {
+                            latestCheckOutHour = 18;
                         }
-                    } catch (DateTimeParseException e) {
-                        System.err.println("Invalid event_time format: " + eventTimeStr);
-                    } catch (Exception e) {
-                        System.err.println("Unexpected error processing log: " + log);
                     }
+                } catch (DateTimeParseException e) {
+                    System.err.println("Invalid event_time format: " + eventTimeStr);
+                } catch (Exception e) {
+                    System.err.println("Unexpected error processing log: " + log);
                 }
             }
         }
@@ -137,8 +136,6 @@ public class ManagerDailyService {
         // Handle case where no 'check_out' events are found
         return latestCheckOutHour == Integer.MIN_VALUE ? 0 : latestCheckOutHour;
     }
-
-
 
 
     public String getUserFullName(int user_id) {

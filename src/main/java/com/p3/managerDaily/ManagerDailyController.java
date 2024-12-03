@@ -1,6 +1,7 @@
 package com.p3.managerDaily;
 
 import com.p3.session.Session;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import javafx.event.ActionEvent;
@@ -31,6 +33,8 @@ public class ManagerDailyController {
     private Map<LocalDate, TitledPane> dayPaneMap = new HashMap<>();
 
     private ScrollPane scrollPane;
+
+    private LocalDate lastLoadedDate = null;
 
     @FXML
     private VBox managerDailyRoot;
@@ -151,7 +155,6 @@ public class ManagerDailyController {
     }
 
     public void generateTimelogBoxes(LocalDate startDate, int daysCount) {
-        centerPanel.getChildren().clear();
 
         if (scrollPane == null) {
             scrollPane = new ScrollPane(); // Initialize only if it's not already initialized
@@ -230,8 +233,8 @@ public class ManagerDailyController {
             timelogBox.setMaxWidth(Double.POSITIVE_INFINITY);
 
             // Get start and end times for the user's shift
-            int startTime = service.getEarliestTime(userId, date);
-            int endTime = service.getLatestTime(userId, date);
+            int startTime = service.getEarliestTime(date);
+            int endTime = service.getLatestTime(date);
 
             userTimelogs.sort(Comparator.comparing(timelog -> {
                 Object eventTimeObj = timelog.get("event_time");
@@ -248,8 +251,8 @@ public class ManagerDailyController {
             }));
 
             HBox hourlyBoxes = new HBox();
-            // Track the current color
-            String currentColor = "#28a745";
+            // Tracks the current color
+            String currentColor = "#F9F6EE";
             int index = 0;
 
             while (index < userTimelogs.size()) {
@@ -290,11 +293,9 @@ public class ManagerDailyController {
                     minuteBoxes.setSpacing(0);
                     minuteBoxes.setAlignment(Pos.CENTER_LEFT);
                     minuteBoxes.setPrefWidth(150);
-
                     String[] minuteColors = new String[60];
                     Arrays.fill(minuteColors, currentColor);
 
-                    // Process events for the current hour
                     while (currentTimelog != null) {
                         Object eventTimeObj = currentTimelog.get("event_time");
                         LocalDateTime eventTime = null;
@@ -331,21 +332,17 @@ public class ManagerDailyController {
                                     String customMessage = getEventLabelForEventType(nextEventType);
                                     String displayMessage = customMessage + String.format("%02d:%02d", nextEventTime.getHour(), nextEventTime.getMinute());
 
-                                    // Store the deferred checkOutLabel
                                     deferredCheckOutLabel = new Label(displayMessage);
                                     deferredCheckOutLabel.getStyleClass().add("eventTypeLabel");
-
+                                    int nextHour = hour + 2;
                                     // Check for the condition where nextTimelog is a 23:59 check_out
                                     if (nextEventTime.getHour() == 23 && nextEventTime.getMinute() == 59) {
                                         eventType = "missing_check_out";
-                                        String missingCheckOutCustomMessage = getEventLabelForEventType("missing_check_out"); // Use "missing_check_out"
+                                        String missingCheckOutCustomMessage = getEventLabelForEventType("missing_check_out");
 
-                                        // Store the missingCheckOutLabel for later
                                         missingCheckOutLabel = new Label(missingCheckOutCustomMessage);
                                         missingCheckOutLabel.getStyleClass().add("eventTypeLabel");
-                                    }
-                                    int nextHour = hour + 1;
-                                    if (nextEventTime.getHour() == nextHour && nextEventTime.getMinute() > 0) {
+                                    } else if (nextEventTime.getHour() == nextHour && nextEventTime.getMinute() > 0) {
                                         endTime = endTime + 1;
                                     }
                                 }
@@ -407,10 +404,10 @@ public class ManagerDailyController {
                     hourBox.getChildren().add(eventLabels);
 
                     hourlyBoxes.getChildren().add(hourBox);
-                    lastHourBox = hourBox; // Update last hour box reference
+                    lastHourBox = hourBox; // Update last hour box reference for eventLabels below
                 }
 
-                    // Add the deferred checkOutLabel and missingCheckOutLabel to the last hour box
+                    // Add the deferredCheckOutLabel and missingCheckOutLabel to the last hour box
                 if (lastHourBox != null) {
                     VBox eventLabelsForLastHour = new VBox();
                     eventLabelsForLastHour.setSpacing(3);
@@ -426,19 +423,13 @@ public class ManagerDailyController {
 
                     lastHourBox.getChildren().add(eventLabelsForLastHour);
                 }
-
-
-
                 // Increment index to move to the next timelog
                 index++;
             }
-            // Add hourly boxes to the timelogBox
             timelogBox.getChildren().add(hourlyBoxes);
-
-            // Box with the buttons (Edit and Note)
             VBox buttonBox = new VBox();
-            buttonBox.setSpacing(10);  // Add spacing between the buttons
-            buttonBox.setAlignment(Pos.CENTER); // Center the buttons
+            buttonBox.setSpacing(10);
+            buttonBox.setAlignment(Pos.CENTER);
             buttonBox.setMinSize(120, 150);
 
             // Edit Button
@@ -460,12 +451,10 @@ public class ManagerDailyController {
         employeeRows.prefWidthProperty().bind(dayPane.widthProperty());
 
         dayPaneMap.put(date, dayPane);
-
+        lastLoadedDate = date;
         dayPane.setContent(employeeRows);
         centerPanel.getChildren().add(dayPane);
     }
-
-
 
     // Helper method to determine color based on event type
     public String getColorForEventType(String eventType) {
@@ -473,12 +462,14 @@ public class ManagerDailyController {
             return "#F9F6EE"; // Default white
         }
         switch (eventType) {
-            case "check_in", "break_end", "check_out":
+            case "check_in", "break_end":
                 return "#28a745"; // Green
             case "break_start":
                 return "yellow"; // Yellow
             case "missing_check_out":
                 return "#ff0000"; // Red
+            case "check_out":
+                return "#F9F6EE"; // White
             case "edited_check_in", "edited_check_out", "edited_break_start", "edited_break_end":
                 return "#fdbb3c";
             default:
@@ -523,14 +514,6 @@ public class ManagerDailyController {
    }
     public enum EventType {
         check_in, check_out, break_start, break_end, missing_check_out;
-            public static EventType fromString(String eventTypeStr) {
-            try {
-                return EventType.valueOf(eventTypeStr.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                System.err.println("Unknown event_type: " + eventTypeStr);
-                return null;
-            }
-        }
     }
 
 
@@ -550,32 +533,38 @@ public class ManagerDailyController {
         String day = clickedButton.getText();
         System.out.println("Clicked: " + day);
         try {
-            // Convert the day (String) into an integer
-            int dayOfMonth = Integer.parseInt(day.trim()); // Ensure the day is parsed correctly
-
-            // Use the YearMonth variable to construct the LocalDate
+            int dayOfMonth = Integer.parseInt(day.trim());
             LocalDate selectedDate = currentMonth.atDay(dayOfMonth);
-
-            // Retrieve the corresponding TitledPane
             TitledPane dayPane = dayPaneMap.get(selectedDate);
 
-            if (dayPane != null) {
-                // Expand the pane if it's collapsed
-                dayPane.setExpanded(true);
+            if (dayPane == null){
+                if (lastLoadedDate == null) {
+                lastLoadedDate = selectedDate;
+            }
+            long daysBetween = ChronoUnit.DAYS.between(lastLoadedDate, selectedDate) - 1;
+            if (daysBetween != 0) {
+                generateTimelogBoxes(lastLoadedDate, Math.abs((int) daysBetween));
+            }
+            lastLoadedDate = selectedDate;
+                dayPane = dayPaneMap.get(selectedDate);
 
+                if (dayPane != null) {
+                    dayPane.setExpanded(true);
+                        scrollToBottom();
+                    return;
+                }
+            }
+
+            if (dayPane != null) {
+
+                dayPane.setExpanded(true);
                 Bounds dayPaneBounds = dayPane.localToScene(dayPane.getBoundsInLocal());
                 double yOffset = dayPaneBounds.getMinY();
-
-                // Get the height of the visible area of the ScrollPane
                 double viewportHeight = scrollPane.getViewportBounds().getHeight();
 
                 // Calculate the amount to scroll to center the dayPane vertically
                 double targetVValue = (yOffset - (viewportHeight / 2)) / (centerPanel.getHeight() - viewportHeight);
-
-                // Ensure targetVValue is between 0 and 1 (valid scroll range)
                 targetVValue = Math.max(0, Math.min(targetVValue, 1));
-
-                // Set the vertical scroll value to scroll to the center
                 scrollPane.setVvalue(targetVValue);
             } else {
                 System.out.println("DayPane not found for date: " + selectedDate);
@@ -584,7 +573,17 @@ public class ManagerDailyController {
             System.err.println("Invalid date format: " + day);
         }
     }
+        private void scrollToBottom() {
+            // Force layout updates
+            centerPanel.applyCss();
+            centerPanel.layout();
 
+            // Defer scrolling to allow for any remaining layout adjustments
+            Platform.runLater(() -> {
+                // Apply scroll
+                scrollPane.setVvalue(1.0);
+            });
+        }
 
     private void handleLogOut() {
         Session.clearSession();

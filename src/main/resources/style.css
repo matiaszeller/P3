@@ -186,6 +186,9 @@
     -fx-min-width: 40px;
     -fx-min-height: 40px;
 }
+.dateButton:hover {
+    -fx-background-color: #8e8e8e;
+}
 .collapseDateBox {
     -fx-border-color: #000000;
     -fx-background-color: #FFFFFF;
