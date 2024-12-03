@@ -25,6 +25,8 @@ import com.p3.session.Session;
 public class LoginController {
     @FXML
     private Label errorText;
+   @FXML
+    private Label deactivatedText;
     @FXML
     private TextField usernameField;
     @FXML
@@ -67,17 +69,20 @@ public class LoginController {
 
     private void handleLogin(){ // TODO ærligt måske bare overvej at lave én method til login DAO så vi ikke laver 4 forskellige kald til db
         String username = usernameField.getText();
-        String role = loginService.validateUser(username);
+        String role = loginService.setUserRole(username);
 
         if (role == null) {
             errorText.setVisible(true);
-        } else {
-            int userId = loginService.getUserId(username);
+        } else if (role.equals("deaktiverede")){
+            deactivatedText.setVisible(true);
+        }
+        {int userId = loginService.getUserId(username);
             String fullName = loginService.getUserFullName(username);
 
             Session.setCurrentUserRole(role);
             Session.setCurrentUserId(userId);
             Session.setCurrentUserFullName(fullName);
+            Session.setRole(role);
 
             if ("manager".equalsIgnoreCase(role)) {
                 showManagerModal(username);
@@ -93,7 +98,7 @@ public class LoginController {
         }
     }
 
-    private void loadMenuPage() {
+    public void loadMenuPage() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com.p3.menu/MenuPage.fxml"));
             Stage stage = (Stage) loginButton.getScene().getWindow();
