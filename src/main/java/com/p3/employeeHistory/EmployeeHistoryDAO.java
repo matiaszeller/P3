@@ -11,7 +11,7 @@ public class EmployeeHistoryDAO {
 
     public String getWeekTimelogs(LocalDate localDate, int userId){
         String url = "timelog/history?date=" + localDate + "&userId=" + userId;
-        HttpResponse response = api.get(url, null);
+        HttpResponse response = api.get(url, null, true);
 
         return (String) response.body();
     }

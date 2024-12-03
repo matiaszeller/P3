@@ -92,6 +92,13 @@ public class EmployeeHistoryService {
         switch (eventType) {
             // Do not add any label for empty types
             case "empty":
+                if(editedTimelogs.contains("check_out")) {
+                    returnString = String.format("Slut %s\n%02d:%02d",
+                            editedString,
+                            shiftSequence.endTime.getHour(),
+                            shiftSequence.endTime.getMinute());
+                    break;
+                }
                 break;
             case "check_in":
                 returnString = String.format("Start %s\n%02d:%02d",
@@ -129,7 +136,7 @@ public class EmployeeHistoryService {
     }
 
     public List<String> getEditedTimelog(JSONArray timelogs) {
-        List<String> editedTimelogs = new ArrayList<>();
+            List<String> editedTimelogs = new ArrayList<>();
 
         for (int i = 0; i < timelogs.length(); i++) {
             String edited = timelogs.getJSONObject(i).optString("edited_time", null);

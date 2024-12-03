@@ -182,6 +182,7 @@ public class EmployeeHistoryController {
         String currentStyleClass = shiftSequences.get(shiftSequenceIndex).styleClass;
         int remainingDuration = shiftSequences.get(shiftSequenceIndex).duration;
 
+
         for (int i = 0; i < weeklyMaxAmountSingleShiftHours; i++) {
             LocalDateTime workingTime = firstTime.withHour(weeklyStartHour).plusHours(i);
 
@@ -197,6 +198,7 @@ public class EmployeeHistoryController {
                 hourBox.getChildren().add(minuteBox);
                 remainingDuration--;
 
+
                 switch (shiftSequences.get(shiftSequenceIndex).getSequenceType()) {
                     case "check_in" -> {
                         if (remainingDuration == shiftSequences.get(shiftSequenceIndex).getDuration() - 1) {
@@ -210,6 +212,11 @@ public class EmployeeHistoryController {
                     }
                     case "break_start" ->
                             createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs);
+                    case "check_out" -> {
+                        if(shiftSequences.get(shiftSequenceIndex).getEdited() && remainingDuration == 2){
+                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs);
+                        }
+                    }
                 }
 
                 if (remainingDuration == 0 && shiftSequenceIndex < shiftSequences.size() - 1) {
@@ -223,6 +230,13 @@ public class EmployeeHistoryController {
             Label hourLabel = createLabel("hourShiftBoxLabel", String.format("%02d:00", workingTime.getHour()));
             hourBoxContainer.getChildren().add(hourLabel);
             StackPane.setAlignment(hourLabel, Pos.TOP_LEFT);
+
+            // If no breaks during day, TODO LAV SOM DEL AF MAIN SEQUENCELABEL METHOD
+            if(shiftSequences.size() == 3
+                    && shiftSequences.get(shiftSequenceIndex).getSequenceType().equals("empty")
+                    && shiftSequences.get(shiftSequenceIndex).getDuration() == remainingDuration) {
+                edgeCreateNoBreakEndDaySequenceLabel(hourBoxContainer, shiftSequences.get(1));
+            }
 
             ObservableList<Node> children = hourBoxContainer.getChildren();
             Node targetNode = null;
@@ -348,6 +362,17 @@ public class EmployeeHistoryController {
 
     private void createSequenceLabel(StackPane hourBoxContainer, ShiftSequence shiftSequence, List<String> editedTimelogs) {
         Label label = createLabel("shiftSequenceLabel", employeeHistoryService.setStringForShiftSequenceLabel(shiftSequence, editedTimelogs));
+        label.setId("shiftSequenceLabel");
+        label.setWrapText(true);
+        hourBoxContainer.getChildren().add(label);
+        hourBoxContainer.setPadding(new Insets(0, 0, 0, 0));
+        hourBoxContainer.setMaxWidth(120);
+        label.setPadding(new Insets(0, 0, 0, 0));
+        StackPane.setAlignment(label, Pos.CENTER);
+    }
+
+    private void edgeCreateNoBreakEndDaySequenceLabel(StackPane hourBoxContainer, ShiftSequence shiftSequence) {
+        Label label = createLabel("shiftSequenceLabel", String.format("Slut\n%02d:%02d", shiftSequence.getEndTime().getHour(), shiftSequence.getEndTime().getMinute()));
         label.setId("shiftSequenceLabel");
         label.setWrapText(true);
         hourBoxContainer.getChildren().add(label);
