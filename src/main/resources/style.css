@@ -173,6 +173,206 @@
 
 .notificationPane{
     -fx-pref-width: 400px;
+    -fx-pref-height: 360px;
+    -fx-alignment: bottom;
+}
+
+.notificationBox{    
+  -fx-pref-width: 400px;
+}
+
+.emptyShiftBox{
+    -fx-background-color: rgba(0, 0, 0, 0.1);
+    -fx-padding: 0;
+    -fx-border-style: dotted;
+    -fx-border-width: 1px;
+    -fx-border-color: grey;
+    -fx-font-size: 12pt;
+    -fx-pref-height: 100%;
+    -fx-pref-width: 100%;
+    -fx-alignment: center;
+    -fx-fill-width: true;
+}
+
+.dayShiftBoxHeader{
+    -fx-background-color: transparent;
+    -fx-pref-height: 10%;
+    -fx-border-style: solid hidden solid hidden;
+    -fx-border-width: 2px;
+    -fx-border-color: grey;
+    -fx-font-size: 12pt;
+    -fx-padding: 0 0 0 6;
+}
+
+.dayHoursHBox{
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-border-style: none;
+    -fx-pref-height: 100%;
+    -fx-pref-width: 100%;
+    -fx-alignment: center;
+    -fx-fill-width: true;
+}
+
+
+.weekButton {
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #333;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 8 15 8 15;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 1);
+}
+
+.weekButton:hover {
+    -fx-background-color: #d0d0d0;
+    -fx-cursor: hand;
+}
+
+
+.empHisLeftContainer{
+    -fx-border-style: hidden solid hidden hidden;
+    -fx-border-width: 2px;
+    -fx-border-color: grey;
+    -fx-background-color: transparent;
+}
+
+.empHisCenterContainer{
+    -fx-fill-height: true;
+    -fx-background-color: transparent;
+}
+
+.empHisWeekNumberContainer{
+    -fx-padding: 20;
+    -fx-background-color: transparent;
+
+}
+
+.empHisCalendarContainer{
+    -fx-border-style: hidden hidden solid hidden;
+    -fx-border-color: grey;
+    -fx-background-color: transparent;
+}
+
+.empHisButtonContainer{
+    -fx-padding: 40;
+}
+
+.empHisWorkHoursLabel{
+    -fx-padding: 20 0 0 10;
+    -fx-font-weight: bold;
+    -fx-font-size: 14pt;
+}
+
+.hourShiftBox{
+    -fx-background-color: transparent;
+    -fx-border-style: hidden dotted hidden dotted;
+    -fx-border-color: grey;
+    -fx-border-width: 1px;
+    -fx-padding: 0;
+    -fx-margin: 0;
+}
+
+.hourShiftBoxLabel{
+    -fx-background-color: transparent;
+    -fx-padding: 5;
+}
+
+.contentContainer{
+    -fx-fill-height: true;
+}
+
+.shiftBoxRegistered{
+    -fx-background-color: #20c997;
+    -fx-padding: 0;
+    -fx-margin: 0;
+}
+
+.shiftBoxMissedEvent{
+    -fx-background-color: #ee7572;
+}
+
+.shiftBoxBreak{
+    -fx-background-color: #f9d58b;
+}
+
+
+.shiftBoxEdited{
+    -fx-background-color: #fdbb3c;
+    -fx-padding: 0;
+}
+
+.shiftBoxNoneRegistered{
+    -fx-background-color: transparent;
+}
+
+.noteHBox{
+    -fx-background-color: transparent;
+    -fx-pref-width: 150px;
+    -fx-padding: 0;
+    -fx-border-width: 0 0 0 1px;
+    -fx-border-color: grey;
+}
+
+.chevronImage{
+    -fx-fit-height: 30px;
+    -fx-fit-width: 30px;
+}
+
+.chevronButton{
+    -fx-background-color: transparent;
+    -fx-border-style: none;
+    -fx-padding: 2;
+    -fx-cursor: hand;
+    -fx-border-radius: 5;
+}
+
+.chevronButton:hover{
+    -fx-background-color: lightgray;
+}
+
+.shiftSequenceLabel{
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-margin: 0;
+    -fx-border-style: none;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-font-weight: bold;
+}
+
+
+/* Base Notification Styling */
+.breakEndNotification, .checkInNotification, .checkOutNotification, .breakStartNotification {
+    -fx-pref-width: 398px;
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+    -fx-padding: 10px;
+    -fx-font-size: 18px;
+    -fx-font-family: 'Lato Bold';
+    -fx-text-fill: white;
+}
+
+.checkInNotification {
+    -fx-background-color: #20C997;
+    -fx-border-color: grey;
+}
+
+.checkOutNotification {
+    -fx-background-color: #EE7572;
+    -fx-border-color: grey;
+}
+
+.breakStartNotification {
+    -fx-background-color: #F9D58B;
+    -fx-border-color: grey;
+}
+
+.breakEndNotification {
+    -fx-background-color: #FDBB3C;
+    -fx-border-color: grey;
 }
 
 .notificationBox{
@@ -260,4 +460,3 @@
 .managerDailyButtons:pressed {
     -fx-background-color: #8e8e8e;
 }
-

@@ -1,16 +1,13 @@
 package com.p3.login;
 
 import org.mindrot.jbcrypt.BCrypt;
-import java.time.LocalDateTime;
 
 //todo implement networking feature, to talk with server.
 public class LoginService {
     private final LoginDAO loginDAO = new LoginDAO();
 
     public String validateUser(String username){
-        String jsonResponse = loginDAO.getUserRole(username);
-        org.json.JSONObject json = new org.json.JSONObject(jsonResponse);
-        return json.getString("role");
+        return loginDAO.getUserRole(username);
     }
 
     public boolean validateManager(String username, String password) {
@@ -46,7 +43,13 @@ public class LoginService {
         loginDAO.setClockedInStatus(username, status);
     }
 
-    public void insertCheckInEvent(int userId, LocalDateTime eventTime) {
-        loginDAO.insertCheckInEvent(userId, eventTime);
+    public void postCheckInEvent(int userId) {
+        loginDAO.postCheckInEvent(userId);
+    }
+
+    public String getApiKey(String username) {
+        String jsonResponse = loginDAO.getApiKey(username);
+        org.json.JSONObject json = new org.json.JSONObject(jsonResponse);
+        return json.getString("api_key");
     }
 }
