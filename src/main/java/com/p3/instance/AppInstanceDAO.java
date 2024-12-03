@@ -12,7 +12,7 @@ public class AppInstanceDAO {
 
     /*public LocalDateTime getServerTime() {
         String url = "time/getTime";
-        HttpResponse response = api.get(url, null);
+        HttpResponse response = api.get(url, null, false);
 
         if (response.statusCode() == 200) {
             String timeString = (String) response.body();

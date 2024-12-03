@@ -5,6 +5,7 @@ public class Session {
     private static String currentUserFullName;
     private static String currentRole;
     private static String currentUserRole;
+    private static String apiKey;
 
     public static int getCurrentUserId() {
         return currentUserId;
@@ -34,9 +35,18 @@ public class Session {
         currentUserRole = role;
     }
 
+    public static String getApiKey() {
+        return apiKey;
+    }
+
+    public static void setApiKey(String key) {
+        apiKey = key;
+    }
+
     public static void clearSession() {
         currentUserId = 0;
         currentUserFullName = null;
         currentUserRole = null;
+        apiKey = null;
     }
 }
