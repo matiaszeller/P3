@@ -7,10 +7,47 @@
 
     <!-- VBox for controls on the left -->
     <left>
-        <VBox alignment="CENTER" prefWidth="200" spacing="10" style="-fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 0; -fx-padding: 10; -fx-background-color: #FFFFFF;" BorderPane.alignment="CENTER">
+        <VBox alignment="CENTER" prefHeight="342.0" prefWidth="312.0" spacing="10" style="-fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 0; -fx-padding: 10; -fx-background-color: #FFFFFF;" BorderPane.alignment="CENTER">
             <children>
-                <Button fx:id="historyButton" text="Load History" />
-            <Region prefHeight="87.0" prefWidth="200.0" />
+                <Button fx:id="historyButton" text="Genindlæs" />
+
+
+                <!-- Calendar Section -->
+                <VBox alignment="TOP_CENTER" spacing="5">
+                    <!-- Calendar Navigation -->
+                    <HBox alignment="TOP_CENTER" spacing="10">
+                        <Button fx:id="prevMonthButton" text="&lt;" />
+                        <Label fx:id="yearMonthLabel" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Month Year" />
+                        <Button fx:id="nextMonthButton" text="&gt;" />
+                    </HBox>
+
+                    <!-- Calendar Grid -->
+                    <GridPane fx:id="calendarGrid" alignment="TOP_CENTER" hgap="5" vgap="5">
+                        <!-- Days of Week Headers -->
+                        <Label style="-fx-font-weight: bold;" text="Mon" GridPane.columnIndex="0" />
+                        <Label style="-fx-font-weight: bold;" text="Tue" GridPane.columnIndex="1" />
+                        <Label style="-fx-font-weight: bold;" text="Wed" GridPane.columnIndex="2" />
+                        <Label style="-fx-font-weight: bold;" text="Thu" GridPane.columnIndex="3" />
+                        <Label style="-fx-font-weight: bold;" text="Fri" GridPane.columnIndex="4" />
+                        <Label style="-fx-font-weight: bold;" text="Sat" GridPane.columnIndex="5" />
+                        <Label style="-fx-font-weight: bold;" text="Sun" GridPane.columnIndex="6" />
+                  <columnConstraints>
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints />
+                  </rowConstraints>
+                        <!-- Calendar days will be dynamically generated in the controller -->
+                    </GridPane>
+                </VBox>
+
+
                 <Label fx:id="totalHoursLabel" alignment="CENTER" style="-fx-alignment: center; -fx-text-alignment: center; -fx-font-weight: bold;" text="Total Weekly Hours Worked: 0:00" />
             <Region prefHeight="33.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                 <Button fx:id="returnButton" styleClass="defaultButton" text="Tilbage" />

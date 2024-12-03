@@ -20,7 +20,9 @@ import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.util.Locale;
@@ -40,6 +42,16 @@ public class HistoryController {
     @FXML
     private Label totalHoursLabel;
 
+    private YearMonth currentMonth;
+
+    @FXML
+    private GridPane calendarGrid;
+    @FXML
+    private Label yearMonthLabel;
+    @FXML
+    private Button prevMonthButton, nextMonthButton;
+
+
     private final HistoryService historyService = new HistoryService();
 
     public static void showHistoryPage(Stage stage) {
@@ -52,21 +64,20 @@ public class HistoryController {
 
             FXMLLoader fxmlLoader = new FXMLLoader(fxmlLocation);
 
-            // Get the current stage's width and height for flexibility
+
             double width = stage.getWidth();
             double height = stage.getHeight();
 
-            // Create the scene with the current stage dimensions
+
             Scene scene = new Scene(fxmlLoader.load(), width, height);
 
-            // Set the scene and make the stage fullscreen for flexibility
+
             stage.setScene(scene);
-            stage.setFullScreen(true); // Change to true if you want fullscreen behavior
-            stage.setResizable(true); // Allow resizing
-            // Show the stage
+            stage.setFullScreen(true);
+            stage.setResizable(true);
             stage.show();
 
-            // Initialize the controller and load dynamic content
+
             HistoryController controller = fxmlLoader.getController();
             controller.loadWeeklyGridPane();
         } catch (IOException e) {
@@ -80,7 +91,66 @@ public class HistoryController {
     private void initialize() {
         historyButton.setOnAction(event -> loadWeeklyGridPane());
         returnButton.setOnAction(event -> loadMenuPage());
+
+        currentMonth = YearMonth.now();
+        generateCalendar(currentMonth);
+
+        prevMonthButton.setOnAction(event -> changeMonth(-1));
+        nextMonthButton.setOnAction(event -> changeMonth(1));
     }
+
+
+
+
+
+    private void generateCalendar(YearMonth yearMonth) {
+        calendarGrid.getChildren().clear();
+        calendarGrid.getColumnConstraints().clear();
+        calendarGrid.getRowConstraints().clear();
+
+        yearMonthLabel.setText(yearMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + yearMonth.getYear());
+
+        // Add day-of-week headers
+        String[] daysOfWeek = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+        for (int col = 0; col < daysOfWeek.length; col++) {
+            Label dayLabel = new Label(daysOfWeek[col]);
+            dayLabel.setStyle("-fx-font-weight: bold;");
+            calendarGrid.add(dayLabel, col, 0);
+        }
+
+        LocalDate firstDayOfMonth = yearMonth.atDay(1);
+        int daysInMonth = yearMonth.lengthOfMonth();
+        int startDayOfWeek = (firstDayOfMonth.getDayOfWeek().getValue() - 1) % 7;
+
+        // Populate the calendar with buttons for each date
+        int row = 1;
+        int col = startDayOfWeek;
+        for (int day = 1; day <= daysInMonth; day++) {
+            LocalDate currentDate = yearMonth.atDay(day);
+            Button dateButton = new Button(String.valueOf(day));
+            dateButton.setOnAction(event -> handleDateClick(currentDate)); // Handle date click
+            dateButton.setMinSize(40, 40);
+            calendarGrid.add(dateButton, col, row);
+
+            col++;
+            if (col == 7) { // Move to the next row after Sunday
+                col = 0;
+                row++;
+            }
+        }
+    }
+
+    private void changeMonth(int offset) {
+        currentMonth = currentMonth.plusMonths(offset);
+        generateCalendar(currentMonth);
+    }
+
+    private void handleDateClick(LocalDate date) {
+        System.out.println("Date clicked: " + date);
+        // Add dynamic behavior here, like loading events for the date
+    }
+
+
 
     private void loadMenuPage() {
         try {
@@ -98,7 +168,7 @@ public class HistoryController {
         LocalDate today = LocalDate.now();
         LocalDate weekStart = today.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY));
         LocalDate weekEnd = weekStart.plusDays(6);
-        int userId = 1; // Replace this with the actual user ID
+        int userId = 1;
 
         int startHour = 7;
         int endHour = calculateEndHour(weekStart, weekEnd, userId);
@@ -111,10 +181,8 @@ public class HistoryController {
         for (int day = 0; day < 7; day++) {
             LocalDate date = weekStart.plusDays(day);
 
-            // Define a formatter for Danish day names
-            DateTimeFormatter danishFormatter = DateTimeFormatter.ofPattern("EEEE", new Locale("da", "DK"));
 
-// Format the day name in Danish and capitalize the first letter
+            DateTimeFormatter danishFormatter = DateTimeFormatter.ofPattern("EEEE", new Locale("da", "DK"));
             String dayNameInDanish = date.format(danishFormatter);
             dayNameInDanish = dayNameInDanish.substring(0, 1).toUpperCase() + dayNameInDanish.substring(1);
 
@@ -146,31 +214,25 @@ public class HistoryController {
                 // Add your logic here to save comments if needed
             });
 
-            // Align the button inside the StackPane
+
             StackPane.setAlignment(commentButton, Pos.BOTTOM_RIGHT);
             StackPane.setMargin(commentButton, new Insets(5)); // Add spacing for the button
-
-            // Add TextArea and button to the StackPane
             commentBox.getChildren().addAll(commentArea, commentButton);
-
-            // Add the StackPane to the grid
             gridPane.add(commentBox, endHour - startHour + 2, day + 1);
 
             // Add hour cells to the grid
             for (int hour = startHour; hour < endHour; hour++) {
                 int columnIndex = hour - startHour + 1;
-
                 if (columnIndex < 0) {
                     System.err.println("Invalid columnIndex: " + columnIndex + " for hour: " + hour);
                     continue;
                 }
 
-                // Create a cell rectangle
+
                 Rectangle cell = new Rectangle(70, 70);
                 cell.setFill(Color.WHITE);
                 cell.setStroke(Color.GRAY);
 
-                // Add time label to the cell
                 Label timeLabel = new Label(String.format("%02d:00", hour));
                 timeLabel.setStyle("-fx-font-size: 10; -fx-text-fill: black;");
 
@@ -180,15 +242,14 @@ public class HistoryController {
                 StackPane.setAlignment(timeLabel, Pos.TOP_LEFT);
                 StackPane.setMargin(timeLabel, new Insets(2, 0, 0, 2));
 
-                // Add the StackPane to the GridPane
+
                 gridPane.add(cellContainer, columnIndex, day + 1);
             }
         }
 
-        // Apply weekly event colors
+
         applyWeeklyEventColors(gridPane, weekStart, weekEnd, userId);
 
-        // Add the GridPane to the container
         gridPaneContainer.getChildren().clear();
         gridPaneContainer.getChildren().add(gridPane);
     }
@@ -200,9 +261,11 @@ public class HistoryController {
         int totalMinutesWorked = 0;
         Map<LocalDate, Integer> dailyWorkMinutes = new HashMap<>();
 
+        //custom colors for matching application
         Color customGreen = Color.web("#20C997");
         Color customRed = Color.web("#EE7572");
         Color customOrange = Color.web("#F9D58B");
+
         // Iterate through the events for each day
         for (Map.Entry<LocalDate, Map<String, LocalDateTime>> entry : timelogEvents.entrySet()) {
             LocalDate date = entry.getKey();
@@ -219,7 +282,7 @@ public class HistoryController {
             // Track the last event time to determine the next step in coloring
             LocalDateTime lastEventTime = null;
 
-            // Handle "check_in" event
+
             if (checkInTime != null) {
                 lastEventTime = checkInTime;
             }
@@ -282,7 +345,7 @@ public class HistoryController {
         int endMinute = end.getMinute();
 
         for (int hour = startHour; hour <= endHour; hour++) {
-            int col = hour - 7 + 1;  // Assuming 7 AM is the start hour for the grid
+            int col = hour - 7 + 1; // from 7 am
 
             // Find the cell in the grid for the given row and column
             StackPane cellContainer = getNodeByRowColumnIndex(row, col, gridPane);
@@ -305,7 +368,6 @@ public class HistoryController {
                     Rectangle overlayRect = new Rectangle(fillWidth, baseCell.getHeight());
                     overlayRect.setFill(color);
 
-                    // Position the overlay within the cell
                     if (hour == startHour) {
                         overlayRect.setTranslateX(baseCell.getWidth() * startFraction - baseCell.getWidth() / 2 + fillWidth / 2);
                     } else {

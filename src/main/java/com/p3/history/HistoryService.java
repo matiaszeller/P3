@@ -4,6 +4,8 @@ import org.json.JSONObject;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class HistoryService {
@@ -18,11 +20,11 @@ public class HistoryService {
         return historyDAO.calculateMaxEndHour(weekStart, weekEnd, userId);
     }
 
-    // Save a comment to the server
+
+        private static List<Map<String, Object>> timelogs = new ArrayList<>();
+
+
+    }
 
 
 
-
-    // Retrieve a comment from the server
-
-}
