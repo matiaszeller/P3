@@ -8,7 +8,7 @@ public class UserEditDAO {
 
     public static String userNames() {
         ServerApi api = new ServerApi();
-        HttpResponse<String> response = api.get("user/info/users", null);
+        HttpResponse<String> response = api.get("user/info/users", null,true);
 
         if (response.statusCode() == 200) {
             return response.body();

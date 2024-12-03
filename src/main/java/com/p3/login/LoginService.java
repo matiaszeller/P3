@@ -6,11 +6,9 @@ import org.mindrot.jbcrypt.BCrypt;
 public class LoginService {
     private final LoginDAO loginDAO = new LoginDAO();
 
-    public String setUserRole(String username){
-        String jsonResponse = loginDAO.getUserRole(username);
-        org.json.JSONObject json = new org.json.JSONObject(jsonResponse);
-        return json.getString("role");
-
+    public String setUserRole(String username) {
+        return  loginDAO.getUserRole(username);
+    }
     public String validateUser(String username){
         return loginDAO.getUserRole(username);
 
