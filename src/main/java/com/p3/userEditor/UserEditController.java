@@ -114,15 +114,13 @@ public class UserEditController {
 
             selectedUser.setUsername(nameField.getText());
             selectedUser.setFullName(lastNameField.getText());
-            if(passwordField.getText() != null) {
-                if (!passwordField.getText().isEmpty()) {
-                    String hashedPassword;
+            if(passwordField.getText() != null && !passwordField.getText().isEmpty()) {
+                String hashedPassword;
                     if (Objects.equals(passwordField.getText(), secondPasswordField.getText())) {
                         hashedPassword = passwordField.getText();
                         hashPassword(hashedPassword);
                         selectedUser.setPassword(hashedPassword);
                     }
-                }
             }
             String selectedRole = roleChoiceBox.getSelectionModel().getSelectedItem();
 
