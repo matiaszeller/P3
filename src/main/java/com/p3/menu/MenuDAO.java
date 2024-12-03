@@ -12,7 +12,7 @@ public class MenuDAO {
 
     public String getOnBreakStatus(int userId) {
         String url = "user/breakStatus/" + userId;
-        HttpResponse response = api.get(url, null);
+        HttpResponse response = api.get(url, null, true);
 
         return (String) response.body();
     }
@@ -55,7 +55,7 @@ public class MenuDAO {
 
     public String getTodaysEventsForUser(int userId, LocalDate today) {
         String url = "timelog/ALL?user_id=" + userId + "&date=" + today;
-        HttpResponse response = api.get(url, null);
+        HttpResponse response = api.get(url, null, true);
 
         return (String) response.body();
     }
@@ -84,7 +84,13 @@ public class MenuDAO {
 
     public String getLastCheckOutEvent(int userId) {
         String url = "timelog/lastCheckOut?user_id=" + userId;
-        HttpResponse response = api.get(url, null);
+        HttpResponse response = api.get(url, null, true);
+
+        // Check if the response status is 204 No Content
+        if (response.statusCode() == 204) {
+            return null;
+        }
+
         return (String) response.body();
     }
 
@@ -106,7 +112,7 @@ public class MenuDAO {
 
     public String noteExistsForDate(int userId, LocalDate noteDate) {
         String url = "note/exists?userId=" + userId + "&noteDate=" + noteDate;
-        HttpResponse response = api.get(url, null);
+        HttpResponse response = api.get(url, null, true);
         return (String) response.body();
     }
 }

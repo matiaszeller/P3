@@ -4,12 +4,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
 import java.io.IOException;
+import java.util.Objects;
 import javafx.util.Duration;
 import javafx.scene.control.ProgressBar;
 import javafx.geometry.Insets;
@@ -35,8 +38,13 @@ public class LoginController {
 
     @FXML
     private void initialize() {
+        Session.clearSession();
+
         loginButton.setOnAction(event -> {
             try {
+                String username = usernameField.getText();
+                String apiKey = loginService.getApiKey(username);
+                Session.setApiKey(apiKey);
                 handleLogin();
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -47,6 +55,9 @@ public class LoginController {
             switch (event.getCode()) {
                 case ENTER -> {
                     try {
+                        String username = usernameField.getText();
+                        String apiKey = loginService.getApiKey(username);
+                        Session.setApiKey(apiKey);
                         handleLogin();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
@@ -111,7 +122,8 @@ public class LoginController {
         // Create modal elements
         Stage modalStage = new Stage();
         modalStage.initModality(Modality.APPLICATION_MODAL);
-        modalStage.setTitle("Manager Login");
+        modalStage.setTitle("");
+        modalStage.getIcons().add(new Image(Objects.requireNonNull(LoginController.class.getResourceAsStream("/icons/favicon.png"))));
 
         // Disable window resizing
         modalStage.setResizable(false);
@@ -131,6 +143,11 @@ public class LoginController {
         vbox.setPadding(new Insets(10));
 
         submitButton.setOnAction(event -> handleSubmit(modalStage, passwordField.getText(), modalErrorLabel));
+        passwordField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                handleSubmit(modalStage, passwordField.getText(), modalErrorLabel);
+            }
+        });
         cancelButton.setOnAction(event -> modalStage.close());
 
         Scene modalScene = new Scene(vbox);
