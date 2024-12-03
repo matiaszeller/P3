@@ -7,7 +7,7 @@ import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ServerApi {
+public class ServerApi{
     private final String BASE_URL = "http://localhost:8080/api/";
 
     public HttpResponse<String> get(String path, Map<String, String> headers, boolean includeApiKey) {
