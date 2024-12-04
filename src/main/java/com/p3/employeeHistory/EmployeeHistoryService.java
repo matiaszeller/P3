@@ -21,6 +21,10 @@ public class EmployeeHistoryService {
         return new JSONArray(employeeHistoryDAO.getWeekTimelogs(localDate, userId));
     }
 
+    public JSONArray getWeekNotes(LocalDate localDate, int userId) {
+        return new JSONArray(employeeHistoryDAO.getWeekNotes(localDate, userId));
+    }
+
     public Duration calculateDayWorkHours(JSONArray dayTimelogs) {
         LocalDateTime checkInTime = null;
         LocalDateTime breakStartTime = null;

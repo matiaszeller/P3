@@ -323,7 +323,7 @@
 }
 
 .chevronButton:hover{
-    -fx-background-color: lightgray;
+    -fx-background-color: #8e8e8e;
 }
 
 .shiftSequenceLabel{
@@ -366,5 +366,134 @@
 .breakEndNotification {
     -fx-background-color: #FDBB3C;
     -fx-border-color: grey;
+}
+
+.dateButton {
+    -fx-background-color: transparent;
+    -fx-text-fill: #000000;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-cursor: hand;
+}
+.dateButton:hover {
+    -fx-background-color: #8e8e8e;
+}
+
+.selectedDateButton {
+    -fx-background-color: #20C997;
+    -fx-text-fill: #ffffff;
+}
+
+.calendarGrid{
+    -fx-spacing: 0;
+    -fx-hgap: 0;
+    -fx-text-alignment: center;
+}
+
+.notCurrentMonthDate{
+    -fx-background-color: transparent;
+    -fx-text-fill: #A0A0A0;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+}
+
+.lastNoteBox{
+    -fx-background-color: transparent;
+    -fx-padding: 5px;
+}
+
+.noteSenderLabel{
+    -fx-wrap-text: true;
+    -fx-font-weight: bold;
+    -fx-font-size: 10pt;
+}
+
+.lastNoteTextLabel{
+    -fx-wrap-text: true;
+    -fx-text-overrun: ellipsis;
+    -fx-font-size: 8pt;
+    -fx-max-height: 48px;
+}
+
+.noteModalMainContainer{
+    -fx-background-color: transparent;
+    -fx-padding: 10px;
+}
+
+.noteModalMainLabel{
+    -fx-alignment: center;
+    -fx-pref-height: 40px;
+    -fx-font-size: 12pt;
+    -fx-font-weight: bold;
+}
+
+.noteModalContentContainer{
+    -fx-pref-width: 500;
+    -fx-pref-height: 350;
+    -fx-max-height: 350;
+    -fx-max-width: 500;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-border-width: 2;
+    -fx-border-color: lightgray;
+
+}
+
+.noteModalButtonContainer{
+    -fx-pref-width: 600;
+    -fx-alignment: center;
+}
+
+.noteUserIsRecipient{
+    -fx-background-color: lightgrey;
+    -fx-max-width: 450;
+    -fx-border-radius: 5;
+    -fx-background-radius: 10;
+}
+
+.noteUserIsSender{
+    -fx-background-color: #20C997;
+    -fx-text-fill: white;
+    -fx-max-width: 450;
+    -fx-border-radius: 5;
+    -fx-background-radius: 10;
+}
+
+.notesScrollPaneBoxContainer{
+    -fx-pref-width: 495;
+    -fx-padding: 5;
+}
+
+.noteInputContainer{
+    -fx-pref-width: 500;
+    -fx-padding: 5;
+    -fx-border-radius: 5;
+}
+
+.noteInputTextField{
+    -fx-pref-width: 450;
+    -fx-pref-height: 30;
+    -fx-max-width: 450;
+    -fx-border-radius: 5 0 0 5;
+    -fx-background-radius: 5 0 0 5;
+    -fx-border-color: lightgray;
+    -fx-border-width: 2;
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+    -fx-font-size: 10pt;
+}
+
+.noteInputTextButton{
+    -fx-cursor: hand;
+    -fx-pref-width: 50;
+    -fx-pref-height: 50;
+    -fx-background-color: #20C997;
+    -fx-border-radius: 0 10 10 0;
+    -fx-background-radius: 0 10 10 0;
+    -fx-border-color: transparent;
 }
 
