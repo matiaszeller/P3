@@ -1,5 +1,7 @@
 package com.p3.userEditor;
 
+import com.p3.menu.MenuService;
+import com.p3.session.Session;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -35,7 +37,16 @@ public class UserEditController {
     private PasswordField secondPasswordField;
 
     @FXML
-    private Button tilbage;
+    private Button tilbageButton;
+
+    @FXML
+    private Button weeklyOverviewButton;
+
+    @FXML
+    private Button dailyOverviewButton;
+
+    @FXML
+    private Button logoutButton;
 
     @FXML
     Button submitBtn;
@@ -68,15 +79,17 @@ public class UserEditController {
 
         ObservableList<String> roles = FXCollections.observableArrayList("manager", "medarbejder", "deaktiver");
         roleChoiceBox.setItems(roles);
-
-        choiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        choiceBox.getSelectionModel().selectedItemProperty().addListener((ObservableList, oldValue, newValue) -> {
             if (newValue != null) {
                 updateUserDetails(newValue);
             }
         });
 
+        dailyOverviewButton.setOnAction(event -> handleDailyPage());
+        weeklyOverviewButton.setOnAction(event -> handleWeeklyPage());
+        logoutButton.setOnAction(event -> handleLogout());
         submitBtn.setOnAction(event -> saveChanges());
-        tilbage.setOnAction(event -> goBack());
+        tilbageButton.setOnAction(event -> goBack());
         newUserBtn.setOnAction(event -> newUser());
     }
 
@@ -145,10 +158,6 @@ public class UserEditController {
                 System.err.println("Failed to save changes!");
             }
         }
-    }
-
-    private void goBack() {
-        loadMenuPage();
     }
     private void newUser() {
         Stage modalStage = new Stage();
@@ -269,7 +278,7 @@ public class UserEditController {
     private void loadMenuPage() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com.p3.menu/MenuPage.fxml"));
-            Stage stage = (Stage) tilbage.getScene().getWindow();
+            Stage stage = (Stage) tilbageButton.getScene().getWindow();
             double width = stage.getWidth();
             double height = stage.getHeight();
             Scene scene = new Scene(fxmlLoader.load(), width, height);
@@ -278,5 +287,19 @@ public class UserEditController {
             e.printStackTrace();
         }
 
+    }
+    private void handleWeeklyPage(){
+        System.out.println("Missing feature");
+    }
+    private void handleDailyPage(){
+        System.out.println("Missing feature");
+    }
+    private void handleLogout(){
+        Session.clearSession();
+        Stage stage = (Stage) logoutButton.getScene().getWindow();
+        MenuService.loadLoginPage(stage);
+    }
+    private void goBack() {
+        loadMenuPage();
     }
 }

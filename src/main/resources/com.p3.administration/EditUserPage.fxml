@@ -27,21 +27,20 @@
          <!-- Center section with label and choice box -->
          <center>
             <VBox spacing="20.0">
-               <Label text="Administrer Medarbejder"/>
+               <Label text="Vælg medarbejder:"/>
                <ChoiceBox fx:id="choiceBox" prefWidth="200.0"/>
-               <Button fx:id="newUserBtn" styleClass="confirmButton" text="Tilføj ny bruger">
-               <VBox.margin>
-                  <Insets top="70"/>
-               </VBox.margin>
-               </Button>
             </VBox>
 
          </center>
          <!-- Bottom section with button -->
          <bottom>
-            <HBox alignment="BOTTOM_LEFT" spacing="40.0">
-               <Button fx:id="tilbage" styleClass="defaultButton" text="Tilbage"/>
-            </HBox>
+            <VBox alignment="BOTTOM_LEFT" spacing="40.0">
+               <Button fx:id="newUserBtn" styleClass="confirmButton" text="Tilføj ny bruger"/>
+               <Button fx:id="dailyOverviewButton" styleClass="defaultButton" text="Dagligt Overblik"/>
+               <Button fx:id="weeklyOverviewButton" styleClass="defaultButton" text="Ugentligt Overblik"/>
+               <Button fx:id="logoutButton" styleClass="defaultButton" text="Log ud"/>
+               <Button fx:id="tilbageButton" styleClass="defaultButton" text="Tilbage"/>
+            </VBox>
          </bottom>
       </BorderPane>
 
