@@ -381,6 +381,40 @@
     -fx-background-color: #FDBB3C;
     -fx-border-color: grey;
 }
+.leftWeeklyOverviewBox{
+    -fx-alignment: TOP-CENTER;
+    -fx-background-color: #f2f2f2;
+    -fx-padding: 10;
+}
+.cell {
+    -fx-border-color: gray;
+    -fx-border-width: 1;
+}
+.grid-pane {
+    -fx-grid-lines-visible: false;
+}
+
+.dateButton {
+    -fx-background-color: #f2f2f2;
+    -fx-text-fill: #000000;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+}
+
+.dateButton:hover {
+    -fx-background-color: #dfdfdf;
+}
+
+.leftDailyManagerBox{
+    -fx-alignment: TOP-CENTER;
+    -fx-border-color: #000000;
+    -fx-background-color: rgba(0, 0, 0, 0);
+    -fx-padding: 10;
+    -fx-fill-height: 100%;
+}
+
 
 .notificationBox{
     -fx-pref-width: 396px;

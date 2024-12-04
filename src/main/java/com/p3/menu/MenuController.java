@@ -2,6 +2,7 @@ package com.p3.menu;
 
 import com.p3.event.Event;
 import com.p3.instance.AppInstance;
+import com.p3.overview.WeeklyOverviewService;
 import com.p3.session.Session;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane styleClass="root" stylesheets="@../style.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.overview.WeeklyOverviewController">
+    <children>
+        <AnchorPane fx:id="contentPane" layoutX="10" layoutY="50" prefWidth="1550" prefHeight="750">
+            <children>
+                <HBox spacing="10" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                    <children>
+                        <!-- Left VBox Section -->
+                        <VBox fx:id="leftDailyManagerBox" prefWidth="200" styleClass="leftDailyManagerBox">
+                            <!-- Calendar Section -->
+                            <VBox spacing="5" alignment="TOP_CENTER">
+                                <HBox spacing="10" alignment="TOP_CENTER">
+                                    <Button text="&lt;" fx:id="prevMonthButton" />
+                                    <Label fx:id="yearMonthLabel" text="Month Year" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                                    <Button text="&gt;" fx:id="nextMonthButton" />
+                                </HBox>
+                                <!-- Calendar Grid -->
+                                <GridPane fx:id="calendarGrid" hgap="5" vgap="5" alignment="TOP_CENTER">
+                                    <!-- Days of Week -->
+                                    <Label text="Mon" GridPane.columnIndex="0" style="-fx-font-weight: bold;" />
+                                    <Label text="Tue" GridPane.columnIndex="1" style="-fx-font-weight: bold;" />
+                                    <Label text="Wed" GridPane.columnIndex="2" style="-fx-font-weight: bold;" />
+                                    <Label text="Thu" GridPane.columnIndex="3" style="-fx-font-weight: bold;" />
+                                    <Label text="Fri" GridPane.columnIndex="4" style="-fx-font-weight: bold;" />
+                                    <Label text="Sat" GridPane.columnIndex="5" style="-fx-font-weight: bold;" />
+                                    <Label text="Sun" GridPane.columnIndex="6" style="-fx-font-weight: bold;" />
+
+                                </GridPane>
+                            </VBox>
+                            <!-- Buttons Section -->
+                            <VBox spacing="10" alignment="CENTER" VBox.vgrow="ALWAYS">
+                                <Region minHeight="30"/>
+                                <Button text="Dagligt Overblik" fx:id="dailyOverviewButton" styleClass="defaultButton" prefWidth="180" />
+                                <Button text="Ugentligt Overblik" fx:id="weeklyOverviewButton" styleClass="defaultButton" prefWidth="180" />
+                                <Button text="Rediger Ansatte" fx:id="editEmployeesButton" styleClass="defaultButton" prefWidth="180" />
+                                <Button text="Eksporter Data" fx:id="exportDataButton" styleClass="defaultButton" prefWidth="180" />
+                                <Region VBox.vgrow="ALWAYS" />
+                                <Button text="Log Ud" fx:id="logOutButton" styleClass="defaultButton" prefWidth="180" />
+                            </VBox>
+                        </VBox>
+
+                        <!-- Main Content Section -->
+                        <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" vbarPolicy="ALWAYS">
+                            <content>
+                                <GridPane fx:id="gridPane"/>
+                            </content>
+                        </ScrollPane>
+                    </children>
+                </HBox>
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>
