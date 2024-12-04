@@ -233,20 +233,9 @@ public class MenuController {
         }
     }
 
-    private void loadManagerPage() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("com/p3/managerDaily/ManagerDaily.fxml"));
-            Stage stage = (Stage) managerButton.getScene().getWindow();
-            double width = stage.getWidth();
-            double height = stage.getHeight();
-            Scene scene = new Scene(loader.load(), width, height);
-            stage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     private void handleOnPressManager() {
-        loadManagerPage(); //xD
+        Stage stage = (Stage) managerButton.getScene().getWindow();
+        MenuService.loadManagerPage(stage);
     }
     private void getMissedCheckout() {
         int userId = Session.getCurrentUserId();

@@ -1,5 +1,7 @@
 package com.p3.overview;
 
+import com.p3.managerDaily.ManagerDailyService;
+import com.p3.menu.MenuService;
 import com.p3.session.Session;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -22,7 +24,7 @@ public class WeeklyOverviewController {
     private GridPane gridPane;
 
     @FXML
-    private AnchorPane Weeklyroot;
+    private VBox Weeklyroot;
 
     @FXML
     private AnchorPane contentPane;
@@ -67,7 +69,7 @@ public class WeeklyOverviewController {
     public void initialize() {
         logOutButton.setOnAction(event -> handleLogOut());
         dailyOverviewButton.setOnAction(event -> handleDailyOverview());
-        weeklyOverviewButton.setOnAction(event -> handleWeeklyOverview());
+        handleWeeklyOverview();
         editEmployeesButton.setOnAction(event -> handleEditEmployees());
         exportDataButton.setOnAction(event -> handleExportData());
         BackButton.setOnAction(event -> handleBackButton());
@@ -344,7 +346,7 @@ public class WeeklyOverviewController {
     }
     private void handleBackButton() {
         Stage stage = (Stage) BackButton.getScene().getWindow();
-        WeeklyOverviewService.loadMenuPage(stage);
+        ManagerDailyService.loadMenuPage(stage);
     }
 
     private void handleDateClick(LocalDate date) {
@@ -364,17 +366,18 @@ public class WeeklyOverviewController {
     }
 
     private void handleDailyOverview() {
-        //Indsæt Wacknuts' her
+        Stage stage = (Stage) dailyOverviewButton.getScene().getWindow();
+        WeeklyOverviewService.loadManagerDailyPage(stage);
     }
 
     private void handleWeeklyOverview() {
-
+        weeklyOverviewButton.getStyleClass().add("managerSelectedBox");
     }
 
     private void handleEditEmployees() {
-        //Indsæt Edit
+        Stage stage = (Stage) editEmployeesButton.getScene().getWindow();
+        WeeklyOverviewService.loadAdminPage(stage);
     }
-
     private void handleExportData() {
         //Indsæt Export??
     }

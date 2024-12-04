@@ -1,6 +1,7 @@
 package com.p3.managerDaily;
 
 import com.p3.menu.MenuService;
+import com.p3.overview.WeeklyOverviewService;
 import com.p3.session.Session;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -41,6 +42,9 @@ public class ManagerDailyController {
     private VBox managerDailyRoot;
     @FXML
     private VBox centerPanel;
+
+    @FXML
+    private Button BackButton;
 
     @FXML
     private Button managerLogOutButton;
@@ -86,6 +90,7 @@ public class ManagerDailyController {
         weeklyOverviewButton.setOnAction(event -> handleWeeklyOverview());
         editEmployeesButton.setOnAction(event -> handleEditEmployees());
         exportDataButton.setOnAction(event -> handleExportData());
+        BackButton.setOnAction(event -> {});
         handleDailyOverview();
         currentMonth = YearMonth.now();
         generateCalendar(currentMonth);
@@ -607,6 +612,10 @@ public class ManagerDailyController {
 
         Stage stage = (Stage) managerLogOutButton.getScene().getWindow();
         ManagerDailyService.loadLoginPage(stage);
+    }
+    private void handleBackButton() {
+        Stage stage = (Stage) BackButton.getScene().getWindow();
+        WeeklyOverviewService.loadMenuPage(stage);
     }
     private void handleDailyOverview() {
         dailyOverviewButton.getStyleClass().add("managerSelectedBox");

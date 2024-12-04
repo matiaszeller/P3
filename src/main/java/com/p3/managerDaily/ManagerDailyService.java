@@ -1,6 +1,7 @@
 package com.p3.managerDaily;
 
 import com.p3.menu.MenuService;
+import com.p3.overview.WeeklyOverviewService;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -166,6 +167,18 @@ public class ManagerDailyService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    public static void loadMenuPage(Stage stage) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(ManagerDailyService.class.getResource("/com.p3.menu/MenuPage.fxml"));
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            Scene scene = new Scene(fxmlLoader.load(), width, height);
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     }

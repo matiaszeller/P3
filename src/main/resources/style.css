@@ -493,3 +493,10 @@
 .managerSelectedBox {
     -fx-background-color: #20C997;
 }
+
+.managerSelectedBox:hover {
+    -fx-background-color: #33d6ad;
+}
+.managerSelectedBox:pressed {
+    -fx-background-color: #009973;
+}

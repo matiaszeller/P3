@@ -1,5 +1,6 @@
 package com.p3.overview;
 
+import com.p3.managerDaily.ManagerDailyService;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.*;
@@ -79,5 +80,28 @@ public class WeeklyOverviewService {
             e.printStackTrace();
         }
 
+    }
+    public static void loadManagerDailyPage(Stage stage) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(WeeklyOverviewService.class.getResource("/com.p3.managerDaily/ManagerDaily.fxml"));
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            Scene scene = new Scene(fxmlLoader.load(), width, height);
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void loadAdminPage(Stage stage) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(WeeklyOverviewService.class.getResource("/com.p3.administration/EditUserPage.fxml"));
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            Scene scene = new Scene(fxmlLoader.load(), width, height);
+            stage.setScene(scene);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

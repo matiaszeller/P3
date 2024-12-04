@@ -3,14 +3,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="Weeklyroot" styleClass="root" stylesheets="@../style.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.overview.WeeklyOverviewController">
+<VBox fx:id="Weeklyroot" spacing="15.0" styleClass="root" stylesheets="@../style.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.overview.WeeklyOverviewController">
     <children>
         <AnchorPane fx:id="contentPane" styleClass="contentPane">
             <children>
                 <HBox spacing="10" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                     <children>
                         <!-- Left VBox Section -->
-                        <VBox fx:id="leftDailyManagerBox" prefWidth="200" styleClass="leftDailyManagerBox">
+                        <VBox fx:id="leftDailyManagerBox" spacing="150" alignment="TOP_CENTER" prefWidth="200" styleClass="leftDailyManagerBox">
                             <!-- Calendar Section -->
                             <VBox spacing="5" alignment="TOP_CENTER">
                                 <HBox spacing="10" alignment="TOP_CENTER">
@@ -28,23 +28,26 @@
                                     <Label text="Fri" GridPane.columnIndex="4" style="-fx-font-weight: bold;" />
                                     <Label text="Sat" GridPane.columnIndex="5" style="-fx-font-weight: bold;" />
                                     <Label text="Sun" GridPane.columnIndex="6" style="-fx-font-weight: bold;" />
+
+                                    <!-- Going to be generated in the controller dynamically bombaclat -->
+
                                 </GridPane>
                             </VBox>
-                            <!-- Buttons Section -->
                             <VBox spacing="20" alignment="CENTER" VBox.vgrow="ALWAYS">
-                                <Region minHeight="30" />
+                                <!-- Buttons -->
                                 <Button text="Dagligt Overblik" fx:id="dailyOverviewButton" styleClass="defaultButton" prefWidth="180" />
                                 <Button text="Ugentligt Overblik" fx:id="weeklyOverviewButton" styleClass="defaultButton" prefWidth="180" />
                                 <Button text="Rediger Ansatte" fx:id="editEmployeesButton" styleClass="defaultButton" prefWidth="180" />
                                 <Button text="Eksporter Data" fx:id="exportDataButton" styleClass="defaultButton" prefWidth="180" />
-                                <Region VBox.vgrow="ALWAYS" />
+                            </VBox>
+                            <VBox spacing="50" alignment="BOTTOM_CENTER">
                                 <Button fx:id="BackButton" styleClass="defaultButton" text="Tilbage" prefWidth="180"/>
-                                <Button text="Log Ud" fx:id="logOutButton" styleClass="defaultButton" prefWidth="180" />
+                                <Button text="Log Ud" fx:id="logOutButton" prefWidth="180" styleClass="defaultButton" />
                             </VBox>
                         </VBox>
 
                         <!-- Main Content Section -->
-                        <ScrollPane fx:id="scrollPane" fitToWidth="true" fitToHeight="true" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="0.0">
+                        <ScrollPane fx:id="scrollPane" fitToWidth="true" fitToHeight="true" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="335.0" AnchorPane.rightAnchor="0.0">
                             <content>
                                 <GridPane fx:id="gridPane" />
                             </content>
@@ -54,4 +57,4 @@
             </children>
         </AnchorPane>
     </children>
-</AnchorPane>
+</VBox>
