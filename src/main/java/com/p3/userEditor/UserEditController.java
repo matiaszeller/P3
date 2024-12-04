@@ -1,5 +1,7 @@
 package com.p3.userEditor;
 
+import com.p3.menu.MenuService;
+import com.p3.session.Session;
 import com.p3.overview.WeeklyOverviewService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -36,7 +38,16 @@ public class UserEditController {
     private PasswordField secondPasswordField;
 
     @FXML
-    private Button BackButton;
+    private Button tilbageButton;
+
+    @FXML
+    private Button weeklyOverviewButton;
+
+    @FXML
+    private Button dailyOverviewButton;
+
+    @FXML
+    private Button logoutButton;
 
     @FXML
     Button submitBtn;
@@ -69,14 +80,17 @@ public class UserEditController {
 
         ObservableList<String> roles = FXCollections.observableArrayList("manager", "medarbejder", "deaktiver");
         roleChoiceBox.setItems(roles);
-
-        choiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        choiceBox.getSelectionModel().selectedItemProperty().addListener((ObservableList, oldValue, newValue) -> {
             if (newValue != null) {
                 updateUserDetails(newValue);
             }
         });
+
+        dailyOverviewButton.setOnAction(event -> handleDailyPage());
+        weeklyOverviewButton.setOnAction(event -> handleWeeklyPage());
+        logoutButton.setOnAction(event -> handleLogout());
         submitBtn.setOnAction(event -> saveChanges());
-        BackButton.setOnAction(event -> handleBackButton());
+        tilbageButton.setOnAction(event -> goBack());
         newUserBtn.setOnAction(event -> newUser());
     }
 
@@ -145,11 +159,6 @@ public class UserEditController {
                 System.err.println("Failed to save changes!");
             }
         }
-    }
-
-    private void handleBackButton() {
-        Stage stage = (Stage) BackButton.getScene().getWindow();
-        UserEditService.loadMenuPage(stage);
     }
     private void newUser() {
         Stage modalStage = new Stage();
@@ -264,5 +273,23 @@ public class UserEditController {
         modalStage.setScene(scene);
         modalStage.setResizable(false);
         modalStage.showAndWait();
+    }
+
+    //todo for some reason, i cant call the method in the login controller, so i've implemented it again. needs to be fixed
+
+    private void handleWeeklyPage(){
+        System.out.println("Missing feature");
+    }
+    private void handleDailyPage(){
+        System.out.println("Missing feature");
+    }
+    private void handleLogout(){
+        Session.clearSession();
+        Stage stage = (Stage) logoutButton.getScene().getWindow();
+        MenuService.loadLoginPage(stage);
+    }
+    private void goBack() {
+        Stage stage = (Stage) tilbageButton.getScene().getWindow();
+       UserEditService.loadMenuPage(stage);
     }
 }
