@@ -13,11 +13,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.KeyCode;
+
 import java.time.LocalDate;
 
 public class NoteModalController {
-    private JSONArray notesToAdd = new JSONArray();
+    NoteModalService noteModalService = new NoteModalService();
     private final VBox noteContainer = new VBox(10);
     private LocalDate date;
 
@@ -30,9 +30,7 @@ public class NoteModalController {
     @FXML
     private HBox modalButtonContainer;
     @FXML
-    private Button modalConfirmButton;
-    @FXML
-    private Button modalCancelButton;
+    private Button modalBackButton;
     @FXML
     private HBox noteInputContainer;
     @FXML
@@ -46,14 +44,8 @@ public class NoteModalController {
     }
 
     private void setActionHandlers() {
-        modalCancelButton.setOnAction(event -> {
-            Stage stage = (Stage) modalCancelButton.getScene().getWindow();
-            stage.close();
-        });
-
-        // An array with input comments are loaded, on stage close, return array and post from main controller
-        modalConfirmButton.setOnAction(event -> {
-            Stage stage = (Stage) modalConfirmButton.getScene().getWindow();
+        modalBackButton.setOnAction(event -> {
+            Stage stage = (Stage) modalBackButton.getScene().getWindow();
             stage.close();
         });
 
@@ -64,7 +56,7 @@ public class NoteModalController {
                 if(event.getCode() == KeyCode.ENTER) {
                     if(!event.isShiftDown()) {
                         event.consume();
-                        appendNoteToArray();
+                        postNoteObject();
                     }
                 }
             });
@@ -73,25 +65,27 @@ public class NoteModalController {
         inputTextArea.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if(event.getCode() == KeyCode.ENTER && !event.isShiftDown()) {
                 event.consume();
-                appendNoteToArray();
+                postNoteObject();
             }
         });
 
-        inputTextButton.setOnAction(event -> {appendNoteToArray();});
+        inputTextButton.setOnAction(event -> {
+            postNoteObject();});
     }
 
-    public JSONArray generateModal(JSONArray dayNotes) {
-        JSONObject firstDayNote = dayNotes.getJSONObject(0);
-        date = LocalDate.parse(firstDayNote.getString("note_date"));
+    public void generateModal(JSONArray dayNotes, LocalDate date) {
+        setDate(date);
+
         modalMainLabel.setText(String.format("Tilføj noter til d. %s", date));
 
         inputTextArea.setWrapText(true);
-
         noteContainer.getStyleClass().add("notesScrollPaneBoxContainer");
 
-        for (int i = 0; i < dayNotes.length(); i++) {
-            JSONObject note = dayNotes.getJSONObject(i);
-            addNoteToContainer(note);
+        if(!dayNotes.isEmpty()) {
+            for (int i = 0; i < dayNotes.length(); i++) {
+                JSONObject note = dayNotes.getJSONObject(i);
+                addNoteToContainer(note);
+            }
         }
 
         modalNoteContentContainer.setContent(noteContainer);
@@ -100,18 +94,23 @@ public class NoteModalController {
         modalNoteContentContainer.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         modalNoteContentContainer.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
-        // Return inputNotes
-        if(!notesToAdd.isEmpty()) {
-            return notesToAdd;
-        }
-        return null;
     }
 
     private void addNoteToContainer(JSONObject note) {
+        int recipientId = note.getInt("recipient_id");
+        int writerId = note.getInt("writer_id");
+        boolean isSessionUserRecipient = recipientId == Session.getCurrentUserId();
+
         VBox noteVBox = new VBox(5);
         noteVBox.setPadding(new javafx.geometry.Insets(10));
 
-        Label noteSenderLabel = new Label("Writer ID: " + note.getInt("writer_id"));
+        Label noteSenderLabel = new Label();
+
+        if (isSessionUserRecipient) {
+            noteSenderLabel.setText(noteModalService.getSenderName(writerId));
+        } else {
+            noteSenderLabel.setText(Session.getCurrentUserFullName());
+        }
         noteSenderLabel.getStyleClass().add("noteSenderLabel");
         noteVBox.getChildren().add(noteSenderLabel);
 
@@ -124,8 +123,7 @@ public class NoteModalController {
         noteAlignmentBox.setPrefWidth(noteContainer.getWidth());
 
         // Align note to left or right based on recipient_id
-        int recipientId = note.getInt("recipient_id");
-        if (recipientId == Session.getCurrentUserId()) {
+        if (isSessionUserRecipient) {
             // User is the recipient, align note to the left
             noteAlignmentBox.setAlignment(Pos.CENTER_LEFT);
             noteVBox.getStyleClass().add("noteUserIsRecipient");
@@ -139,9 +137,10 @@ public class NoteModalController {
         noteContainer.getChildren().add(noteAlignmentBox);
     }
 
-    private void appendNoteToArray() {
+    private void postNoteObject() {
         String noteText = inputTextArea.getText();
 
+        // Create note object and post to server
         if(!noteText.isEmpty()) {
             JSONObject newNote = new JSONObject();
             newNote.put("writer_id", Session.getCurrentUserId());
@@ -149,12 +148,18 @@ public class NoteModalController {
             newNote.put("written_note", noteText);
             newNote.put("full_name", Session.getCurrentUserFullName());
             newNote.put("note_date", date);
-            notesToAdd.put(newNote);
 
+            noteModalService.postNewNote(newNote);
+
+            // Visual confirmation of note being added to server
             addNoteToContainer(newNote);
 
+            // Clear for next input
             inputTextArea.clear();
         }
     }
 
+    private void setDate(LocalDate date) {
+        this.date = date;
+    }
 }

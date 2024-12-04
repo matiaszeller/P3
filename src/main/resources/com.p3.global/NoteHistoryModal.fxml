@@ -25,9 +25,7 @@
         </HBox>
         <Region style="-fx-pref-height: 20px;"/>
         <HBox fx:id="modalButtonContainer" styleClass="noteModalButtonContainer">
-            <Button fx:id="modalConfirmButton" styleClass="confirmButton" text="Bekræft"/>
-            <Region style="-fx-pref-width: 40px;"/>
-            <Button fx:id="modalCancelButton" styleClass="defaultButton" text="Fortryd"/>
+            <Button fx:id="modalBackButton" styleClass="defaultButton" text="Luk"/>
         </HBox>
     </VBox>
 </AnchorPane>

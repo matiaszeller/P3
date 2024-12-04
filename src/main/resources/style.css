@@ -464,8 +464,8 @@
 }
 
 .notesScrollPaneBoxContainer{
-    -fx-pref-width: 495;
-    -fx-padding: 5;
+    -fx-pref-width: 490;
+    -fx-padding: 10;
 }
 
 .noteInputContainer{
