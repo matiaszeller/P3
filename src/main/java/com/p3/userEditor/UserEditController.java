@@ -128,7 +128,7 @@ public class UserEditController {
                 case "deaktiver":
                     selectedUser.setRole("deaktiverede");
                     break;
-                case "medarbejder":
+                case "employee":
                     selectedUser.setRole("employee");
                     break;
                 default:
@@ -138,7 +138,7 @@ public class UserEditController {
             boolean success = infoService.updateUser(selectedUser);
 
             if (success) {
-                System.out.println("Changes saved successfully!");
+               initialize();
             } else {
                 System.err.println("Failed to save changes!");
             }
