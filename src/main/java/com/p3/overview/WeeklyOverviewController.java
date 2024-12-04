@@ -3,6 +3,7 @@ package com.p3.overview;
 import com.p3.session.Session;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -18,6 +19,12 @@ public class WeeklyOverviewController {
 
     @FXML
     private GridPane gridPane;
+
+    @FXML
+    private AnchorPane Weeklyroot;
+
+    @FXML
+    private AnchorPane contentPane;
 
     @FXML
     private ScrollPane scrollPane;
@@ -76,10 +83,30 @@ public class WeeklyOverviewController {
         setupGridPaneConstraints();
         loadGridPane(currentYear);
         scrollPane.setContent(gridPane);
-        scrollPane.setFitToWidth(true);
         applyBordersToCells();
+        contentPane.sceneProperty().addListener((observable, oldScene, newScene) -> {
+            if (newScene != null) {
+                adjustLayout();
+            }
+        });
     }
 
+    private void adjustLayout() {
+        // Dynamically adjust contentPane size based on the Scene
+        Scene scene = contentPane.getScene();
+        if (scene != null) {
+            contentPane.setPrefWidth(scene.getWidth() - 20);
+            contentPane.setPrefHeight(scene.getHeight() - 60);
+
+            // Optional: Add listeners to dynamically adjust on window resize
+            scene.widthProperty().addListener((obs, oldWidth, newWidth) ->
+                    contentPane.setPrefWidth(newWidth.doubleValue() - 20)
+            );
+            scene.heightProperty().addListener((obs, oldHeight, newHeight) ->
+                    contentPane.setPrefHeight(newHeight.doubleValue() - 20)
+            );
+        }
+    }
     private void changeMonth(int offset) {
         YearMonth newMonth = currentMonth.plusMonths(offset);
         int newYear = newMonth.getYear();
@@ -155,7 +182,7 @@ public class WeeklyOverviewController {
         ColumnConstraints employeeColumn = new ColumnConstraints();
         employeeColumn.setMinWidth(EMPLOYEE_WIDTH);
         employeeColumn.setPrefWidth(EMPLOYEE_WIDTH);
-        employeeColumn.setMaxWidth(EMPLOYEE_WIDTH);
+        employeeColumn.setHgrow(Priority.NEVER);
         gridPane.getColumnConstraints().add(employeeColumn);
 
         // Week columns
@@ -163,7 +190,7 @@ public class WeeklyOverviewController {
             ColumnConstraints weekColumn = new ColumnConstraints();
             weekColumn.setMinWidth(WEEK_WIDTH);
             weekColumn.setPrefWidth(WEEK_WIDTH);
-            weekColumn.setMaxWidth(WEEK_WIDTH);
+            weekColumn.setHgrow(Priority.NEVER);
             gridPane.getColumnConstraints().add(weekColumn);
         }
     }
@@ -171,6 +198,14 @@ public class WeeklyOverviewController {
     // Loads the GridPane
     private void loadGridPane(int year) {
         gridPane.getChildren().clear();
+
+        scrollPane.setContent(gridPane);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        contentPane.getChildren().add(scrollPane);
 
         // Adds week labels
         for (int col = 1; col <= NUM_WEEKS; col++) {

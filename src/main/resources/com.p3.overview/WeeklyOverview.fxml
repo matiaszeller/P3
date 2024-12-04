@@ -3,9 +3,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane styleClass="root" stylesheets="@../style.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.overview.WeeklyOverviewController">
+<AnchorPane fx:id="Weeklyroot" styleClass="root" stylesheets="@../style.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.overview.WeeklyOverviewController">
     <children>
-        <AnchorPane fx:id="contentPane" layoutX="10" layoutY="50" prefWidth="1550" prefHeight="750">
+        <AnchorPane fx:id="contentPane" styleClass="contentPane">
             <children>
                 <HBox spacing="10" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                     <children>
@@ -28,12 +28,11 @@
                                     <Label text="Fri" GridPane.columnIndex="4" style="-fx-font-weight: bold;" />
                                     <Label text="Sat" GridPane.columnIndex="5" style="-fx-font-weight: bold;" />
                                     <Label text="Sun" GridPane.columnIndex="6" style="-fx-font-weight: bold;" />
-
                                 </GridPane>
                             </VBox>
                             <!-- Buttons Section -->
                             <VBox spacing="10" alignment="CENTER" VBox.vgrow="ALWAYS">
-                                <Region minHeight="30"/>
+                                <Region minHeight="30" />
                                 <Button text="Dagligt Overblik" fx:id="dailyOverviewButton" styleClass="defaultButton" prefWidth="180" />
                                 <Button text="Ugentligt Overblik" fx:id="weeklyOverviewButton" styleClass="defaultButton" prefWidth="180" />
                                 <Button text="Rediger Ansatte" fx:id="editEmployeesButton" styleClass="defaultButton" prefWidth="180" />
@@ -44,9 +43,9 @@
                         </VBox>
 
                         <!-- Main Content Section -->
-                        <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" vbarPolicy="ALWAYS">
+                        <ScrollPane fx:id="scrollPane" fitToWidth="true" fitToHeight="true" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="0.0">
                             <content>
-                                <GridPane fx:id="gridPane"/>
+                                <GridPane fx:id="gridPane" />
                             </content>
                         </ScrollPane>
                     </children>
