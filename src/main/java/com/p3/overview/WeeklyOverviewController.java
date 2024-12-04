@@ -16,7 +16,8 @@ import java.time.temporal.WeekFields;
 import java.util.*;
 
 public class WeeklyOverviewController {
-
+    @FXML
+    public Button BackButton;
     @FXML
     private GridPane gridPane;
 
@@ -69,7 +70,7 @@ public class WeeklyOverviewController {
         weeklyOverviewButton.setOnAction(event -> handleWeeklyOverview());
         editEmployeesButton.setOnAction(event -> handleEditEmployees());
         exportDataButton.setOnAction(event -> handleExportData());
-
+        BackButton.setOnAction(event -> handleBackButton());
         currentMonth = YearMonth.now();
         generateCalendar(currentMonth);
 
@@ -340,6 +341,10 @@ public class WeeklyOverviewController {
             }
         }
         return null;
+    }
+    private void handleBackButton() {
+        Stage stage = (Stage) BackButton.getScene().getWindow();
+        WeeklyOverviewService.loadMenuPage(stage);
     }
 
     private void handleDateClick(LocalDate date) {

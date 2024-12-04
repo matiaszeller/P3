@@ -40,7 +40,7 @@
          <!-- Bottom section with button -->
          <bottom>
             <HBox alignment="BOTTOM_LEFT" spacing="40.0">
-               <Button fx:id="tilbage" styleClass="defaultButton" text="Tilbage"/>
+               <Button fx:id="BackButton" styleClass="defaultButton" text="Tilbage" prefWidth="180"/>
             </HBox>
          </bottom>
       </BorderPane>

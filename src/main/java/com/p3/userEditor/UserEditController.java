@@ -1,5 +1,6 @@
 package com.p3.userEditor;
 
+import com.p3.overview.WeeklyOverviewService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -35,7 +36,7 @@ public class UserEditController {
     private PasswordField secondPasswordField;
 
     @FXML
-    private Button tilbage;
+    private Button BackButton;
 
     @FXML
     Button submitBtn;
@@ -74,9 +75,8 @@ public class UserEditController {
                 updateUserDetails(newValue);
             }
         });
-
         submitBtn.setOnAction(event -> saveChanges());
-        tilbage.setOnAction(event -> goBack());
+        BackButton.setOnAction(event -> handleBackButton());
         newUserBtn.setOnAction(event -> newUser());
     }
 
@@ -147,8 +147,9 @@ public class UserEditController {
         }
     }
 
-    private void goBack() {
-        loadMenuPage();
+    private void handleBackButton() {
+        Stage stage = (Stage) BackButton.getScene().getWindow();
+        UserEditService.loadMenuPage(stage);
     }
     private void newUser() {
         Stage modalStage = new Stage();
@@ -263,20 +264,5 @@ public class UserEditController {
         modalStage.setScene(scene);
         modalStage.setResizable(false);
         modalStage.showAndWait();
-    }
-
-    //todo for some reason, i cant call the method in the login controller, so i've implemented it again. needs to be fixed
-    private void loadMenuPage() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com.p3.menu/MenuPage.fxml"));
-            Stage stage = (Stage) tilbage.getScene().getWindow();
-            double width = stage.getWidth();
-            double height = stage.getHeight();
-            Scene scene = new Scene(fxmlLoader.load(), width, height);
-            stage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 }
