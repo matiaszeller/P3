@@ -6,8 +6,12 @@ import org.mindrot.jbcrypt.BCrypt;
 public class LoginService {
     private final LoginDAO loginDAO = new LoginDAO();
 
+    public String setUserRole(String username) {
+        return  loginDAO.getUserRole(username);
+    }
     public String validateUser(String username){
         return loginDAO.getUserRole(username);
+
     }
 
     public boolean validateManager(String username, String password) {

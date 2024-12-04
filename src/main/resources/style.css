@@ -24,12 +24,19 @@
     -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #FFFFFF, #EAF2EF);
     -fx-alignment: center;
 }
+
+.scroll-pane .right-pane {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #FFFFFF, #EAF2EF);
+    -fx-border-color: blue;
+
+
 .leftDailyManagerBox{
     -fx-alignment: TOP-CENTER;
     -fx-border-color: #000000;
     -fx-background-color: #f2f2f2;
     -fx-padding: 10;
     -fx-fill-height: 100%;
+
 }
 
 /* Welcome Text */

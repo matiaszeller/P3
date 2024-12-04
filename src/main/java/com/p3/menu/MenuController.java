@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 public class MenuController {
 
@@ -30,7 +31,11 @@ public class MenuController {
     @FXML
     private Button breakButton;
     @FXML
+
+    private Button adminButton;
+
     private Button historyButton;
+
     @FXML
     private Label clock;
     @FXML
@@ -40,6 +45,8 @@ public class MenuController {
     @FXML
     private Button managerButton;
 
+
+    private final MenuDAO menuDAO = new MenuDAO();
     private final MenuService menuService = new MenuService();
 
 
@@ -50,8 +57,17 @@ public class MenuController {
         endShiftButton.setOnAction(event -> handleEndShift());
         logOutButton.setOnAction(event -> handleLogOut());
         breakButton.setOnAction(event -> handleBreakButton());
+        adminButton.setOnAction(event -> handleAdminButton());
+        if (!Objects.equals(Session.getRole(), "manager")){
+            adminButton.setDisable(true);
+        } else {adminButton.setDisable(false);}
+
+
+
+
         managerButton.setOnAction(event -> handleOnPressManager());
         historyButton.setOnAction(event -> loadEmployeeHistoryPage());
+
         initializeClock();
         loadDailyEvents();
         initializeWelcomeText();
@@ -156,6 +172,10 @@ public class MenuController {
         }
 
         loadDailyEvents();
+    }
+    private void handleAdminButton() {
+        Stage stage = (Stage) adminButton.getScene().getWindow();
+        MenuService.loadAdminPage(stage);
     }
 
     private void loadDailyEvents() {

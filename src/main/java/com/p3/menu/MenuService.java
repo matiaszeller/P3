@@ -173,4 +173,16 @@ public class MenuService {
         String response = menuDao.noteExistsForDate(userId, missedShiftDate);
         return Boolean.parseBoolean(response);
     }
+    public static void loadAdminPage(Stage stage) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(MenuService.class.getResource("/com.p3.administration/EditUserPage.fxml"));
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            Scene scene = new Scene(fxmlLoader.load(), width, height);
+            stage.setScene(scene);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
