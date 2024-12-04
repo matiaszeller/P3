@@ -31,13 +31,14 @@
                                 </GridPane>
                             </VBox>
                             <!-- Buttons Section -->
-                            <VBox spacing="10" alignment="CENTER" VBox.vgrow="ALWAYS">
+                            <VBox spacing="20" alignment="CENTER" VBox.vgrow="ALWAYS">
                                 <Region minHeight="30" />
                                 <Button text="Dagligt Overblik" fx:id="dailyOverviewButton" styleClass="defaultButton" prefWidth="180" />
                                 <Button text="Ugentligt Overblik" fx:id="weeklyOverviewButton" styleClass="defaultButton" prefWidth="180" />
                                 <Button text="Rediger Ansatte" fx:id="editEmployeesButton" styleClass="defaultButton" prefWidth="180" />
                                 <Button text="Eksporter Data" fx:id="exportDataButton" styleClass="defaultButton" prefWidth="180" />
                                 <Region VBox.vgrow="ALWAYS" />
+                                <Button fx:id="BackButton" styleClass="defaultButton" text="Tilbage" prefWidth="180"/>
                                 <Button text="Log Ud" fx:id="logOutButton" styleClass="defaultButton" prefWidth="180" />
                             </VBox>
                         </VBox>

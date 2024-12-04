@@ -83,11 +83,10 @@ public class ManagerDailyController {
     @FXML
     public void initialize() {
         managerLogOutButton.setOnAction(event -> handleLogOut());
-        dailyOverviewButton.setOnAction(event -> handleDailyOverview());
         weeklyOverviewButton.setOnAction(event -> handleWeeklyOverview());
         editEmployeesButton.setOnAction(event -> handleEditEmployees());
         exportDataButton.setOnAction(event -> handleExportData());
-
+        handleDailyOverview();
         currentMonth = YearMonth.now();
         generateCalendar(currentMonth);
         generateTimelogBoxes(LocalDate.now(), 30);
@@ -610,7 +609,7 @@ public class ManagerDailyController {
         ManagerDailyService.loadLoginPage(stage);
     }
     private void handleDailyOverview() {
-        //Ny side skal loades
+        dailyOverviewButton.getStyleClass().add("managerSelectedBox");
     }
     private void handleWeeklyOverview() {
         Stage stage = (Stage) weeklyOverviewButton.getScene().getWindow();

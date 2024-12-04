@@ -2,6 +2,7 @@ package com.p3.userEditor;
 
 import com.p3.menu.MenuService;
 import com.p3.session.Session;
+import com.p3.overview.WeeklyOverviewService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

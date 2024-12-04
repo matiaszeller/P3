@@ -489,3 +489,7 @@
 .managerDailyButtons:pressed {
     -fx-background-color: #8e8e8e;
 }
+
+.managerSelectedBox {
+    -fx-background-color: #20C997;
+}

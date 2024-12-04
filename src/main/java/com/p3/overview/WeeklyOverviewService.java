@@ -68,4 +68,16 @@ public class WeeklyOverviewService {
             e.printStackTrace();
         }
     }
+    public static void loadMenuPage(Stage stage) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(WeeklyOverviewService.class.getResource("/com.p3.menu/MenuPage.fxml"));
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            Scene scene = new Scene(fxmlLoader.load(), width, height);
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
