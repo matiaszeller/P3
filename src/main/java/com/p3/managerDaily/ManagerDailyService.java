@@ -143,6 +143,18 @@ public class ManagerDailyService {
         org.json.JSONObject json = new org.json.JSONObject(jsonResponse);
         return json.getString("full_name");
     }
+    public void loadAdminPage(Stage stage) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(ManagerDailyService.class.getResource("/com.p3.administration/EditUserPage.fxml"));
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            Scene scene = new Scene(fxmlLoader.load(), width, height);
+            stage.setScene(scene);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     }
 

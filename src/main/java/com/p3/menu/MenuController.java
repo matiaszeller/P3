@@ -55,10 +55,9 @@ public class MenuController {
         endShiftButton.setOnAction(event -> handleEndShift());
         logOutButton.setOnAction(event -> handleLogOut());
         breakButton.setOnAction(event -> handleBreakButton());
-        adminButton.setOnAction(event -> handleAdminButton());
         if (!Objects.equals(Session.getRole(), "manager")){
-            adminButton.setDisable(true);
-        } else {adminButton.setDisable(false);}
+            managerButton.setDisable(true);
+        } else {managerButton.setDisable(false);}
 
         managerButton.setOnAction(event -> handleOnPressManager());
         historyButton.setOnAction(event -> loadEmployeeHistoryPage());
@@ -167,10 +166,6 @@ public class MenuController {
         }
 
         loadDailyEvents();
-    }
-    private void handleAdminButton() {
-        Stage stage = (Stage) adminButton.getScene().getWindow();
-        MenuService.loadAdminPage(stage);
     }
 
     private void loadDailyEvents() {

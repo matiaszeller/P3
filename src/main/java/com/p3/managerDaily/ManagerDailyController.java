@@ -1,5 +1,6 @@
 package com.p3.managerDaily;
 
+import com.p3.menu.MenuService;
 import com.p3.session.Session;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -614,7 +615,8 @@ public class ManagerDailyController {
         //Ny side skal loades
     }
     private void handleEditEmployees() {
-        //Ny side skal loades
+        Stage stage = (Stage) editEmployeesButton.getScene().getWindow();
+        service.loadAdminPage(stage);
     }
     private void handleExportData() {
         // Modal
