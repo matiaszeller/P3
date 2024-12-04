@@ -49,6 +49,7 @@ public class MenuController {
     private final MenuDAO menuDAO = new MenuDAO();
     private final MenuService menuService = new MenuService();
 
+
     private LocalDateTime currentDateTime;
 
     @FXML
@@ -56,15 +57,16 @@ public class MenuController {
         endShiftButton.setOnAction(event -> handleEndShift());
         logOutButton.setOnAction(event -> handleLogOut());
         breakButton.setOnAction(event -> handleBreakButton());
-
         adminButton.setOnAction(event -> handleAdminButton());
         if (!Objects.equals(Session.getRole(), "manager")){
             adminButton.setDisable(true);
         } else {adminButton.setDisable(false);}
 
 
-        historyButton.setOnAction(event -> loadEmployeeHistoryPage());
 
+
+        managerButton.setOnAction(event -> handleOnPressManager());
+        historyButton.setOnAction(event -> loadEmployeeHistoryPage());
 
         initializeClock();
         loadDailyEvents();
@@ -239,6 +241,21 @@ public class MenuController {
             breakButton.setText("Start Pause");
         }
     }
+
+    private void loadManagerPage() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("com/p3/managerDaily/ManagerDaily.fxml"));
+            Stage stage = (Stage) managerButton.getScene().getWindow();
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            Scene scene = new Scene(loader.load(), width, height);
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void handleOnPressManager(){
+        loadManagerPage(); //xD
 
     private void getMissedCheckout() {
         int userId = Session.getCurrentUserId();
