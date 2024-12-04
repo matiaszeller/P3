@@ -89,6 +89,7 @@ public class UserEditController {
                     secondPasswordField.visibleProperty().set(false);
                     PassText.visibleProperty().set(false);
                     secPassText.visibleProperty().set(false);
+
                 }
                 else{passwordField.visibleProperty().set(true);
                     secondPasswordField.visibleProperty().set(true);
@@ -104,6 +105,7 @@ public class UserEditController {
             nameField.setText(selectedUser.getUsername());
             passwordField.setText(selectedUser.getPassword());
             roleChoiceBox.getSelectionModel().select(selectedUser.getRole());
+            if(selectedUser.getRole().equals("employee")){ roleChoiceBox.setValue("medarbejder"); }
             lastNameField.setText(selectedUser.getFullName());
 
         }
@@ -128,7 +130,7 @@ public class UserEditController {
                 case "deaktiver":
                     selectedUser.setRole("deaktiverede");
                     break;
-                case "employee":
+                case "medarbejder":
                     selectedUser.setRole("employee");
                     break;
                 default:
@@ -227,7 +229,7 @@ public class UserEditController {
             }
 
             String password = null;
-            if (!role.equals("employee")) {
+            if (role.equals("manager")) {
                 password = passwordField.getText();
                 String confirmPassword = confirmPasswordField.getText();
 
