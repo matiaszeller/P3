@@ -39,7 +39,7 @@
                <Button fx:id="dailyOverviewButton" styleClass="defaultButton" text="Dagligt Overblik"/>
                <Button fx:id="weeklyOverviewButton" styleClass="defaultButton" text="Ugentligt Overblik"/>
                <Button fx:id="logoutButton" styleClass="defaultButton" text="Log ud"/>
-               <Button fx:id="tilbageButton" styleClass="defaultButton" text="Tilbage"/>
+               <Button fx:id="tilbageButton" styleClass="defaultButton" text="Tilbage til hoved menu"/>
             </VBox>
          </bottom>
       </BorderPane>

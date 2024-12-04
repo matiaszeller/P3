@@ -54,6 +54,7 @@ public class UserEditService {
     public boolean createUser(User user) {
         return UserEditDAO.createUser(user);
     }
+
     static void loadMenuPage(Stage stage) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(UserEditService.class.getResource("/com.p3.menu/MenuPage.fxml"));
@@ -65,4 +66,5 @@ public class UserEditService {
             e.printStackTrace();
         }
     }
+
 }

@@ -276,19 +276,7 @@ public class UserEditController {
     }
 
     //todo for some reason, i cant call the method in the login controller, so i've implemented it again. needs to be fixed
-    private void loadMenuPage() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com.p3.menu/MenuPage.fxml"));
-            Stage stage = (Stage) tilbageButton.getScene().getWindow();
-            double width = stage.getWidth();
-            double height = stage.getHeight();
-            Scene scene = new Scene(fxmlLoader.load(), width, height);
-            stage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-    }
     private void handleWeeklyPage(){
         System.out.println("Missing feature");
     }
@@ -301,6 +289,7 @@ public class UserEditController {
         MenuService.loadLoginPage(stage);
     }
     private void goBack() {
-        loadMenuPage();
+        Stage stage = (Stage) tilbageButton.getScene().getWindow();
+       UserEditService.loadMenuPage(stage);
     }
 }
