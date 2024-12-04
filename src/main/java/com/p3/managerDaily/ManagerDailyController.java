@@ -90,7 +90,7 @@ public class ManagerDailyController {
 
         currentMonth = YearMonth.now();
         generateCalendar(currentMonth);
-        generateTimelogBoxes(LocalDate.now(), 50);
+        generateTimelogBoxes(LocalDate.now(), 30);
 
         // Add navigation button actions
         prevMonthButton.setOnAction(event -> changeMonth(-1));
@@ -158,6 +158,7 @@ public class ManagerDailyController {
     }
 
     public void generateTimelogBoxes(LocalDate startDate, int daysCount) {
+        centerPanel.getChildren().clear();
 
         if (scrollPane == null) {
             scrollPane = new ScrollPane(); // Initialize only if it's not already initialized
@@ -612,7 +613,8 @@ public class ManagerDailyController {
         //Ny side skal loades
     }
     private void handleWeeklyOverview() {
-        //Ny side skal loades
+        Stage stage = (Stage) weeklyOverviewButton.getScene().getWindow();
+        service.loadWeeklyPage(stage);
     }
     private void handleEditEmployees() {
         Stage stage = (Stage) editEmployeesButton.getScene().getWindow();
