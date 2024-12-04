@@ -254,9 +254,9 @@ public class MenuController {
             e.printStackTrace();
         }
     }
-    private void handleOnPressManager(){
+    private void handleOnPressManager() {
         loadManagerPage(); //xD
-
+    }
     private void getMissedCheckout() {
         int userId = Session.getCurrentUserId();
         Event lastCheckOutEvent = menuService.getLastCheckOutEvent(userId);

@@ -17,7 +17,7 @@ public class ManagerDailyDAO {
         String url = "timelog/getTimelogsByDate?date=" + date;
 
 
-        HttpResponse response = api.get(url, null);
+        HttpResponse response = api.get(url, null, true);
 
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -32,7 +32,7 @@ public class ManagerDailyDAO {
     }
     public String getUserFullNameById(int user_id) {
         String url = "user/fullNameId/" + user_id;
-        HttpResponse response = api.get(url, null);
+        HttpResponse response = api.get(url, null, true);
 
         return (String) response.body();
     }
