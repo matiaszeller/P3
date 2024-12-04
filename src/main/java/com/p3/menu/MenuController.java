@@ -31,11 +31,9 @@ public class MenuController {
     @FXML
     private Button breakButton;
     @FXML
-
     private Button adminButton;
-
+    @FXML
     private Button historyButton;
-
     @FXML
     private Label clock;
     @FXML
@@ -61,9 +59,6 @@ public class MenuController {
         if (!Objects.equals(Session.getRole(), "manager")){
             adminButton.setDisable(true);
         } else {adminButton.setDisable(false);}
-
-
-
 
         managerButton.setOnAction(event -> handleOnPressManager());
         historyButton.setOnAction(event -> loadEmployeeHistoryPage());
