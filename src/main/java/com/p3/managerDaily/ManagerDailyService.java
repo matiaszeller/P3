@@ -33,9 +33,6 @@ public class ManagerDailyService {
             e.printStackTrace();
         }
     }
-    public static void setTimelogs(List<Map<String, Object>> logs) {
-        timelogs = logs;
-    }
 
         public void loadTimelogsForRange(LocalDate startDate, int daysCount) {
             timelogs.clear();
@@ -52,31 +49,6 @@ public class ManagerDailyService {
             return timelogs;
         }
 
-        public List<Map<String, Object>> fetchTimelogs(LocalDate date) {
-
-        return dao.getTimelogsForDate(date);
-    }
-
-        public static String getEventForHour(Integer userId, int hour) {
-            for (Map<String, Object> log : timelogs) {
-                Integer logUserId = (Integer) log.get("user_id");
-                if (logUserId.equals(userId)) {
-
-                    String eventTimeStr = (String) log.get("event_time");
-                    try {
-
-                        LocalDateTime eventTime = LocalDateTime.parse(eventTimeStr);
-                        int logHour = eventTime.getHour();
-                        if (logHour == hour) {
-                            return (String) log.get("event_type");
-                        }
-                    } catch (Exception e) {
-                        System.err.println("Error parsing event time: " + eventTimeStr);
-                    }
-                }
-            }
-            return "No Event";
-        }
 
     public int getEarliestTime(LocalDate date) {
         int earliestCheckInHour = Integer.MAX_VALUE;

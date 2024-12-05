@@ -38,7 +38,13 @@ public class UserEditController {
     private PasswordField secondPasswordField;
 
     @FXML
-    private Button tilbageButton;
+    private Button BackButton;
+
+    @FXML
+    private Button editEmployeesButton;
+
+    @FXML
+    private Button exportDataButton;
 
     @FXML
     private Button weeklyOverviewButton;
@@ -47,7 +53,7 @@ public class UserEditController {
     private Button dailyOverviewButton;
 
     @FXML
-    private Button logoutButton;
+    private Button logOutButton;
 
     @FXML
     Button submitBtn;
@@ -88,9 +94,11 @@ public class UserEditController {
 
         dailyOverviewButton.setOnAction(event -> handleDailyPage());
         weeklyOverviewButton.setOnAction(event -> handleWeeklyPage());
-        logoutButton.setOnAction(event -> handleLogout());
+        handleEditEmployee();
+        exportDataButton.setOnAction(event -> handleExportData());
+        logOutButton.setOnAction(event -> handleLogout());
         submitBtn.setOnAction(event -> saveChanges());
-        tilbageButton.setOnAction(event -> goBack());
+        BackButton.setOnAction(event -> goBack());
         newUserBtn.setOnAction(event -> newUser());
     }
 
@@ -277,19 +285,27 @@ public class UserEditController {
 
     //todo for some reason, i cant call the method in the login controller, so i've implemented it again. needs to be fixed
 
-    private void handleWeeklyPage(){
-        System.out.println("Missing feature");
+    private void handleWeeklyPage() {
+        Stage stage = (Stage) weeklyOverviewButton.getScene().getWindow();
+        infoService.loadWeeklyPage(stage);
     }
     private void handleDailyPage(){
-        System.out.println("Missing feature");
+        Stage stage = (Stage) dailyOverviewButton.getScene().getWindow();
+        infoService.loadManagerDailyPage(stage);
+    }
+    private void handleEditEmployee(){
+        editEmployeesButton.getStyleClass().add("managerSelectedBox");
+    }
+    private void handleExportData(){
+        // Modal Saka
     }
     private void handleLogout(){
         Session.clearSession();
-        Stage stage = (Stage) logoutButton.getScene().getWindow();
-        MenuService.loadLoginPage(stage);
+        Stage stage = (Stage) logOutButton.getScene().getWindow();
+        infoService.loadLoginPage(stage);
     }
     private void goBack() {
-        Stage stage = (Stage) tilbageButton.getScene().getWindow();
-       UserEditService.loadMenuPage(stage);
+        Stage stage = (Stage) BackButton.getScene().getWindow();
+       infoService.loadMenuPage(stage);
     }
 }

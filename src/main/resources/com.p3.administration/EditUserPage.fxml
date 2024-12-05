@@ -14,35 +14,33 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.BorderPane?>
 
+<?import javafx.scene.layout.Region?>
 <AnchorPane styleClass="root" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.p3.userEditor.UserEditController">
    <!-- SplitPane occupies the entire AnchorPane -->
    <SplitPane dividerPositions="0.3" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" styleClass="root">
       <!-- Left Pane -->
-      <BorderPane>
-         <padding>
-            <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
-         </padding>
-         <!-- Center section with label and choice box -->
-         <center>
-            <VBox spacing="20.0">
+         <VBox fx:id="leftDailyManagerBox" alignment="TOP_CENTER" prefWidth="200" styleClass="leftDailyManagerBox">
+            <!-- Calendar Section -->
+            <VBox spacing="5" alignment="TOP_CENTER">
                <Label text="Vælg medarbejder:"/>
-               <ChoiceBox fx:id="choiceBox" prefWidth="200.0"/>
-            </VBox>
-
-         </center>
-         <!-- Bottom section with button -->
-         <bottom>
-            <VBox alignment="BOTTOM_LEFT" spacing="40.0">
+               <ChoiceBox fx:id="choiceBox" prefWidth="180"/>
                <Button fx:id="newUserBtn" styleClass="confirmButton" text="Tilføj ny bruger"/>
-               <Button fx:id="dailyOverviewButton" styleClass="defaultButton" text="Dagligt Overblik"/>
-               <Button fx:id="weeklyOverviewButton" styleClass="defaultButton" text="Ugentligt Overblik"/>
-               <Button fx:id="logoutButton" styleClass="defaultButton" text="Log ud"/>
-               <Button fx:id="tilbageButton" styleClass="defaultButton" text="Tilbage til hoved menu"/>
             </VBox>
-         </bottom>
-      </BorderPane>
+            <VBox spacing="20" alignment="CENTER" VBox.vgrow="ALWAYS">
+               <!-- Buttons -->
+               <Button text="Dagligt Overblik" fx:id="dailyOverviewButton" styleClass="defaultButton" prefWidth="180" />
+               <Button text="Ugentligt Overblik" fx:id="weeklyOverviewButton" styleClass="defaultButton" prefWidth="180" />
+               <Button text="Rediger Ansatte" fx:id="editEmployeesButton" styleClass="defaultButton" prefWidth="180" />
+               <Button text="Eksporter Data" fx:id="exportDataButton" styleClass="defaultButton" prefWidth="180" />
+            </VBox>
+            <Region style="-fx-pref-height: 40"/>
+            <VBox spacing="20" alignment="BOTTOM_CENTER">
+               <Button fx:id="BackButton" styleClass="defaultButton" text="Tilbage" prefWidth="180"/>
+               <Button text="Log Ud" fx:id="logOutButton" prefWidth="180" styleClass="defaultButton" />
+            </VBox>
+         </VBox>
 
       <!-- Right Pane -->
       <ScrollPane styleClass="right-pane">
