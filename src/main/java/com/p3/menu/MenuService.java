@@ -1,6 +1,7 @@
 package com.p3.menu;
 
 import com.p3.event.Event;
+import com.p3.managerDaily.ManagerDailyService;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -172,5 +173,16 @@ public class MenuService {
     public boolean checkIfNoteExists(int userId, LocalDate missedShiftDate) {
         String response = menuDao.noteExistsForDate(userId, missedShiftDate);
         return Boolean.parseBoolean(response);
+    }
+    public static void loadManagerPage(Stage stage) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(MenuService.class.getResource("/com.p3.managerDaily/ManagerDaily.fxml"));
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            Scene scene = new Scene(fxmlLoader.load(), width, height);
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.p3.menu;
 
 import com.p3.event.Event;
 import com.p3.instance.AppInstance;
+import com.p3.overview.WeeklyOverviewService;
 import com.p3.session.Session;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 public class MenuController {
 
@@ -29,6 +31,8 @@ public class MenuController {
     private Button logOutButton;
     @FXML
     private Button breakButton;
+    @FXML
+    private Button adminButton;
     @FXML
     private Button historyButton;
     @FXML
@@ -40,7 +44,10 @@ public class MenuController {
     @FXML
     private Button managerButton;
 
+
+    private final MenuDAO menuDAO = new MenuDAO();
     private final MenuService menuService = new MenuService();
+
 
     private LocalDateTime currentDateTime;
 
@@ -49,6 +56,11 @@ public class MenuController {
         endShiftButton.setOnAction(event -> handleEndShift());
         logOutButton.setOnAction(event -> handleLogOut());
         breakButton.setOnAction(event -> handleBreakButton());
+        if (!Objects.equals(Session.getRole(), "manager")){
+            managerButton.setDisable(true);
+        } else {managerButton.setDisable(false);}
+
+        managerButton.setOnAction(event -> handleOnPressManager());
         historyButton.setOnAction(event -> loadEmployeeHistoryPage());
 
         initializeClock();
@@ -221,6 +233,10 @@ public class MenuController {
         }
     }
 
+    private void handleOnPressManager() {
+        Stage stage = (Stage) managerButton.getScene().getWindow();
+        menuService.loadManagerPage(stage);
+    }
     private void getMissedCheckout() {
         int userId = Session.getCurrentUserId();
         Event lastCheckOutEvent = menuService.getLastCheckOutEvent(userId);
