@@ -283,7 +283,6 @@ public class UserEditController {
         modalStage.showAndWait();
     }
 
-    //todo for some reason, i cant call the method in the login controller, so i've implemented it again. needs to be fixed
 
     private void handleWeeklyPage() {
         Stage stage = (Stage) weeklyOverviewButton.getScene().getWindow();

@@ -231,7 +231,6 @@ public class LoginController {
 
         PauseTransition timer = new PauseTransition(Duration.seconds(5));
         timer.setOnFinished(event -> LogoutAndClose(modalStage));
-        //todo J: This might inadvertently create a memory leak, but i dont care right now.
         menu.setOnAction(event -> { progressAnimation.stop(); timer.stop(); MenuAndClose(modalStage); });
         logout.setOnAction(event -> {LogoutAndClose(modalStage);});
         progressAnimation.play();
