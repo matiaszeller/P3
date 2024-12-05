@@ -34,6 +34,8 @@ public class ManagerDailyController {
 
     private Map<LocalDate, TitledPane> dayPaneMap = new HashMap<>();
 
+    private Map<LocalDate, Map<Integer, VBox>> timelogBoxMap = new HashMap<>();
+
     private ScrollPane scrollPane;
 
     private LocalDate lastLoadedDate = null;
@@ -82,15 +84,16 @@ public class ManagerDailyController {
 
     private LocalDateTime originalTime = null;
 
-
+    private VBox timelogBox = new VBox();
 
     @FXML
     public void initialize() {
+        resetVariables();
         managerLogOutButton.setOnAction(event -> handleLogOut());
         weeklyOverviewButton.setOnAction(event -> handleWeeklyOverview());
         editEmployeesButton.setOnAction(event -> handleEditEmployees());
         exportDataButton.setOnAction(event -> handleExportData());
-        BackButton.setOnAction(event -> {});
+        BackButton.setOnAction(event -> handleBackButton());
         handleDailyOverview();
         currentMonth = YearMonth.now();
         generateCalendar(currentMonth);
@@ -99,6 +102,7 @@ public class ManagerDailyController {
         // Add navigation button actions
         prevMonthButton.setOnAction(event -> changeMonth(-1));
         nextMonthButton.setOnAction(event -> changeMonth(1));
+
     }
 
     private void changeMonth(int offset) {
@@ -107,6 +111,10 @@ public class ManagerDailyController {
 
     }
 
+    private void resetVariables() {
+        dayPaneMap.clear();
+        lastLoadedDate = null;
+    }
 
     public void generateCalendar(YearMonth yearMonth) {
         calendarGrid.getChildren().clear();
@@ -179,6 +187,7 @@ public class ManagerDailyController {
         List<Map<String, Object>> timelogs = ManagerDailyService.getTimelogs();
 
         for (int i = 0; i < daysCount; i++) {
+
             LocalDate currentDate = startDate.minusDays(i);
             generateTimelogBox(currentDate, timelogs);
         }
@@ -206,6 +215,8 @@ public class ManagerDailyController {
                 })
                 .collect(Collectors.groupingBy(timelog -> (Integer) timelog.getOrDefault("user_id", 0)));
 
+        timelogBoxMap.putIfAbsent(date, new HashMap<>());
+        Map<Integer, VBox> userTimelogBoxes = timelogBoxMap.get(date);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH);
         String formattedDate = date.format(formatter);
@@ -214,10 +225,9 @@ public class ManagerDailyController {
         dayPane.setText(formattedDate);
         dayPane.getStyleClass().add("collapseDateBox");
         dayPane.setExpanded(false);
-
         VBox employeeRows = new VBox();
         employeeRows.setSpacing(15);
-
+        // Debug: Check if the dayPaneMap already contains the date
         for (Map.Entry<Integer, List<Map<String, Object>>> entry : timelogsByUserId.entrySet()) {
             Integer userId = entry.getKey();
             List<Map<String, Object>> userTimelogs = entry.getValue();
@@ -235,11 +245,10 @@ public class ManagerDailyController {
             fullNameText.getStyleClass().add("managerDailyFullName");
             nameBox.getChildren().add(fullNameText);
 
-            VBox timelogBox = new VBox();
             timelogBox.setSpacing(2);
             timelogBox.setAlignment(Pos.CENTER_LEFT);
             timelogBox.setMaxWidth(Double.POSITIVE_INFINITY);
-
+            
             // Get start and end times for the user's shift
             int startTime = service.getEarliestTime(date);
             int endTime = service.getLatestTime(date);
@@ -259,6 +268,7 @@ public class ManagerDailyController {
             }));
 
             HBox hourlyBoxes = new HBox();
+
             // Tracks the current color
             String currentColor = "#F9F6EE";
             int index = 0;

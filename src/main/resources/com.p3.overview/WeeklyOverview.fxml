@@ -10,7 +10,7 @@
                 <HBox spacing="10" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                     <children>
                         <!-- Left VBox Section -->
-                        <VBox fx:id="leftDailyManagerBox" spacing="150" alignment="TOP_CENTER" prefWidth="200" styleClass="leftDailyManagerBox">
+                        <VBox fx:id="leftDailyManagerBox" spacing="100" alignment="TOP_CENTER" prefWidth="200" styleClass="leftDailyManagerBox">
                             <!-- Calendar Section -->
                             <VBox spacing="5" alignment="TOP_CENTER">
                                 <HBox spacing="10" alignment="TOP_CENTER">
