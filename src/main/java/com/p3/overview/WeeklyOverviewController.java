@@ -210,7 +210,9 @@ public class WeeklyOverviewController {
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
-        contentPane.getChildren().add(scrollPane);
+        if (!contentPane.getChildren().contains(scrollPane)) {
+            contentPane.getChildren().add(scrollPane);
+        }
 
         // Adds week labels
         for (int col = 1; col <= NUM_WEEKS; col++) {
@@ -223,15 +225,14 @@ public class WeeklyOverviewController {
 
         // Gets data and sets up rows for each user
         List<Map<String, Object>> timelogData = WeeklyOverviewService.getWeeklyTimelogs();
-
         System.out.println("Timelog Data: " + timelogData);
 
-        //To avoid NullPointerException
+        // To avoid NullPointerException
         if (timelogData == null) {
             timelogData = new ArrayList<>();
         }
 
-        //Keeps track of what row is connected to a user_id
+        // Keeps track of what row is connected to a user_id
         Map<Integer, Integer> userIdToRow = new HashMap<>();
         int currentRow = 1;
 
