@@ -90,7 +90,7 @@ public class ManagerDailyController {
         weeklyOverviewButton.setOnAction(event -> handleWeeklyOverview());
         editEmployeesButton.setOnAction(event -> handleEditEmployees());
         exportDataButton.setOnAction(event -> handleExportData());
-        BackButton.setOnAction(event -> {});
+        BackButton.setOnAction(event -> {handleBackButton();});
         handleDailyOverview();
         currentMonth = YearMonth.now();
         generateCalendar(currentMonth);
@@ -163,6 +163,7 @@ public class ManagerDailyController {
 
     public void generateTimelogBoxes(LocalDate startDate, int daysCount) {
         centerPanel.getChildren().clear();
+        centerPanel.getChildren().removeIf(node -> node instanceof TitledPane);
 
         if (scrollPane == null) {
             scrollPane = new ScrollPane(); // Initialize only if it's not already initialized
@@ -640,7 +641,7 @@ public class ManagerDailyController {
     }
     private void handleBackButton() {
         Stage stage = (Stage) BackButton.getScene().getWindow();
-        WeeklyOverviewService.loadMenuPage(stage);
+        service.loadMenuPage(stage);
     }
     private void handleDailyOverview() {
         dailyOverviewButton.getStyleClass().add("managerSelectedBox");

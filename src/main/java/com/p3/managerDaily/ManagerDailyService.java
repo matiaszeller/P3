@@ -168,7 +168,7 @@ public class ManagerDailyService {
             e.printStackTrace();
         }
     }
-    public static void loadMenuPage(Stage stage) {
+    public void loadMenuPage(Stage stage) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ManagerDailyService.class.getResource("/com.p3.menu/MenuPage.fxml"));
             double width = stage.getWidth();
