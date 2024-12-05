@@ -65,6 +65,7 @@ public class WeeklyOverviewController {
     private static final int NUM_WEEKS = 52;
     private static final int EMPLOYEE_WIDTH = 150;
     ManagerDailyService managerService = new ManagerDailyService();
+    WeeklyOverviewService weeklyOverviewService = new WeeklyOverviewService();
 
     @FXML
     public void initialize() {
@@ -368,7 +369,7 @@ public class WeeklyOverviewController {
 
     private void handleDailyOverview() {
         Stage stage = (Stage) dailyOverviewButton.getScene().getWindow();
-        WeeklyOverviewService.loadManagerDailyPage(stage);
+        weeklyOverviewService.loadManagerDailyPage(stage);
     }
 
     private void handleWeeklyOverview() {

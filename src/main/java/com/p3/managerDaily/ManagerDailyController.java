@@ -164,6 +164,7 @@ public class ManagerDailyController {
     public void generateTimelogBoxes(LocalDate startDate, int daysCount) {
         centerPanel.getChildren().clear();
         centerPanel.getChildren().removeIf(node -> node instanceof TitledPane);
+        dayPaneMap.clear();
 
         if (scrollPane == null) {
             scrollPane = new ScrollPane(); // Initialize only if it's not already initialized
@@ -176,8 +177,9 @@ public class ManagerDailyController {
         BorderPane root = BorderPaneOuter;
         root.setCenter(scrollPane);
 
-        ManagerDailyService.loadTimelogsForRange(startDate, daysCount);
-        List<Map<String, Object>> timelogs = ManagerDailyService.getTimelogs();
+        service.loadTimelogsForRange(startDate, daysCount);
+        List<Map<String, Object>> timelogs = service.getTimelogs();
+        System.out.println(timelogs.size());
 
         for (int i = 0; i < daysCount; i++) {
             LocalDate currentDate = startDate.minusDays(i);
