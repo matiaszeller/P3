@@ -72,8 +72,7 @@ public class NoteModalController {
             }
         });
 
-        inputTextButton.setOnAction(event -> {
-            postNoteObject();});
+        inputTextButton.setOnAction(event -> postNoteObject());
     }
 
     public void generateModal(JSONArray dayNotes, LocalDate date, int userId) {

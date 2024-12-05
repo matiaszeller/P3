@@ -631,3 +631,24 @@
     -fx-background-color: #009973;
 }
 
+.timelogModalTextField{
+    -fx-border-style: hidden;
+}
+
+.timelogModalConfigurationContainers{
+    -fx-background-color: transparent;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-border-width: 2;
+    -fx-border-color: lightgray;
+    -fx-padding: 5;
+    -fx-pref-width: 280;
+}
+
+.modalTimePicker{
+    -fx-background-color: lightgray;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-focus-color: transparent;
+}
+

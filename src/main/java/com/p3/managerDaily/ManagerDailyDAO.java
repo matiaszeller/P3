@@ -44,4 +44,10 @@ public class ManagerDailyDAO {
 
         return (String) response.body();
     }
+
+    public String getDayTimelogs(LocalDate date, int userId){
+        String url = "timelog/day?date=" + date + "&userId=" + userId;
+        HttpResponse response = api.get(url, null, true);
+        return (String) response.body();
+    }
 }
