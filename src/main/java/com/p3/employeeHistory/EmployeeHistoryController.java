@@ -203,7 +203,7 @@ public class EmployeeHistoryController {
         List<ShiftSequence> shiftSequences = generateShiftSequence(dayTimelogs);
         String currentStyleClass = shiftSequences.get(shiftSequenceIndex).styleClass;
         int remainingDuration = shiftSequences.get(shiftSequenceIndex).duration;
-
+        boolean isLastEvent = false;
 
         for (int i = 0; i < weeklyMaxAmountSingleShiftHours; i++) {
             LocalDateTime workingTime = firstTime.withHour(weeklyStartHour).plusHours(i);
@@ -220,23 +220,27 @@ public class EmployeeHistoryController {
                 hourBox.getChildren().add(minuteBox);
                 remainingDuration--;
 
+                if(shiftSequenceIndex == shiftSequences.size() - 2) {
+                    isLastEvent = true;
+                }
+
 
                 switch (shiftSequences.get(shiftSequenceIndex).getSequenceType()) {
                     case "check_in" -> {
                         if (remainingDuration == shiftSequences.get(shiftSequenceIndex).getDuration() - 1) {
-                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs);
+                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs, isLastEvent);
                         }
                     }
                     case "break_end" -> {
                         if (remainingDuration == 2) {
-                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs);
+                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs, isLastEvent);
                         }
                     }
                     case "break_start" ->
-                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs);
+                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs, isLastEvent);
                     case "check_out" -> {
                         if(shiftSequences.get(shiftSequenceIndex).getEdited() && remainingDuration == 2){
-                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs);
+                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs, isLastEvent);
                         }
                     }
                 }
@@ -421,16 +425,23 @@ public class EmployeeHistoryController {
             if (startTime.getHour() < weeklyStartHour) {
                 weeklyStartHour = startTime.getHour();
             }
-            if (endTime.getHour() > weeklyEndHour && !(endTime.getHour() == 23 && endTime.getMinute() == 59)) {
-                weeklyEndHour = endTime.getHour();
+            if (endTime.getHour() >= weeklyEndHour && !(endTime.getHour() == 23 && endTime.getMinute() == 59)) {
+                weeklyEndHour = endTime.getHour() + 1;
             }
 
             weeklyMaxAmountSingleShiftHours = weeklyEndHour - weeklyStartHour + 1;
         }
+
+        if(weeklyEndHour > 23){
+            weeklyEndHour = 23;
+        }
+        if (weeklyStartHour < 1) {
+            weeklyStartHour = 1;
+        }
     }
 
-    private void createSequenceLabel(StackPane hourBoxContainer, ShiftSequence shiftSequence, List<String> editedTimelogs) {
-        Label label = createLabel("shiftSequenceLabel", employeeHistoryService.setStringForShiftSequenceLabel(shiftSequence, editedTimelogs));
+    private void createSequenceLabel(StackPane hourBoxContainer, ShiftSequence shiftSequence, List<String> editedTimelogs, boolean isLastEvent) {
+        Label label = createLabel("shiftSequenceLabel", employeeHistoryService.setStringForShiftSequenceLabel(shiftSequence, editedTimelogs, isLastEvent));
         label.setId("shiftSequenceLabel");
         label.setWrapText(true);
         hourBoxContainer.getChildren().add(label);
