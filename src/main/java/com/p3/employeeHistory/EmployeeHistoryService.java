@@ -14,11 +14,16 @@ import java.util.List;
 
 public class EmployeeHistoryService {
     EmployeeHistoryDAO employeeHistoryDAO = new EmployeeHistoryDAO();
+    boolean breakLabelHasBeenAdded = false;
 
     // Return list of lists - Each list contains all timelogs for a day. Allows for looping through each day (no more than 7) and append to pane on fxml
     public JSONArray getWeekTimelogs(LocalDate localDate, int userId) {
         // Response is in string format and is converted to a jsonArray
         return new JSONArray(employeeHistoryDAO.getWeekTimelogs(localDate, userId));
+    }
+
+    public JSONArray getWeekNotes(LocalDate localDate, int userId) {
+        return new JSONArray(employeeHistoryDAO.getWeekNotes(localDate, userId));
     }
 
     public Duration calculateDayWorkHours(JSONArray dayTimelogs) {
@@ -83,7 +88,7 @@ public class EmployeeHistoryService {
         return null;
     }
 
-    public String setStringForShiftSequenceLabel(ShiftSequence shiftSequence, List<String> editedTimelogs) {
+    public String setStringForShiftSequenceLabel(ShiftSequence shiftSequence, List<String> editedTimelogs, boolean isLastEvent) {
         String returnString = "";
         String eventType = shiftSequence.sequenceType;
         String editedString = (shiftSequence.getEdited()) ? "\n(Redigeret)" : "";
@@ -114,14 +119,19 @@ public class EmployeeHistoryService {
                 break;
 
             case "break_start":
-                returnString = String.format("Pause %s\n%02d:%02d\n%02d:%02d",
-                        editedString,
-                        shiftSequence.startTime.getHour(),
-                        shiftSequence.startTime.getMinute(),
-                        shiftSequence.endTime.getHour(),
-                        shiftSequence.endTime.getMinute());
+                if(!breakLabelHasBeenAdded) {
+                    returnString = String.format("Pause %s\n%02d:%02d\n%02d:%02d",
+                            editedString,
+                            shiftSequence.startTime.getHour(),
+                            shiftSequence.startTime.getMinute(),
+                            shiftSequence.endTime.getHour(),
+                            shiftSequence.endTime.getMinute());
+                }
+                breakLabelHasBeenAdded = true;
                 break;
             case "break_end":
+                breakLabelHasBeenAdded = false;
+                if(!isLastEvent){break;}
                 if(editedTimelogs.contains("check_out")){break;}
                 if(shiftSequence.getEndTime().getHour() == 23 && shiftSequence.getEndTime().getMinute() == 59) {
                     break;
