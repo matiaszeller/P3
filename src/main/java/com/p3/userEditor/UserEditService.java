@@ -54,7 +54,7 @@ public class UserEditService {
     public boolean createUser(User user) {
         return UserEditDAO.createUser(user);
     }
-
+    //todo for some reason, i cant call the method in the login controller, so i've implemented it again. needs to be fixed
     static void loadMenuPage(Stage stage) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(UserEditService.class.getResource("/com.p3.menu/MenuPage.fxml"));
