@@ -25,6 +25,20 @@
     -fx-alignment: center;
 }
 
+.scroll-pane .right-pane {
+    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #FFFFFF, #EAF2EF);
+    -fx-border-color: blue;
+}
+
+.leftDailyManagerBox{
+    -fx-alignment: TOP-CENTER;
+    -fx-border-color: #000000;
+    -fx-background-color: #f2f2f2;
+    -fx-padding: 10;
+    -fx-fill-height: 100%;
+
+}
+
 /* Welcome Text */
 .welcomeText {
     -fx-text-fill: #333333;
@@ -367,6 +381,107 @@
     -fx-background-color: #FDBB3C;
     -fx-border-color: grey;
 }
+.leftWeeklyOverviewBox{
+    -fx-alignment: TOP-CENTER;
+    -fx-background-color: #f2f2f2;
+    -fx-padding: 10;
+}
+.cell {
+    -fx-border-color: gray;
+    -fx-border-width: 1;
+}
+.grid-pane {
+    -fx-grid-lines-visible: false;
+}
+
+.leftDailyManagerBox{
+    -fx-alignment: TOP-CENTER;
+    -fx-border-color: #000000;
+    -fx-background-color: rgba(0, 0, 0, 0);
+    -fx-padding: 10;
+    -fx-fill-height: 100%;
+}
+.contentPane {
+}
+
+.notificationBox{
+    -fx-pref-width: 396px;
+}
+.dateButton {
+    -fx-background-color: #f2f2f2;
+    -fx-text-fill: #000000;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+}
+.dateButton:hover {
+    -fx-background-color: #8e8e8e;
+}
+.collapseDateBox {
+    -fx-border-color: #000000;
+    -fx-background-color: #FFFFFF;
+    -fx-font-size: 17pt;
+    -fx-font-weight: bold;
+    -fx-pref-width: 100%;
+}
+.managerDailyEmployeeBox {
+    -fx-border-color: #000000;
+    -fx-background-color: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+
+}
+
+.hourLabel{
+    -fx-background-color: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.yearMonth{
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-max-width: 100px;
+}
+.hourBox {
+    -fx-border-color: #000000;
+    -fx-border-style: dashed;
+    -fx-border-width: 2px;
+    -fx-pref-height: 150px;
+    -fx-pref-width: 150px;
+}
+
+.hourBoxTimeLabel {
+    -fx-text-fill: black;
+    -fx-font-size: 14px;
+    -fx-font-family: 'Lato Bold';
+    -fx-padding: 3px;
+}
+.eventTypeLabel {
+    -fx-text-fill: black;
+    -fx-font-family: 'Lato Bold';
+    -fx-font-size: 14px;
+    -fx-padding: 1px;
+}
+
+.managerDailyButtons {
+    -fx-pref-width: 80px;
+    -fx-pref-height: 50px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Lato Bold';
+    -fx-font-size: 14pt;
+    -fx-cursor: hand;
+    -fx-background-color: #d1d1d1;
+    -fx-text-fill: black;
+}
+.managerDailyFullName {
+    -fx-font-size: 14pt;
+    -fx-font-family: "Lato Bold";
+    -fx-text-fill: black;
+
+}
+
 
 .dateButton {
     -fx-background-color: transparent;
@@ -495,5 +610,25 @@
     -fx-border-radius: 0 10 10 0;
     -fx-background-radius: 0 10 10 0;
     -fx-border-color: transparent;
+}
+
+=======
+.managerDailyButtons:hover{
+    -fx-background-color: #dfdfdf;
+}
+
+.managerDailyButtons:pressed {
+    -fx-background-color: #8e8e8e;
+}
+
+.managerSelectedBox {
+    -fx-background-color: #20C997;
+}
+
+.managerSelectedBox:hover {
+    -fx-background-color: #33d6ad;
+}
+.managerSelectedBox:pressed {
+    -fx-background-color: #009973;
 }
 

@@ -34,7 +34,7 @@ public class LoginDAO {
     }
 
     public String getUserFullName(String username) {
-        String url = "user/name/" + username;
+        String url = "user/fullName/" + username;
         HttpResponse response = api.get(url, null, true);
 
         return (String) response.body();

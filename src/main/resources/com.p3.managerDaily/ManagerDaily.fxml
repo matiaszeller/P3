@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox fx:id="managerDailyRoot" alignment="CENTER" spacing="15.0" styleClass="root" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.managerDaily.ManagerDailyController">
+<BorderPane fx:id="BorderPaneOuter" prefHeight="1000.0" prefWidth="1000.0">
+    <!-- Left Panel -->
+    <left>
+        <VBox fx:id="leftDailyManagerBox" spacing="150" alignment="TOP_CENTER" prefWidth="200" styleClass="leftDailyManagerBox">
+            <!-- Calendar Section -->
+            <VBox spacing="5" alignment="TOP_CENTER">
+                <HBox spacing="10" alignment="TOP_CENTER">
+                    <Button text="&lt;" fx:id="prevMonthButton" />
+                    <Label fx:id="yearMonthLabel" text="Month Year" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                    <Button text="&gt;" fx:id="nextMonthButton" />
+                </HBox>
+                <!-- Calendar Grid -->
+                <GridPane fx:id="calendarGrid" hgap="5" vgap="5" alignment="TOP_CENTER">
+                    <!-- Days of Week -->
+                    <Label text="Mon" GridPane.columnIndex="0" style="-fx-font-weight: bold;" />
+                    <Label text="Tue" GridPane.columnIndex="1" style="-fx-font-weight: bold;" />
+                    <Label text="Wed" GridPane.columnIndex="2" style="-fx-font-weight: bold;" />
+                    <Label text="Thu" GridPane.columnIndex="3" style="-fx-font-weight: bold;" />
+                    <Label text="Fri" GridPane.columnIndex="4" style="-fx-font-weight: bold;" />
+                    <Label text="Sat" GridPane.columnIndex="5" style="-fx-font-weight: bold;" />
+                    <Label text="Sun" GridPane.columnIndex="6" style="-fx-font-weight: bold;" />
+
+                    <!-- Going to be generated in the controller dynamically bombaclat -->
+
+                </GridPane>
+            </VBox>
+            <VBox spacing="20" alignment="CENTER" VBox.vgrow="ALWAYS">
+            <!-- Buttons -->
+                <Button text="Dagligt Overblik" fx:id="dailyOverviewButton" styleClass="defaultButton" prefWidth="180" />
+                <Button text="Ugentligt Overblik" fx:id="weeklyOverviewButton" styleClass="defaultButton" prefWidth="180" />
+                <Button text="Rediger Ansatte" fx:id="editEmployeesButton" styleClass="defaultButton" prefWidth="180" />
+                <Button text="Eksporter Data" fx:id="exportDataButton" styleClass="defaultButton" prefWidth="180" />
+            </VBox>
+            <VBox spacing="50" alignment="BOTTOM_CENTER">
+                <Button fx:id="BackButton" styleClass="defaultButton" text="Tilbage" prefWidth="180"/>
+                <Button text="Log Ud" fx:id="managerLogOutButton" prefWidth="180" styleClass="defaultButton" />
+            </VBox>
+        </VBox>
+    </left>
+
+    <!-- Center Panel -->
+    <center>
+        <VBox fx:id="centerPanel" spacing="10" style="-fx-padding: 10;">
+
+        </VBox>
+    </center>
+
+    <!-- Right Panel - Måske ikke brug denne her, idk, we shall see-->
+    <right>
+        <VBox spacing="10" alignment="CENTER" style="-fx-background-color: #f9f9f9; -fx-padding: 10;">
+        </VBox>
+    </right>
+
+
+</BorderPane>
+</VBox>
