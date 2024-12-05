@@ -168,12 +168,19 @@ public class LoginController {
         if (loginService.validateManager(managerUsername, password)) {
             int userId = loginService.getUserId(managerUsername);
             String fullName = loginService.getUserFullName(managerUsername);
+            String username = usernameField.getText();
 
             Session.setCurrentUserId(userId);
             Session.setCurrentUserFullName(fullName);
 
             modalStage.close();
-            loadMenuPage();
+            boolean clockedIn = loginService.getClockedInStatus(username);
+
+            if (clockedIn) {
+                loadMenuPage();
+            } else {
+                showEmployeeModal(username);
+            }
         } else {
             modalErrorLabel.setVisible(true);
         }

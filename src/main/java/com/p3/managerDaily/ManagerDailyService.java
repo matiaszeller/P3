@@ -37,15 +37,18 @@ public class ManagerDailyService {
         timelogs = logs;
     }
 
-        public static void loadTimelogsForRange(LocalDate startDate, int daysCount) {
+        public void loadTimelogsForRange(LocalDate startDate, int daysCount) {
+            timelogs.clear();
+        
             for (int i = 0; i < daysCount; i++) {
                 LocalDate currentDate = startDate.minusDays(i);
+
                 List<Map<String, Object>> dailyTimelogs = dao.getTimelogsForDate(currentDate);
                     timelogs.addAll(dailyTimelogs);
             }
         }
 
-        public static List<Map<String, Object>> getTimelogs() {
+        public List<Map<String, Object>> getTimelogs() {
             return timelogs;
         }
 
@@ -168,7 +171,7 @@ public class ManagerDailyService {
             e.printStackTrace();
         }
     }
-    public static void loadMenuPage(Stage stage) {
+    public void loadMenuPage(Stage stage) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ManagerDailyService.class.getResource("/com.p3.menu/MenuPage.fxml"));
             double width = stage.getWidth();

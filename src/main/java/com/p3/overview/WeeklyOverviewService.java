@@ -81,7 +81,7 @@ public class WeeklyOverviewService {
         }
 
     }
-    public static void loadManagerDailyPage(Stage stage) {
+    public void loadManagerDailyPage(Stage stage) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(WeeklyOverviewService.class.getResource("/com.p3.managerDaily/ManagerDaily.fxml"));
             double width = stage.getWidth();

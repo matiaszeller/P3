@@ -235,7 +235,7 @@ public class MenuController {
 
     private void handleOnPressManager() {
         Stage stage = (Stage) managerButton.getScene().getWindow();
-        MenuService.loadManagerPage(stage);
+        menuService.loadManagerPage(stage);
     }
     private void getMissedCheckout() {
         int userId = Session.getCurrentUserId();
