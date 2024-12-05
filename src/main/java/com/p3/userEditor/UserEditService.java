@@ -55,7 +55,7 @@ public class UserEditService {
         return UserEditDAO.createUser(user);
     }
 
-    static void loadMenuPage(Stage stage) {
+    public void loadMenuPage(Stage stage) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(UserEditService.class.getResource("/com.p3.menu/MenuPage.fxml"));
             double width = stage.getWidth();
@@ -66,5 +66,40 @@ public class UserEditService {
             e.printStackTrace();
         }
     }
+    public void loadManagerDailyPage(Stage stage) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(UserEditService.class.getResource("/com.p3.managerDaily/ManagerDaily.fxml"));
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            Scene scene = new Scene(fxmlLoader.load(), width, height);
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void loadWeeklyPage(Stage stage) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(UserEditService.class.getResource("/com.p3.overview/WeeklyOverview.fxml"));
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            Scene scene = new Scene(fxmlLoader.load(), width, height);
+            stage.setScene(scene);
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void loadLoginPage(Stage stage) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(UserEditService.class.getResource("/com.p3.login/LoginPage.fxml"));
+            double width = stage.getWidth();
+            double height = stage.getHeight();
+            Scene loginScene = new Scene(fxmlLoader.load(), width, height);
+            stage.setScene(loginScene);
+            stage.setTitle("Time Registration System");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
