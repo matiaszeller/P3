@@ -1,8 +1,10 @@
 package com.p3.managerDaily;
 
 import com.p3.menu.MenuService;
+import com.p3.noteModal.NoteModalController;
 import com.p3.overview.WeeklyOverviewService;
 import com.p3.session.Session;
+import com.p3.util.ModalUtil;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
@@ -27,6 +29,8 @@ import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javafx.scene.shape.Rectangle;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class ManagerDailyController {
 
@@ -440,9 +444,28 @@ public class ManagerDailyController {
             Button editButton = new Button("Edit");
             editButton.setOnAction(e -> showEditModal(userId));
             editButton.getStyleClass().add("managerDailyButtons");
+
+
             // Note Button
             Button noteButton = new Button("Note");
-            noteButton.setOnAction(e -> showNoteModal(userId));
+
+
+            noteButton.setOnAction(event -> {
+                Stage stage = (Stage) managerLogOutButton.getScene().getWindow();
+                ModalUtil.ModalResult<NoteModalController> modalResult = ModalUtil.showModal("/com.p3.global/NoteHistoryModal.fxml", stage, "Noter");
+                if(modalResult != null){
+                    JSONArray dayNotes = service.getDayNotes(date, userId);
+                    System.out.println(dayNotes);
+                    NoteModalController controller = modalResult.getController();
+                    controller.generateModal(dayNotes, date, userId);
+
+                    Stage modalStage = modalResult.getStage();
+                    modalStage.showAndWait();
+                }
+            });
+
+
+
             noteButton.getStyleClass().add("managerDailyButtons");
             buttonBox.getChildren().addAll(editButton, noteButton);
 
@@ -545,8 +568,7 @@ public class ManagerDailyController {
     }
 
     private void showNoteModal(int userId) {
-        System.out.println("Adding note for User ID: " + userId);
-        // Implement modal Flemming
+
     }
 
 

@@ -5,6 +5,7 @@ import com.p3.overview.WeeklyOverviewService;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.json.JSONArray;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -179,6 +180,10 @@ public class ManagerDailyService {
             e.printStackTrace();
         }
 
+    }
+
+    public JSONArray getDayNotes(LocalDate date, int userId) {
+        return new JSONArray(dao.getDayNotes(date, userId));
     }
 
     }

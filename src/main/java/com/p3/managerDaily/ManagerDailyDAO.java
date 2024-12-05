@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.List;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONArray;
 
 public class ManagerDailyDAO {
     private final ServerApi api = new ServerApi();
@@ -32,6 +33,13 @@ public class ManagerDailyDAO {
     }
     public String getUserFullNameById(int user_id) {
         String url = "user/fullNameId/" + user_id;
+        HttpResponse response = api.get(url, null, true);
+
+        return (String) response.body();
+    }
+
+    public String getDayNotes(LocalDate date, int userId){
+        String url = "note/day?date=" + date + "&userId=" + userId;
         HttpResponse response = api.get(url, null, true);
 
         return (String) response.body();

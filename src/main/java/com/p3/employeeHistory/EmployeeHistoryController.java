@@ -331,7 +331,7 @@ public class EmployeeHistoryController {
             ModalUtil.ModalResult<NoteModalController> modalResult = ModalUtil.showModal("/com.p3.global/NoteHistoryModal.fxml", stage, "Noter");
             if(modalResult != null){
                 NoteModalController controller = modalResult.getController();
-                controller.generateModal(dayNotes, firstTime.toLocalDate());
+                controller.generateModal(dayNotes, firstTime.toLocalDate(), Session.getCurrentUserId());
 
                 Stage modalStage = modalResult.getStage();
                 modalStage.showAndWait();

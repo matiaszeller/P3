@@ -15,11 +15,15 @@ import org.json.JSONObject;
 import javafx.scene.input.KeyEvent;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class NoteModalController {
     NoteModalService noteModalService = new NoteModalService();
     private final VBox noteContainer = new VBox(10);
     private LocalDate date;
+    private JSONArray dayNotes;
+    private int userId;
+    private int recipientId;
 
     @FXML
     private VBox modalMainContainer;
@@ -52,7 +56,6 @@ public class NoteModalController {
         Scene scene = modalMainContainer.getScene();
         if (scene != null) {
             scene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-                System.out.println(event.getCode());
                 if(event.getCode() == KeyCode.ENTER) {
                     if(!event.isShiftDown()) {
                         event.consume();
@@ -73,8 +76,23 @@ public class NoteModalController {
             postNoteObject();});
     }
 
-    public void generateModal(JSONArray dayNotes, LocalDate date) {
+    public void generateModal(JSONArray dayNotes, LocalDate date, int userId) {
+        this.dayNotes = dayNotes;
+        this.userId = userId;
         setDate(date);
+
+        if(!dayNotes.isEmpty()) {
+            if(Session.getCurrentUserId() == dayNotes.getJSONObject(0).getInt("writer_id")) {
+                recipientId = dayNotes.getJSONObject(0).getInt("recipient_id");
+            } else {
+                recipientId = dayNotes.getJSONObject(0).getInt("writer_id");
+            }
+        } else if (Session.getRole() == "manager") {
+            recipientId = userId;  // default for first manager
+        } else {
+            recipientId = 1;
+        }
+
 
         modalMainLabel.setText(String.format("Tilføj noter til d. %s", date));
 
@@ -140,14 +158,24 @@ public class NoteModalController {
     private void postNoteObject() {
         String noteText = inputTextArea.getText();
 
+
         // Create note object and post to server
         if(!noteText.isEmpty()) {
             JSONObject newNote = new JSONObject();
             newNote.put("writer_id", Session.getCurrentUserId());
-            newNote.put("recipient_id", 1); // TODO brian hardcoded for nu, men lav get request til at skaffe mulige managers
             newNote.put("written_note", noteText);
             newNote.put("full_name", Session.getCurrentUserFullName());
             newNote.put("note_date", date);
+            System.out.println(userId);
+            System.out.println(Session.getRole());
+            if(Objects.equals(Session.getRole(), "manager")) {
+                newNote.put("recipient_id", userId);
+            }
+            else{
+                newNote.put("recipient_id", recipientId);
+            }
+
+            System.out.println(newNote.toString());
 
             noteModalService.postNewNote(newNote);
 
