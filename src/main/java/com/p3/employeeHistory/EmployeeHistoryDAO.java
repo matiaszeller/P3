@@ -16,11 +16,4 @@ public class EmployeeHistoryDAO {
         return (String) response.body();
     }
 
-    public String getWeekNotes(LocalDate localDate, int userId){
-        String url = "note/week/history?date=" + localDate + "&userId=" + userId;
-        HttpResponse response = api.get(url, null, true);
-
-        return (String) response.body();
-    }
-
 }

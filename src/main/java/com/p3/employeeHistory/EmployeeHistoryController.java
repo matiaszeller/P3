@@ -2,10 +2,7 @@ package com.p3.employeeHistory;
 
 import com.p3.session.Session;
 
-import com.p3.util.ModalUtil;
-import com.p3.noteModal.NoteModalController;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -14,7 +11,10 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -23,9 +23,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.time.*;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.time.temporal.IsoFields;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -37,10 +41,6 @@ public class EmployeeHistoryController {
     private LocalDate date;
     private int weeklyStartHour;
     private int weeklyEndHour;
-    private Button selectedDateButton = null;
-    private LocalDate selectedDate = null;
-    private LocalDate weeklyDate;
-    private Stage stage;
 
     @FXML
     private Button logOutButton;
@@ -56,23 +56,11 @@ public class EmployeeHistoryController {
     private Label weekNumberLabel;
     @FXML
     private Label weekWorkHoursLabel;
-    @FXML
-    private GridPane calendarGrid;
-    @FXML
-    private Label yearMonthLabel;
-    @FXML
-    private Button prevMonthButton;
-    @FXML
-    private Button nextMonthButton;
 
     @FXML
     private void initialize() {
         setActionHandlers();
         date = LocalDate.now();
-        selectedDate = date;
-        weeklyDate = date;
-
-        generateCalendar(YearMonth.of(date.getYear(), date.getMonthValue()));
         handleWeekTimelogs(date); // First time will always default to current day, could be stored as session data if this is not preferred
     }
 
@@ -81,8 +69,6 @@ public class EmployeeHistoryController {
         goBackButton.setOnAction(event -> loadStage("/com.p3.menu/MenuPage.fxml"));
         prevWeekButton.setOnAction(event -> fetchWeekHistory(-1));
         nextWeekButton.setOnAction(event -> fetchWeekHistory(1));
-        prevMonthButton.setOnAction(event -> changeMonth(-1));
-        nextMonthButton.setOnAction(event -> changeMonth(1));
     }
 
     private void handleLogOut() {
@@ -93,7 +79,7 @@ public class EmployeeHistoryController {
     private void loadStage(String fxmlPath) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath));
-            stage = (Stage) logOutButton.getScene().getWindow();
+            Stage stage = (Stage) logOutButton.getScene().getWindow();
             double width = stage.getWidth();
             double height = stage.getHeight();
 
@@ -106,25 +92,17 @@ public class EmployeeHistoryController {
     }
 
     private void handleWeekTimelogs(LocalDate date) {
-        weeklyDate = date;
-        JSONArray jsonArrayTimelogs = new JSONArray(employeeHistoryService.getWeekTimelogs(date, Session.getCurrentUserId()));
-        JSONArray jsonArrayNotes = new JSONArray(employeeHistoryService.getWeekNotes(date, Session.getCurrentUserId()));
+        JSONArray jsonArray = new JSONArray(employeeHistoryService.getWeekTimelogs(date, Session.getCurrentUserId()));
 
         contentContainer.getChildren().removeIf(node -> node instanceof VBox); // Clears previous VBox
         weekNumberLabel.setText(String.format("%d | Uge nr: %d", date.getYear(), date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)));
 
         Duration weekWorkHours = Duration.ZERO;
-        calculateWeeklyDayValues(jsonArrayTimelogs);
+        calculateWeeklyDayValues(jsonArray);
 
-        // Timelogs and notes should (is) always same length as server searches and returns for week. Empty lists are included in main list
-        for (int i = 0; i < jsonArrayTimelogs.length(); i++) {
-            JSONArray dayEvents = jsonArrayTimelogs.getJSONArray(i);
-            JSONArray dayNotes = jsonArrayNotes.getJSONArray(i);
-
-            VBox dayBox = dayEvents.isEmpty() ?
-                    createEmptyDayShiftBox(employeeHistoryService.toMonday(date).plusDays(i)) :
-                    createDayShiftBox(dayEvents, dayNotes);
-
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONArray dayEvents = jsonArray.getJSONArray(i);
+            VBox dayBox = dayEvents.isEmpty() ? createEmptyDayShiftBox(employeeHistoryService.toMonday(date).plusDays(i)) : createDayShiftBox(dayEvents);
             contentContainer.getChildren().add(dayBox);
             weekWorkHours = weekWorkHours.plus(employeeHistoryService.calculateDayWorkHours(dayEvents));
         }
@@ -182,7 +160,7 @@ public class EmployeeHistoryController {
         return dayVBox;
     }
 
-    private VBox createDayShiftBox(JSONArray dayTimelogs, JSONArray dayNotes) {
+    private VBox createDayShiftBox(JSONArray dayTimelogs) {
         JSONObject firstIndexObject = dayTimelogs.getJSONObject(0);
         LocalDateTime firstTime = LocalDateTime.parse(firstIndexObject.getString("event_time"));
         List<String> editedTimelogs = employeeHistoryService.getEditedTimelog(dayTimelogs);
@@ -203,7 +181,7 @@ public class EmployeeHistoryController {
         List<ShiftSequence> shiftSequences = generateShiftSequence(dayTimelogs);
         String currentStyleClass = shiftSequences.get(shiftSequenceIndex).styleClass;
         int remainingDuration = shiftSequences.get(shiftSequenceIndex).duration;
-        boolean isLastEvent = false;
+
 
         for (int i = 0; i < weeklyMaxAmountSingleShiftHours; i++) {
             LocalDateTime workingTime = firstTime.withHour(weeklyStartHour).plusHours(i);
@@ -220,27 +198,23 @@ public class EmployeeHistoryController {
                 hourBox.getChildren().add(minuteBox);
                 remainingDuration--;
 
-                if(shiftSequenceIndex == shiftSequences.size() - 2) {
-                    isLastEvent = true;
-                }
-
 
                 switch (shiftSequences.get(shiftSequenceIndex).getSequenceType()) {
                     case "check_in" -> {
                         if (remainingDuration == shiftSequences.get(shiftSequenceIndex).getDuration() - 1) {
-                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs, isLastEvent);
+                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs);
                         }
                     }
                     case "break_end" -> {
                         if (remainingDuration == 2) {
-                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs, isLastEvent);
+                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs);
                         }
                     }
                     case "break_start" ->
-                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs, isLastEvent);
+                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs);
                     case "check_out" -> {
                         if(shiftSequences.get(shiftSequenceIndex).getEdited() && remainingDuration == 2){
-                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs, isLastEvent);
+                            createSequenceLabel(hourBoxContainer, shiftSequences.get(shiftSequenceIndex), editedTimelogs);
                         }
                     }
                 }
@@ -283,72 +257,25 @@ public class EmployeeHistoryController {
 
         dayVBox.getChildren().add(dayHoursHBox);
 
-
-        HBox noteBox = createHBox("noteHBox", true, false);
+        HBox noteBox = createHBox("noteHBox", true, true);
         noteBox.setAlignment(Pos.BOTTOM_RIGHT);
-
-        // Get the last note if available, otherwise it will be null (JAVAFX IS FUCKED SO THIS FIXES GROW ISSUES)
-        JSONObject lastNote = (!dayNotes.isEmpty()) ? dayNotes.getJSONObject(dayNotes.length() - 1) : null;
-
-        VBox lastNoteBox = createVBox("lastNoteBox", true, false);
-        lastNoteBox.getStyleClass().add("lastNoteBox");
-
-        Label lastNoteSenderLabel = new Label();
-        lastNoteSenderLabel.getStyleClass().add("noteSenderLabel");
-
-        if (lastNote != null) {
-            lastNoteSenderLabel.setText(String.format("%s:", lastNote.getString("full_name")));
-        } else {
-            lastNoteSenderLabel.setText("");
-        }
-        lastNoteBox.getChildren().add(lastNoteSenderLabel);
-
-        Label lastNoteTextLabel = new Label();
-        lastNoteTextLabel.getStyleClass().add("lastNoteTextLabel");
-
-        if (lastNote != null) {
-            lastNoteTextLabel.setText(String.format("%s", lastNote.getString("written_note")));
-        } else {
-            lastNoteTextLabel.setText("");
-        }
-        lastNoteBox.getChildren().add(lastNoteTextLabel);
-
-        noteBox.getChildren().add(lastNoteBox);
-
         Button noteButton = new Button();
         noteButton.getStyleClass().add("chevronButton");
         Image noteImage = new Image(getClass().getResourceAsStream("/icons/add-note-svgrepo-com.png"));
         ImageView noteImageView = new ImageView(noteImage);
         noteImageView.getStyleClass().add("chevronImage");
         noteButton.setGraphic(noteImageView);
-
-
         noteBox.getChildren().add(noteButton);
         dayHoursHBox.getChildren().add(noteBox);
 
-        // On buttonclick, show modal.
-        noteButton.setOnAction(event -> {
-            ModalUtil.ModalResult<NoteModalController> modalResult = ModalUtil.showModal("/com.p3.global/NoteHistoryModal.fxml", stage, "Noter");
-            if(modalResult != null){
-                NoteModalController controller = modalResult.getController();
-                controller.generateModal(dayNotes, firstTime.toLocalDate(), Session.getCurrentUserId());
-
-                Stage modalStage = modalResult.getStage();
-                modalStage.showAndWait();
-            }
-        });
 
         return dayVBox;
     }
 
 
     public void fetchWeekHistory(int weeksToAdd) {
-        if(weeklyDate.getMonthValue() != date.getMonthValue()){
-            date = weeklyDate;
-        }
         date = date.plusWeeks(weeksToAdd);
         handleWeekTimelogs(date);
-        generateCalendar(YearMonth.of(date.getYear(), date.getMonthValue()));
     }
 
     private List<ShiftSequence> generateShiftSequence(JSONArray timelogs) {
@@ -425,23 +352,16 @@ public class EmployeeHistoryController {
             if (startTime.getHour() < weeklyStartHour) {
                 weeklyStartHour = startTime.getHour();
             }
-            if (endTime.getHour() >= weeklyEndHour && !(endTime.getHour() == 23 && endTime.getMinute() == 59)) {
-                weeklyEndHour = endTime.getHour() + 1;
+            if (endTime.getHour() > weeklyEndHour && !(endTime.getHour() == 23 && endTime.getMinute() == 59)) {
+                weeklyEndHour = endTime.getHour();
             }
 
             weeklyMaxAmountSingleShiftHours = weeklyEndHour - weeklyStartHour + 1;
         }
-
-        if(weeklyEndHour > 23){
-            weeklyEndHour = 23;
-        }
-        if (weeklyStartHour < 1) {
-            weeklyStartHour = 1;
-        }
     }
 
-    private void createSequenceLabel(StackPane hourBoxContainer, ShiftSequence shiftSequence, List<String> editedTimelogs, boolean isLastEvent) {
-        Label label = createLabel("shiftSequenceLabel", employeeHistoryService.setStringForShiftSequenceLabel(shiftSequence, editedTimelogs, isLastEvent));
+    private void createSequenceLabel(StackPane hourBoxContainer, ShiftSequence shiftSequence, List<String> editedTimelogs) {
+        Label label = createLabel("shiftSequenceLabel", employeeHistoryService.setStringForShiftSequenceLabel(shiftSequence, editedTimelogs));
         label.setId("shiftSequenceLabel");
         label.setWrapText(true);
         hourBoxContainer.getChildren().add(label);
@@ -462,117 +382,4 @@ public class EmployeeHistoryController {
         StackPane.setAlignment(label, Pos.CENTER);
     }
 
-
-    // Har lige lavet min egen implementation, synes der manglede lidt :)) - Sakarias
-    public void generateCalendar(YearMonth yearMonth) {
-        calendarGrid.getChildren().clear();
-        calendarGrid.getColumnConstraints().clear();
-        calendarGrid.getRowConstraints().clear();
-
-
-        yearMonthLabel.setText(yearMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + yearMonth.getYear());
-
-        // Add day-of-week headers
-        String[] daysOfWeek = {"Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"};
-        for (int col = 0; col < daysOfWeek.length; col++) {
-            Label dayLabel = new Label(daysOfWeek[col]);
-            calendarGrid.add(dayLabel, col, 0);
-        }
-
-        // Get the first day of the month and the total number of days
-        LocalDate firstDayOfMonth = yearMonth.atDay(1);
-        int daysInMonth = yearMonth.lengthOfMonth();
-
-        // Determine the starting day of the week (1=Monday, 2=Tuesday, ..., 7=Sunday)
-        int startDayOfWeek = (firstDayOfMonth.getDayOfWeek().getValue() - 1) % 7;
-
-        // Get the previous month
-        YearMonth previousMonth = yearMonth.minusMonths(1);
-        int daysInPreviousMonth = previousMonth.lengthOfMonth();
-
-        // Set grid constraints to ensure equal column widths
-        for (int col = 0; col < 7; col++) {
-            ColumnConstraints colConstraints = new ColumnConstraints();
-            colConstraints.setPercentWidth(14.2857); // 100% / 7 columns = 14.2857% :DD
-            calendarGrid.getColumnConstraints().add(colConstraints);
-        }
-
-        // Adds buttons for days from last month until row is filled combined with days from current month
-        // Buttons are disabled :D
-        int row = 1;
-        int col = 0;
-        for (int i = daysInPreviousMonth - startDayOfWeek + 1; i <= daysInPreviousMonth; i++) {
-            Button prevMonthButton = new Button(String.valueOf(i));
-            prevMonthButton.setMinSize(40, 40);
-            prevMonthButton.getStyleClass().add("notCurrentMonthDate");
-            prevMonthButton.setDisable(true);
-            calendarGrid.add(prevMonthButton, col++, row);
-        }
-
-        // Add buttons for the current month
-        for (int day = 1; day <= daysInMonth; day++) {
-            Button dateButton = new Button(String.valueOf(day));
-            dateButton.setOnAction(this::handleDateClick);
-            dateButton.setMinSize(40, 40);
-            dateButton.getStyleClass().add("dateButton");
-
-            // If this is the selected date, mark it
-            if (selectedDate != null && selectedDate.equals(LocalDate.of(yearMonth.getYear(), yearMonth.getMonth(), day))) {
-                selectedDateButton = dateButton;
-                selectedDateButton.getStyleClass().add("selectedDateButton");
-            }
-
-            calendarGrid.add(dateButton, col, row);
-
-            col++;
-            if (col == 7) { // Move to the next row after Sunday
-                col = 0;
-                row++;
-            }
-        }
-
-        // Add remaining days if row columns is not filled
-        int nextMonthDay = 1;
-        while (col < 7) {
-            Button nextMonthButton = new Button(String.valueOf(nextMonthDay++));
-            nextMonthButton.setMinSize(40, 40);
-            nextMonthButton.getStyleClass().add("notCurrentMonthDate");
-            nextMonthButton.setDisable(true);
-            calendarGrid.add(nextMonthButton, col++, row);
-        }
-
-        for (int r = 0; r <= row; r++) {
-            RowConstraints rowConstraints = new RowConstraints();
-            rowConstraints.setVgrow(Priority.ALWAYS);
-            calendarGrid.getRowConstraints().add(rowConstraints);
-        }
-    }
-
-
-    private void handleDateClick(ActionEvent event) {
-        Button clickedButton = (Button) event.getSource();
-
-        if(selectedDateButton != null) {
-            selectedDateButton.getStyleClass().remove("selectedDateButton");
-        }
-        selectedDateButton = clickedButton;
-        selectedDateButton.getStyleClass().add("selectedDateButton");
-
-        String day = clickedButton.getText();
-        int dayOfMonth = Integer.parseInt(day.trim());
-        setDate(date.withDayOfMonth(dayOfMonth));
-        selectedDate = date.withDayOfMonth(dayOfMonth);
-
-        handleWeekTimelogs(date);
-    }
-
-    private void setDate(LocalDate date){
-        this.date = date;
-    }
-
-    private void changeMonth(int offset) {
-        setDate(date.plusMonths(offset));
-        generateCalendar(YearMonth.of(date.getYear(), date.getMonth()));
-
-    }
 }

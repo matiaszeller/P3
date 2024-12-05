@@ -5,32 +5,12 @@
 
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.shape.Rectangle?>
 <AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.employeeHistory.EmployeeHistoryController" stylesheets="@../style.css" styleClass="root">
 
     <VBox alignment="TOP_CENTER" styleClass="empHisLeftContainer" prefWidth="400" maxHeight="600" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0">
-        <VBox alignment="TOP_CENTER" styleClass="empHisCalendarContainer" prefHeight="350">
-            <HBox spacing="10" alignment="TOP_CENTER" style="-fx-padding: 5 0 0 0;">
-                <Button fx:id="prevMonthButton" styleClass="chevronButton">
-                    <graphic>
-                        <ImageView styleClass="chevronImage" style="-fx-fit-height: 20px; -fx-fit-width: 20px;">
-                            <Image url="@/icons/chevron-left-svgrepo-com.png"/>
-                        </ImageView>
-                    </graphic>
-                </Button>
-                <Label fx:id="yearMonthLabel" text="Month Year" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-pref-width: 125px; -fx-alignment: center" />
-                <Button fx:id="nextMonthButton" styleClass="chevronButton">
-                    <graphic>
-                        <ImageView styleClass="chevronImage" style="-fx-fit-height: 20px; -fx-fit-width: 20px;">
-                            <Image url="@/icons/chevron-right-svgrepo-com.png"/>
-                        </ImageView>
-                    </graphic>
-                </Button>
-            </HBox>
-            <Region VBox.vgrow="ALWAYS"/>
-            <GridPane fx:id="calendarGrid" hgap="5" vgap="5" alignment="TOP_CENTER" styleClass="calendarGrid" >
-                <!-- Going to be generated in the controller dynamically bombaclat -->
-            </GridPane>
-            <Region VBox.vgrow="ALWAYS"/>
+        <VBox alignment="TOP_CENTER" styleClass="empHisCalendarContainer" prefHeight="300">
+            <DatePicker fx:id="calendar" showWeekNumbers="true"/>
         </VBox>
 
         <Label styleClass="empHisWorkHoursLabel" text="Samlet Arbejdstid For Ugen "/>

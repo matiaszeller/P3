@@ -1,10 +1,10 @@
 package com.p3.managerDaily;
 
 import com.p3.menu.MenuService;
+import com.p3.overview.WeeklyOverviewService;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.json.JSONArray;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -181,13 +181,5 @@ public class ManagerDailyService {
 
     }
 
-    public JSONArray getDayNotes(LocalDate date, int userId) {
-        return new JSONArray(dao.getDayNotes(date, userId));
     }
-
-    public JSONArray getDayTimelogs(LocalDate date, int userId) {
-        return new JSONArray(dao.getDayTimelogs(date, userId));
-    }
-
-}
 
