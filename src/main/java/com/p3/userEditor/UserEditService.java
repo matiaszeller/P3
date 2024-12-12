@@ -15,7 +15,7 @@ public class UserEditService {
     private final UserEditDAO userEditDAO = new UserEditDAO();
 
     public List<User> getAllUsers() {
-        String jsonResponse = UserEditDAO.userNames();
+        String jsonResponse = userEditDAO.userNames();
 
         if (jsonResponse == null) {
             System.err.println("No valid JSON response from backend.");
@@ -48,11 +48,11 @@ public class UserEditService {
     }
 
     public boolean updateUser(User user) {
-        return UserEditDAO.updateUser(user);
+        return userEditDAO.updateUser(user);
     }
 
     public boolean createUser(User user) {
-        return UserEditDAO.createUser(user);
+        return userEditDAO.createUser(user);
     }
 
     public void loadMenuPage(Stage stage) {

@@ -567,17 +567,6 @@ public class ManagerDailyController {
         }
     }
 
-
-    private void showEditModal(int userId) {
-        System.out.println("Editing for User ID: " + userId);
-        // Implement modal right here Flemming
-    }
-
-    private void showNoteModal(int userId) {
-
-    }
-
-
     private void handleDateClick(ActionEvent event) {
         Button clickedButton = (Button) event.getSource();
         String day = clickedButton.getText();

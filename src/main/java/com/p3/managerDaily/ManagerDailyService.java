@@ -115,9 +115,7 @@ public class ManagerDailyService {
 
 
     public String getUserFullName(int user_id) {
-        String jsonResponse = dao.getUserFullNameById(user_id);
-        org.json.JSONObject json = new org.json.JSONObject(jsonResponse);
-        return json.getString("full_name");
+        return dao.getUserFullNameById(user_id);
     }
     public void loadAdminPage(Stage stage) {
         try {

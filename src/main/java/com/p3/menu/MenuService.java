@@ -82,9 +82,7 @@ public class MenuService {
 
     public List<Event> getTodaysEventsForUser(int userId){
         LocalDate today = LocalDate.now();
-
-        JSONObject jsonResponse = new JSONObject(menuDao.getTodaysEventsForUser(userId, today));
-        JSONArray timelogs = jsonResponse.getJSONArray("timelogs");
+        JSONArray timelogs = new JSONArray(menuDao.getTodaysEventsForUser(userId, today));
 
         List<Event> events = new ArrayList<>();
 
@@ -96,6 +94,7 @@ public class MenuService {
 
             events.add(event);
         }
+
         return events;
     }
 

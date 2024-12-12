@@ -17,7 +17,6 @@ public class ManagerDailyDAO {
     public List<Map<String, Object>> getTimelogsForDate(LocalDate date) {
         String url = "timelog/getTimelogsByDate?date=" + date;
 
-
         HttpResponse response = api.get(url, null, true);
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -32,11 +31,13 @@ public class ManagerDailyDAO {
         }
     }
     public String getUserFullNameById(int user_id) {
-        String url = "user/fullNameId/" + user_id;
+        String url = "user/id/" + user_id + "/fullName";
         HttpResponse response = api.get(url, null, true);
 
         return (String) response.body();
     }
+
+    // TODO Fix de x kald, og lav ét kald på en periode
 
     public String getDayNotes(LocalDate date, int userId){
         String url = "note/day?date=" + date + "&userId=" + userId;

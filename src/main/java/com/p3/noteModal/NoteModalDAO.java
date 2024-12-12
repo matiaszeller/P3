@@ -20,8 +20,7 @@ public class NoteModalDAO {
     }
 
     public String getSenderName(int userId){
-        String url = "user/nameById/" + userId;
-
+        String url = "user/id/" + userId + "/fullName";
         HttpResponse response = api.get(url, null, true);
 
         return (String) response.body();

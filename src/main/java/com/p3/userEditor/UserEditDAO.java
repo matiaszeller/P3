@@ -6,8 +6,9 @@ import java.net.http.HttpResponse;
 
 public class UserEditDAO {
 
-    public static String userNames() {
-        ServerApi api = new ServerApi();
+    private final ServerApi api = new ServerApi();
+
+    public String userNames() {
         HttpResponse<String> response = api.get("user/info/users", null,true);
 
         if (response.statusCode() == 200) {
@@ -18,12 +19,9 @@ public class UserEditDAO {
         }
     }
 
-    public static boolean updateUser(User user) {
+    public boolean updateUser(User user) {
         ServerApi api = new ServerApi();
-
-
         String userJson = user.toJson();
-        System.out.println(userJson);
 
         try {
             HttpResponse<String> response = api.put("user/update", null, userJson);
@@ -39,12 +37,10 @@ public class UserEditDAO {
             return false;
         }
     }
-    public static boolean createUser(User user) {
+    public boolean createUser(User user) {
         ServerApi api = new ServerApi();
 
-
         String userJson = user.toJson();
-        System.out.println(userJson);
 
         try {
             HttpResponse<String> response = api.post("user/newUser", null, userJson);
@@ -61,4 +57,4 @@ public class UserEditDAO {
         }
     }
 
-} // merging main
+}
