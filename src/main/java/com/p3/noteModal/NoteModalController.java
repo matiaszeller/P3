@@ -157,7 +157,6 @@ public class NoteModalController {
     private void postNoteObject() {
         String noteText = inputTextArea.getText();
 
-
         // Create note object and post to server
         if(!noteText.isEmpty()) {
             JSONObject newNote = new JSONObject();
@@ -165,20 +164,14 @@ public class NoteModalController {
             newNote.put("written_note", noteText);
             newNote.put("full_name", Session.getCurrentUserFullName());
             newNote.put("note_date", date);
-            System.out.println(userId);
-            System.out.println(Session.getRole());
+
             if(Objects.equals(Session.getRole(), "manager")) {
                 newNote.put("recipient_id", userId);
-            }
-            else{
+            } else{
                 newNote.put("recipient_id", recipientId);
             }
 
-            System.out.println(newNote.toString());
-
             noteModalService.postNewNote(newNote);
-
-            // Visual confirmation of note being added to server
             addNoteToContainer(newNote);
 
             // Clear for next input

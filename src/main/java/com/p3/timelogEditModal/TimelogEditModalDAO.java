@@ -11,7 +11,7 @@ public class TimelogEditModalDAO {
         String url = "timelog/list";
 
         try{
-            api.post(url, null, timelogs.toString());
+            api.put(url, null, timelogs.toString());
         } catch (Exception e){
             e.printStackTrace();
         }

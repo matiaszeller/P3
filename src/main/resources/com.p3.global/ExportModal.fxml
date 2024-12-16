@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.exportModal.ExportModalController" stylesheets="@../style.css" styleClass="root" prefWidth="600" prefHeight="600" maxWidth="600" maxHeight="600">
+    <VBox alignment="TOP_CENTER" fx:id="modalMainContainer" styleClass="noteModalMainContainer" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <Label fx:id="modalMainLabel" styleClass="noteModalMainLabel"/>
+        <HBox fx:id="datepickerContainer">
+            <DatePicker fx:id="startDatePicker"/>
+            <DatePicker fx:id="endDatePicker"/>
+        </HBox>
+
+        <Label fx:id="datapickerErrorLabel" visible="false" styleClass="errorText">Ugyldigt datasæt indtastet</Label>
+
+        <HBox fx:id="buttonContainer">
+            <Button fx:id="confirmButton" styleClass="confirmButton">Bekræft</Button>
+            <Button fx:id="cancelButton" styleClass="defaultButton">Annuller</Button>
+        </HBox>
+
+
+    </VBox>
+</AnchorPane>

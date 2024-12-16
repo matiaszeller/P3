@@ -15,7 +15,7 @@ public class UserEditService {
     private final UserEditDAO userEditDAO = new UserEditDAO();
 
     public List<User> getAllUsers() {
-        String jsonResponse = UserEditDAO.userNames();
+        String jsonResponse = userEditDAO.userNames();
 
         if (jsonResponse == null) {
             System.err.println("No valid JSON response from backend.");
@@ -48,11 +48,11 @@ public class UserEditService {
     }
 
     public boolean updateUser(User user) {
-        return UserEditDAO.updateUser(user);
+        return userEditDAO.updateUser(user);
     }
 
     public boolean createUser(User user) {
-        return UserEditDAO.createUser(user);
+        return userEditDAO.createUser(user);
     }
 
     public void loadMenuPage(Stage stage) {
@@ -62,42 +62,6 @@ public class UserEditService {
             double height = stage.getHeight();
             Scene scene = new Scene(fxmlLoader.load(), width, height);
             stage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    public void loadManagerDailyPage(Stage stage) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(UserEditService.class.getResource("/com.p3.managerDaily/ManagerDaily.fxml"));
-            double width = stage.getWidth();
-            double height = stage.getHeight();
-            Scene scene = new Scene(fxmlLoader.load(), width, height);
-            stage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    public void loadWeeklyPage(Stage stage) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(UserEditService.class.getResource("/com.p3.overview/WeeklyOverview.fxml"));
-            double width = stage.getWidth();
-            double height = stage.getHeight();
-            Scene scene = new Scene(fxmlLoader.load(), width, height);
-            stage.setScene(scene);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    public void loadLoginPage(Stage stage) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(UserEditService.class.getResource("/com.p3.login/LoginPage.fxml"));
-            double width = stage.getWidth();
-            double height = stage.getHeight();
-            Scene loginScene = new Scene(fxmlLoader.load(), width, height);
-            stage.setScene(loginScene);
-            stage.setTitle("Time Registration System");
-            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }

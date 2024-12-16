@@ -3,6 +3,7 @@ package com.p3.userEditor;
 import com.p3.menu.MenuService;
 import com.p3.session.Session;
 import com.p3.overview.WeeklyOverviewService;
+import com.p3.util.StageLoader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -70,6 +71,7 @@ public class UserEditController {
    @FXML Label secPassText;
 
     private final UserEditService infoService = new UserEditService();
+    private final StageLoader stageLoader = new StageLoader();
     private List<User> users;
     private User selectedUser;
 
@@ -92,13 +94,37 @@ public class UserEditController {
             }
         });
 
-        dailyOverviewButton.setOnAction(event -> handleDailyPage());
-        weeklyOverviewButton.setOnAction(event -> handleWeeklyPage());
+        dailyOverviewButton.setOnAction(event -> {
+            try {
+                handleDailyPage();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        weeklyOverviewButton.setOnAction(event -> {
+            try {
+                handleWeeklyPage();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         handleEditEmployee();
         exportDataButton.setOnAction(event -> handleExportData());
-        logOutButton.setOnAction(event -> handleLogout());
+        logOutButton.setOnAction(event -> {
+            try {
+                handleLogout();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         submitBtn.setOnAction(event -> saveChanges());
-        BackButton.setOnAction(event -> goBack());
+        BackButton.setOnAction(event -> {
+            try {
+                goBack();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         newUserBtn.setOnAction(event -> newUser());
     }
 
@@ -284,27 +310,27 @@ public class UserEditController {
     }
 
 
-    private void handleWeeklyPage() {
+    private void handleWeeklyPage() throws IOException {
         Stage stage = (Stage) weeklyOverviewButton.getScene().getWindow();
-        infoService.loadWeeklyPage(stage);
+        stageLoader.loadStage("/com.p3.overview/WeeklyOverview.fxml", stage);
     }
-    private void handleDailyPage(){
+    private void handleDailyPage() throws IOException {
         Stage stage = (Stage) dailyOverviewButton.getScene().getWindow();
-        infoService.loadManagerDailyPage(stage);
+        stageLoader.loadStage("/com.p3.managerDaily/ManagerDaily.fxml", stage);
     }
     private void handleEditEmployee(){
         editEmployeesButton.getStyleClass().add("managerSelectedBox");
     }
     private void handleExportData(){
-        // Modal Saka
+        // TODO EXPORT MODAL
     }
-    private void handleLogout(){
+    private void handleLogout() throws IOException {
         Session.clearSession();
         Stage stage = (Stage) logOutButton.getScene().getWindow();
-        infoService.loadLoginPage(stage);
+        stageLoader.loadStage("/com.p3.login/LoginPage.fxml", stage);
     }
-    private void goBack() {
+    private void goBack() throws IOException {
         Stage stage = (Stage) BackButton.getScene().getWindow();
-       infoService.loadMenuPage(stage);
+        stageLoader.loadStage("/com.p3.menu/MenuPage.fxml", stage);
     }
 }

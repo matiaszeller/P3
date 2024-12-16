@@ -11,7 +11,7 @@ public class MenuDAO {
     private final ServerApi api = new ServerApi();
 
     public String getOnBreakStatus(int userId) {
-        String url = "user/breakStatus/" + userId;
+        String url = "user/id/" + userId + "/breakStatus";
         HttpResponse response = api.get(url, null, true);
 
         return (String) response.body();
@@ -54,7 +54,7 @@ public class MenuDAO {
     }
 
     public String getTodaysEventsForUser(int userId, LocalDate today) {
-        String url = "timelog/ALL?user_id=" + userId + "&date=" + today;
+        String url = "timelog/day?date=" + today + "&userId=" + userId;
         HttpResponse response = api.get(url, null, true);
 
         return (String) response.body();
@@ -99,7 +99,7 @@ public class MenuDAO {
         JSONObject jsonBody = new JSONObject();
         jsonBody.put("note_date", missedShiftDate.toString());
         jsonBody.put("writer_id", userId);
-        jsonBody.put("recipient_id", userId); // er det her rigtigt?
+        jsonBody.put("recipient_id", 1); // TODO vælg mellem modtager managers
         jsonBody.put("full_name", Session.getCurrentUserFullName());
         jsonBody.put("written_note", note);
 

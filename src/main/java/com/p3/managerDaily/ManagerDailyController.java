@@ -1,10 +1,12 @@
 package com.p3.managerDaily;
 
+import com.p3.exportModal.ExportModalController;
 import com.p3.noteModal.NoteModalController;
 import com.p3.timelogEditModal.TimelogEditModalController;
 import com.p3.overview.WeeklyOverviewService;
 import com.p3.session.Session;
 import com.p3.util.ModalUtil;
+import com.p3.util.StageLoader;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
@@ -12,6 +14,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
@@ -31,6 +35,7 @@ import org.json.JSONArray;
 public class ManagerDailyController {
 
     private static final ManagerDailyService service = new ManagerDailyService();
+    private final StageLoader stageLoader = new StageLoader();
 
     private Map<LocalDate, TitledPane> dayPaneMap = new HashMap<>();
 
@@ -86,11 +91,35 @@ public class ManagerDailyController {
 
     @FXML
     public void initialize() {
-        managerLogOutButton.setOnAction(event -> handleLogOut());
-        weeklyOverviewButton.setOnAction(event -> handleWeeklyOverview());
-        editEmployeesButton.setOnAction(event -> handleEditEmployees());
+        managerLogOutButton.setOnAction(event -> {
+            try {
+                handleLogOut();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        weeklyOverviewButton.setOnAction(event -> {
+            try {
+                handleWeeklyOverview();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        editEmployeesButton.setOnAction(event -> {
+            try {
+                handleEditEmployees();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         exportDataButton.setOnAction(event -> handleExportData());
-        BackButton.setOnAction(event -> {handleBackButton();});
+        BackButton.setOnAction(event -> {
+            try {
+                handleBackButton();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         handleDailyOverview();
         currentMonth = YearMonth.now();
         generateCalendar(currentMonth);
@@ -567,17 +596,6 @@ public class ManagerDailyController {
         }
     }
 
-
-    private void showEditModal(int userId) {
-        System.out.println("Editing for User ID: " + userId);
-        // Implement modal right here Flemming
-    }
-
-    private void showNoteModal(int userId) {
-
-    }
-
-
     private void handleDateClick(ActionEvent event) {
         Button clickedButton = (Button) event.getSource();
         String day = clickedButton.getText();
@@ -635,28 +653,32 @@ public class ManagerDailyController {
             });
         }
 
-    private void handleLogOut() {
+    private void handleLogOut() throws IOException {
         Session.clearSession();
-
         Stage stage = (Stage) managerLogOutButton.getScene().getWindow();
-        ManagerDailyService.loadLoginPage(stage);
+        stageLoader.loadStage("/com.p3.login/LoginPage.fxml", stage);
     }
-    private void handleBackButton() {
+    private void handleBackButton() throws IOException {
         Stage stage = (Stage) BackButton.getScene().getWindow();
-        service.loadMenuPage(stage);
+        stageLoader.loadStage("/com.p3.menu/MenuPage.fxml", stage);
     }
     private void handleDailyOverview() {
         dailyOverviewButton.getStyleClass().add("managerSelectedBox");
     }
-    private void handleWeeklyOverview() {
+    private void handleWeeklyOverview() throws IOException {
         Stage stage = (Stage) weeklyOverviewButton.getScene().getWindow();
-        service.loadWeeklyPage(stage);
+        stageLoader.loadStage("/com.p3.overview/WeeklyOverview.fxml", stage);
     }
-    private void handleEditEmployees() {
+    private void handleEditEmployees() throws IOException {
         Stage stage = (Stage) editEmployeesButton.getScene().getWindow();
-        service.loadAdminPage(stage);
+        stageLoader.loadStage("/com.p3.administration/EditUserPage.fxml", stage);
     }
     private void handleExportData() {
-        // Modal
+        Stage stage = (Stage) exportDataButton.getScene().getWindow();
+        ModalUtil.ModalResult<ExportModalController> modalResult = ModalUtil.showModal("/com.p3.global/ExportModal.fxml", stage, "Export Data");
+        if(modalResult != null){
+            Stage modalStage = modalResult.getStage();
+            modalStage.showAndWait();
+        }
     }
 }

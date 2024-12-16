@@ -4,6 +4,7 @@ import com.p3.event.Event;
 import com.p3.instance.AppInstance;
 import com.p3.overview.WeeklyOverviewService;
 import com.p3.session.Session;
+import com.p3.util.StageLoader;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -45,7 +46,7 @@ public class MenuController {
     private Button managerButton;
 
 
-    private final MenuDAO menuDAO = new MenuDAO();
+    private final StageLoader stageLoader = new StageLoader();
     private final MenuService menuService = new MenuService();
 
 
@@ -53,15 +54,41 @@ public class MenuController {
 
     @FXML
     public void initialize() {
-        endShiftButton.setOnAction(event -> handleEndShift());
-        logOutButton.setOnAction(event -> handleLogOut());
+        endShiftButton.setOnAction(event -> {
+            try {
+                handleEndShift();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        logOutButton.setOnAction(event -> {
+            try {
+                handleLogOut();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         breakButton.setOnAction(event -> handleBreakButton());
         if (!Objects.equals(Session.getRole(), "manager")){
             managerButton.setDisable(true);
         } else {managerButton.setDisable(false);}
 
-        managerButton.setOnAction(event -> handleOnPressManager());
-        historyButton.setOnAction(event -> loadEmployeeHistoryPage());
+        managerButton.setOnAction(event -> {
+            try {
+                handleOnPressManager();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        historyButton.setOnAction(event -> {
+            Stage stage = (Stage) historyButton.getScene().getWindow();
+            try {
+                stageLoader.loadStage("/com.p3.employeeHistory/EmployeeHistoryPage.fxml", stage);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         initializeClock();
         loadDailyEvents();
@@ -106,7 +133,7 @@ public class MenuController {
         }
     }
 
-    private void handleEndShift() {
+    private void handleEndShift() throws IOException {
         boolean confirmed = MenuService.showEndShiftConfirmation();
         if (confirmed) {
             int userId = Session.getCurrentUserId();
@@ -123,28 +150,15 @@ public class MenuController {
             Session.clearSession();
 
             Stage stage = (Stage) endShiftButton.getScene().getWindow();
-            MenuService.loadLoginPage(stage);
+            stageLoader.loadStage("/com.p3.login/LoginPage.fxml", stage);
         }
     }
 
-    private void loadEmployeeHistoryPage() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com.p3.employeeHistory/EmployeeHistoryPage.fxml"));
-            Stage stage = (Stage) historyButton.getScene().getWindow();
-            double width = stage.getWidth();
-            double height = stage.getHeight();
-            Scene scene = new Scene(fxmlLoader.load(), width, height);
-            stage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void handleLogOut() {
+    private void handleLogOut() throws IOException {
         Session.clearSession();
 
         Stage stage = (Stage) logOutButton.getScene().getWindow();
-        MenuService.loadLoginPage(stage);
+        stageLoader.loadStage("/com.p3.login/LoginPage.fxml", stage);
     }
 
     private void handleBreakButton() {
@@ -233,9 +247,9 @@ public class MenuController {
         }
     }
 
-    private void handleOnPressManager() {
+    private void handleOnPressManager() throws IOException {
         Stage stage = (Stage) managerButton.getScene().getWindow();
-        menuService.loadManagerPage(stage);
+        stageLoader.loadStage("/com.p3.managerDaily/ManagerDaily.fxml", stage);
     }
     private void getMissedCheckout() {
         int userId = Session.getCurrentUserId();
