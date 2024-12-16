@@ -1,7 +1,7 @@
 package com.p3.login;
 
+import com.p3.util.StageLoader;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -35,6 +35,7 @@ public class LoginController {
     private String managerUsername;
     private String employeeUsername;
     private final LoginService loginService = new LoginService();
+    private final StageLoader stageLoader = new StageLoader();
 
     @FXML
     private void initialize() {
@@ -67,7 +68,7 @@ public class LoginController {
         });
     }
 
-    private void handleLogin(){ // TODO ærligt måske bare overvej at lave én method til login DAO så vi ikke laver 4 forskellige kald til db
+    private void handleLogin() throws Exception {
         String username = usernameField.getText();
         String role = loginService.setUserRole(username);
 
@@ -90,29 +91,11 @@ public class LoginController {
                 boolean clockedIn = loginService.getClockedInStatus(username);
 
                 if (clockedIn) {
-                    loadMenuPage();
+                    stageLoader.loadStage("/com.p3.menu/MenuPage.fxml",(Stage) loginButton.getScene().getWindow());
                 } else {
                     showEmployeeModal(username);
                 }
             }
-        }
-    }
-
-    public void loadMenuPage() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com.p3.menu/MenuPage.fxml"));
-            Stage stage = (Stage) loginButton.getScene().getWindow();
-            // This is for getting the stage sizes so it doesn't mess with alignment and centering
-            double width = stage.getWidth();
-            double height = stage.getHeight();
-
-            Scene scene = new Scene(fxmlLoader.load());
-            stage.setScene(scene);
-
-            stage.setWidth(width);
-            stage.setHeight(height);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -142,10 +125,20 @@ public class LoginController {
         VBox vbox = new VBox(10, instructionLabel, passwordField, new HBox(10, submitButton, cancelButton), modalErrorLabel);
         vbox.setPadding(new Insets(10));
 
-        submitButton.setOnAction(event -> handleSubmit(modalStage, passwordField.getText(), modalErrorLabel));
+        submitButton.setOnAction(event -> {
+            try {
+                handleSubmit(modalStage, passwordField.getText(), modalErrorLabel);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         passwordField.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                handleSubmit(modalStage, passwordField.getText(), modalErrorLabel);
+                try {
+                    handleSubmit(modalStage, passwordField.getText(), modalErrorLabel);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         cancelButton.setOnAction(event -> modalStage.close());
@@ -164,7 +157,7 @@ public class LoginController {
         modalStage.showAndWait();
     }
 
-    private void handleSubmit(Stage modalStage, String password, Label modalErrorLabel) {
+    private void handleSubmit(Stage modalStage, String password, Label modalErrorLabel) throws IOException {
         if (loginService.validateManager(managerUsername, password)) {
             int userId = loginService.getUserId(managerUsername);
             String fullName = loginService.getUserFullName(managerUsername);
@@ -177,7 +170,7 @@ public class LoginController {
             boolean clockedIn = loginService.getClockedInStatus(username);
 
             if (clockedIn) {
-                loadMenuPage();
+                stageLoader.loadStage("/com.p3.menu/MenuPage.fxml",(Stage) loginButton.getScene().getWindow());
             } else {
                 showEmployeeModal(username);
             }
@@ -231,7 +224,13 @@ public class LoginController {
 
         PauseTransition timer = new PauseTransition(Duration.seconds(5));
         timer.setOnFinished(event -> LogoutAndClose(modalStage));
-        menu.setOnAction(event -> { progressAnimation.stop(); timer.stop(); MenuAndClose(modalStage); });
+        menu.setOnAction(event -> { progressAnimation.stop(); timer.stop();
+            try {
+                MenuAndClose(modalStage);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
         logout.setOnAction(event -> {LogoutAndClose(modalStage);});
         progressAnimation.play();
         timer.play();
@@ -244,8 +243,8 @@ public class LoginController {
         Session.clearSession();
     }
 
-    private void MenuAndClose(Stage modalStage) {
+    private void MenuAndClose(Stage modalStage) throws Exception{
         modalStage.close();
-        loadMenuPage();
+        stageLoader.loadStage("/com.p3.menu/MenuPage.fxml",(Stage) loginButton.getScene().getWindow());
     }
 }

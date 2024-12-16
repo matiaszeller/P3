@@ -3,7 +3,6 @@ package com.p3.timelogEditModal;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import org.json.JSONArray;
@@ -21,23 +20,7 @@ public class TimelogEditModalController {
     TimelogEditModalService service = new TimelogEditModalService();
 
     @FXML
-    private Label shiftStartLabel;
-    @FXML
-    private Label shiftEndLabel;
-    @FXML
-    private Label breakStartLabel;
-    @FXML
-    private Label breakEndLabel;
-    @FXML
     private Label modalMainLabel;
-    @FXML
-    private Label shiftStartHeader;
-    @FXML
-    private Label shiftEndHeader;
-    @FXML
-    private Label breakStartHeader;
-    @FXML
-    private Label breakEndHeader;
     @FXML
     private Button modalConfirmButton;
     @FXML

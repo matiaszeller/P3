@@ -3,6 +3,7 @@ package com.p3.overview;
 import com.p3.managerDaily.ManagerDailyService;
 import com.p3.menu.MenuService;
 import com.p3.session.Session;
+import com.p3.util.StageLoader;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -12,6 +13,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
+
+import java.io.IOException;
 import java.time.*;
 import java.time.format.TextStyle;
 import java.time.temporal.WeekFields;
@@ -60,6 +63,7 @@ public class WeeklyOverviewController {
     private Button nextMonthButton;
 
     private YearMonth currentMonth;
+    private final StageLoader stageLoader = new StageLoader();
 
     private static final int WEEK_WIDTH = 70;
     private static final int NUM_WEEKS = 52;
@@ -69,12 +73,36 @@ public class WeeklyOverviewController {
 
     @FXML
     public void initialize() {
-        logOutButton.setOnAction(event -> handleLogOut());
-        dailyOverviewButton.setOnAction(event -> handleDailyOverview());
+        logOutButton.setOnAction(event -> {
+            try {
+                handleLogOut();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        dailyOverviewButton.setOnAction(event -> {
+            try {
+                handleDailyOverview();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         handleWeeklyOverview();
-        editEmployeesButton.setOnAction(event -> handleEditEmployees());
+        editEmployeesButton.setOnAction(event -> {
+            try {
+                handleEditEmployees();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         exportDataButton.setOnAction(event -> handleExportData());
-        BackButton.setOnAction(event -> handleBackButton());
+        BackButton.setOnAction(event -> {
+            try {
+                handleBackButton();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         currentMonth = YearMonth.now();
         generateCalendar(currentMonth);
 
@@ -347,9 +375,9 @@ public class WeeklyOverviewController {
         }
         return null;
     }
-    private void handleBackButton() {
+    private void handleBackButton() throws IOException {
         Stage stage = (Stage) BackButton.getScene().getWindow();
-        managerService.loadMenuPage(stage);
+        stageLoader.loadStage("/com.p3.menu/MenuPage.fxml", stage);
     }
 
     private void handleDateClick(LocalDate date) {
@@ -362,26 +390,26 @@ public class WeeklyOverviewController {
         scrollToWeek(date);
     }
 
-    private void handleLogOut() {
+    private void handleLogOut() throws IOException {
         Session.clearSession();
         Stage stage = (Stage) logOutButton.getScene().getWindow();
-        WeeklyOverviewService.loadLoginPage(stage);
+        stageLoader.loadStage("/com.p3.login/LoginPage.fxml", stage);
     }
 
-    private void handleDailyOverview() {
+    private void handleDailyOverview() throws IOException {
         Stage stage = (Stage) dailyOverviewButton.getScene().getWindow();
-        weeklyOverviewService.loadManagerDailyPage(stage);
+        stageLoader.loadStage("/com.p3.managerDaily/ManagerDaily.fxml", stage);
     }
 
     private void handleWeeklyOverview() {
         weeklyOverviewButton.getStyleClass().add("managerSelectedBox");
     }
 
-    private void handleEditEmployees() {
+    private void handleEditEmployees() throws IOException {
         Stage stage = (Stage) editEmployeesButton.getScene().getWindow();
-        WeeklyOverviewService.loadAdminPage(stage);
+        stageLoader.loadStage("/com.p3.administration/EditUserPage.fxml", stage);
     }
     private void handleExportData() {
-        //Indsæt Export??
+        //Indsæt Export??   TODO fak glemte de også skulle ind der
     }
 }

@@ -47,21 +47,6 @@ public class MenuService {
         return result.isPresent() && result.get() == confirmButton;
     }
 
-    public static void loadLoginPage(Stage stage) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(MenuService.class.getResource("/com.p3.login/LoginPage.fxml"));
-            double width = stage.getWidth();
-            double height = stage.getHeight();
-            Scene loginScene = new Scene(fxmlLoader.load(), width, height);
-            stage.setScene(loginScene);
-
-            stage.setTitle("Time Registration System");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public boolean getOnBreakStatus(int userId){
         String jsonResponse = menuDao.getOnBreakStatus(userId);
         org.json.JSONObject jsonObject = new org.json.JSONObject(jsonResponse);
@@ -172,16 +157,5 @@ public class MenuService {
     public boolean checkIfNoteExists(int userId, LocalDate missedShiftDate) {
         String response = menuDao.noteExistsForDate(userId, missedShiftDate);
         return Boolean.parseBoolean(response);
-    }
-    public static void loadManagerPage(Stage stage) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(MenuService.class.getResource("/com.p3.managerDaily/ManagerDaily.fxml"));
-            double width = stage.getWidth();
-            double height = stage.getHeight();
-            Scene scene = new Scene(fxmlLoader.load(), width, height);
-            stage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

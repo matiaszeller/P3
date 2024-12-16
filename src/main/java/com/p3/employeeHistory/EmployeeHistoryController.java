@@ -4,6 +4,8 @@ import com.p3.session.Session;
 
 import com.p3.util.ModalUtil;
 import com.p3.noteModal.NoteModalController;
+import com.p3.util.StageLoader;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,6 +35,7 @@ import java.util.Locale;
 public class EmployeeHistoryController {
 
     private final EmployeeHistoryService employeeHistoryService = new EmployeeHistoryService();
+    private final StageLoader stageLoader = new StageLoader();
     private int weeklyMaxAmountSingleShiftHours;
     private LocalDate date;
     private int weeklyStartHour;
@@ -77,32 +80,32 @@ public class EmployeeHistoryController {
     }
 
     private void setActionHandlers() {
-        logOutButton.setOnAction(event -> handleLogOut());
-        goBackButton.setOnAction(event -> loadStage("/com.p3.menu/MenuPage.fxml"));
         prevWeekButton.setOnAction(event -> fetchWeekHistory(-1));
         nextWeekButton.setOnAction(event -> fetchWeekHistory(1));
         prevMonthButton.setOnAction(event -> changeMonth(-1));
         nextMonthButton.setOnAction(event -> changeMonth(1));
-    }
 
-    private void handleLogOut() {
-        Session.clearSession();
-        loadStage("/com.p3.login/LoginPage.fxml");
-    }
-
-    private void loadStage(String fxmlPath) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath));
+        Platform.runLater(() -> {
             stage = (Stage) logOutButton.getScene().getWindow();
-            double width = stage.getWidth();
-            double height = stage.getHeight();
 
-            Scene scene = new Scene(fxmlLoader.load(), width, height);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            goBackButton.setOnAction(event -> {
+                try {
+                    stageLoader.loadStage("/com.p3.menu/MenuPage.fxml", stage);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            logOutButton.setOnAction(event -> {
+                Session.clearSession();
+                try {
+                    stageLoader.loadStage("/com.p3.login/LoginPage.fxml", stage);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+        });
     }
 
     private void handleWeekTimelogs(LocalDate date) {

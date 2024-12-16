@@ -19,21 +19,6 @@ public class ManagerDailyService {
     private static final ManagerDailyDAO dao = new ManagerDailyDAO();
     private static List<Map<String, Object>> timelogs = new ArrayList<>();
 
-    public static void loadLoginPage(Stage stage) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(MenuService.class.getResource("/com.p3.login/LoginPage.fxml"));
-            double width = stage.getWidth();
-            double height = stage.getHeight();
-            Scene loginScene = new Scene(fxmlLoader.load(), width, height);
-            stage.setScene(loginScene);
-
-            stage.setTitle("Time Registration System");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
         public void loadTimelogsForRange(LocalDate startDate, int daysCount) {
             timelogs.clear();
         
@@ -113,34 +98,11 @@ public class ManagerDailyService {
         return latestCheckOutHour == Integer.MIN_VALUE ? 0 : latestCheckOutHour;
     }
 
-
     public String getUserFullName(int user_id) {
         return dao.getUserFullNameById(user_id);
     }
-    public void loadAdminPage(Stage stage) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(ManagerDailyService.class.getResource("/com.p3.administration/EditUserPage.fxml"));
-            double width = stage.getWidth();
-            double height = stage.getHeight();
-            Scene scene = new Scene(fxmlLoader.load(), width, height);
-            stage.setScene(scene);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    public void loadWeeklyPage(Stage stage) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(ManagerDailyService.class.getResource("/com.p3.overview/WeeklyOverview.fxml"));
-            double width = stage.getWidth();
-            double height = stage.getHeight();
-            Scene scene = new Scene(fxmlLoader.load(), width, height);
-            stage.setScene(scene);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     public void loadMenuPage(Stage stage) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ManagerDailyService.class.getResource("/com.p3.menu/MenuPage.fxml"));
