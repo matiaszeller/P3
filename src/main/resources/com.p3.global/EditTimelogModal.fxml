@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.timelogEditModal.TimelogEditModalController" stylesheets="@../style.css" styleClass="root" prefWidth="600" prefHeight="600" maxWidth="600" maxHeight="600">
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.timelogEditModal.TimelogEditModalController" stylesheets="@../style.css" styleClass="root" prefWidth="600" prefHeight="600" maxWidth="600">
     <VBox alignment="TOP_CENTER" fx:id="modalMainContainer" styleClass="noteModalMainContainer" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <Label fx:id="modalMainLabel" styleClass="noteModalMainLabel"/>
         <HBox fx:id="timlogViewContainer" prefHeight="50" prefWidth="600">
@@ -15,37 +15,10 @@
         <Region style="-fx-pref-height: 20px;"/>
 
         <VBox fx:id="configurationContainer" spacing="10" styleClass="timelogModalConfigurationContainer" prefWidth="600" prefHeight="400">
-            <HBox fx:id="topConfigurationContainer" spacing="10" prefWidth="590" prefHeight="145" alignment="CENTER">
-                <VBox fx:id="topStartContainer" styleClass="timelogModalConfigurationContainers" alignment="CENTER" prefWidth="290">
-                    <Label fx:id="shiftStartHeader" styleClass="noteSenderLabel" text="Vagt start tid" style="-fx-font-size: 14"/>
-                    <HBox alignment="CENTER" spacing="1">
-                        <ComboBox fx:id="shiftStartHourPicker" styleClass="modalTimePicker"/>
-                        <ComboBox fx:id="shiftStartMinutePicker" styleClass="modalTimePicker" />
-                    </HBox>
-                </VBox>
-                <VBox fx:id="topEndContainer" styleClass="timelogModalConfigurationContainers" alignment="CENTER" prefWidth="290">
-                    <Label fx:id="shiftEndHeader" styleClass="noteSenderLabel" text="Vagt slut tid" style="-fx-font-size: 14"/>
-                    <HBox alignment="CENTER" spacing="1">
-                        <ComboBox fx:id="shiftEndHourPicker" styleClass="modalTimePicker" />
-                        <ComboBox fx:id="shiftEndMinutePicker" styleClass="modalTimePicker" />
-                    </HBox>
-                </VBox>
-            </HBox>
+            <VBox fx:id="topConfigurationContainer" spacing="10" prefWidth="590" prefHeight="145" alignment="CENTER">
+            </VBox>
             <HBox fx:id="bottomConfigurationContainer" spacing="10" prefWidth="590" prefHeight="145" alignment="CENTER">
-                <VBox fx:id="bottomStartContainer" styleClass="timelogModalConfigurationContainers" alignment="CENTER" prefWidth="290">
-                    <Label fx:id="breakStartHeader" styleClass="noteSenderLabel" text="Pause start tid" style="-fx-font-size: 14"/>
-                    <HBox alignment="CENTER" spacing="1">
-                        <ComboBox fx:id="breakStartHourPicker" styleClass="modalTimePicker" />
-                        <ComboBox fx:id="breakStartMinutePicker" styleClass="modalTimePicker" />
-                    </HBox>
-                </VBox>
-                <VBox fx:id="bottomEndContainer" styleClass="timelogModalConfigurationContainers" alignment="CENTER" prefWidth="290">
-                    <Label fx:id="breakEndHeader" styleClass="noteSenderLabel" text="Pause slut tid" style="-fx-font-size: 14"/>
-                    <HBox alignment="CENTER" spacing="1">
-                        <ComboBox fx:id="breakEndHourPicker" styleClass="modalTimePicker" />
-                        <ComboBox fx:id="breakEndMinutePicker" styleClass="modalTimePicker" />
-                    </HBox>
-                </VBox>
+
             </HBox>
         </VBox>
 

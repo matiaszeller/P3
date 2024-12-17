@@ -1,8 +1,10 @@
 package com.p3.userEditor;
 
+import com.p3.exportModal.ExportModalController;
 import com.p3.menu.MenuService;
 import com.p3.session.Session;
 import com.p3.overview.WeeklyOverviewService;
+import com.p3.util.ModalUtil;
 import com.p3.util.StageLoader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -322,7 +324,12 @@ public class UserEditController {
         editEmployeesButton.getStyleClass().add("managerSelectedBox");
     }
     private void handleExportData(){
-        // TODO EXPORT MODAL
+        Stage stage = (Stage) exportDataButton.getScene().getWindow();
+        ModalUtil.ModalResult<ExportModalController> modalResult = ModalUtil.showModal("/com.p3.global/ExportModal.fxml", stage, "Export Data");
+        if(modalResult != null){
+            Stage modalStage = modalResult.getStage();
+            modalStage.showAndWait();
+        }
     }
     private void handleLogout() throws IOException {
         Session.clearSession();

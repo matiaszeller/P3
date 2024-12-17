@@ -1,8 +1,10 @@
 package com.p3.overview;
 
+import com.p3.exportModal.ExportModalController;
 import com.p3.managerDaily.ManagerDailyService;
 import com.p3.menu.MenuService;
 import com.p3.session.Session;
+import com.p3.util.ModalUtil;
 import com.p3.util.StageLoader;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -162,7 +164,7 @@ public class WeeklyOverviewController {
         yearMonthLabel.setText(yearMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + yearMonth.getYear());
 
         // Add day-of-week headers
-        String[] daysOfWeek = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+        String[] daysOfWeek = {"Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"};
         for (int col = 0; col < daysOfWeek.length; col++) {
             Label dayLabel = new Label(daysOfWeek[col]);
             calendarGrid.add(dayLabel, col, 0);
@@ -410,6 +412,11 @@ public class WeeklyOverviewController {
         stageLoader.loadStage("/com.p3.administration/EditUserPage.fxml", stage);
     }
     private void handleExportData() {
-        //Indsæt Export??   TODO fak glemte de også skulle ind der
+        Stage stage = (Stage) exportDataButton.getScene().getWindow();
+        ModalUtil.ModalResult<ExportModalController> modalResult = ModalUtil.showModal("/com.p3.global/ExportModal.fxml", stage, "Export Data");
+        if(modalResult != null){
+            Stage modalStage = modalResult.getStage();
+            modalStage.showAndWait();
+        }
     }
 }

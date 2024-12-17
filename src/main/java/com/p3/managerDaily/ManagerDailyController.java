@@ -145,7 +145,7 @@ public class ManagerDailyController {
         yearMonthLabel.setText(yearMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + yearMonth.getYear());
 
         // Add day-of-week headers
-        String[] daysOfWeek = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+        String[] daysOfWeek = {"Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"};
         for (int col = 0; col < daysOfWeek.length; col++) {
             Label dayLabel = new Label(daysOfWeek[col]);
             calendarGrid.add(dayLabel, col, 0);
@@ -574,9 +574,6 @@ public class ManagerDailyController {
        }
        return customMessage;
    }
-    public enum EventType {
-        check_in, check_out, break_start, break_end, missing_check_out;
-    }
 
     private void addUniqueLabel(VBox container, Label labelToAdd, Set<String> addedLabels) {
         if (labelToAdd == null || addedLabels.contains(labelToAdd.getText())) {
