@@ -6,6 +6,9 @@ import com.p3.menu.MenuService;
 import com.p3.session.Session;
 import com.p3.util.ModalUtil;
 import com.p3.util.StageLoader;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -15,6 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.time.*;
@@ -70,8 +74,7 @@ public class WeeklyOverviewController {
     private static final int WEEK_WIDTH = 70;
     private static final int NUM_WEEKS = 52;
     private static final int EMPLOYEE_WIDTH = 150;
-    ManagerDailyService managerService = new ManagerDailyService();
-    WeeklyOverviewService weeklyOverviewService = new WeeklyOverviewService();
+
 
     @FXML
     public void initialize() {
@@ -255,7 +258,6 @@ public class WeeklyOverviewController {
 
         // Gets data and sets up rows for each user
         List<Map<String, Object>> timelogData = WeeklyOverviewService.getWeeklyTimelogs();
-        System.out.println("Timelog Data: " + timelogData);
 
         // To avoid NullPointerException
         if (timelogData == null) {
@@ -328,6 +330,8 @@ public class WeeklyOverviewController {
                 }
             }
         }
+
+        Platform.runLater(this::focusCurrentWeekDefault);
     }
 
     // Converts string to hours
@@ -377,6 +381,12 @@ public class WeeklyOverviewController {
         }
         return null;
     }
+
+    // Scrolls to column of the current week when loading
+    private void focusCurrentWeekDefault() {
+        scrollToWeek(LocalDate.now());
+    }
+
     private void handleBackButton() throws IOException {
         Stage stage = (Stage) BackButton.getScene().getWindow();
         stageLoader.loadStage("/com.p3.menu/MenuPage.fxml", stage);

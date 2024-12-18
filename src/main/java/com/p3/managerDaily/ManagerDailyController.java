@@ -208,7 +208,6 @@ public class ManagerDailyController {
 
         service.loadTimelogsForRange(startDate, daysCount);
         List<Map<String, Object>> timelogs = service.getTimelogs();
-        System.out.println(timelogs.size());
 
         for (int i = 0; i < daysCount; i++) {
             LocalDate currentDate = startDate.minusDays(i);
@@ -596,7 +595,6 @@ public class ManagerDailyController {
     private void handleDateClick(ActionEvent event) {
         Button clickedButton = (Button) event.getSource();
         String day = clickedButton.getText();
-        System.out.println("Clicked: " + day);
         try {
             int dayOfMonth = Integer.parseInt(day.trim());
             LocalDate selectedDate = currentMonth.atDay(dayOfMonth);
@@ -638,17 +636,15 @@ public class ManagerDailyController {
             System.err.println("Invalid date format: " + day);
         }
     }
-        private void scrollToBottom() {
-            // Force layout updates
-            centerPanel.applyCss();
-            centerPanel.layout();
 
-            // Defer scrolling to allow for any remaining layout adjustments
-            Platform.runLater(() -> {
-                // Apply scroll
-                scrollPane.setVvalue(1.0);
-            });
-        }
+    private void scrollToBottom() {
+        // Force layout updates
+        centerPanel.applyCss();
+        centerPanel.layout();
+
+        // Defer scrolling to allow for any remaining layout adjustments
+        Platform.runLater(() -> {scrollPane.setVvalue(1.0);});
+    }
 
     private void handleLogOut() throws IOException {
         Session.clearSession();

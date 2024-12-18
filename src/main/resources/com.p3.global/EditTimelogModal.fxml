@@ -9,17 +9,9 @@
 <AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.timelogEditModal.TimelogEditModalController" stylesheets="@../style.css" styleClass="root" prefWidth="600" prefHeight="600" maxWidth="600">
     <VBox alignment="TOP_CENTER" fx:id="modalMainContainer" styleClass="noteModalMainContainer" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
         <Label fx:id="modalMainLabel" styleClass="noteModalMainLabel"/>
-        <HBox fx:id="timlogViewContainer" prefHeight="50" prefWidth="600">
-
-        </HBox>
-        <Region style="-fx-pref-height: 20px;"/>
-
         <VBox fx:id="configurationContainer" spacing="10" styleClass="timelogModalConfigurationContainer" prefWidth="600" prefHeight="400">
             <VBox fx:id="topConfigurationContainer" spacing="10" prefWidth="590" prefHeight="145" alignment="CENTER">
             </VBox>
-            <HBox fx:id="bottomConfigurationContainer" spacing="10" prefWidth="590" prefHeight="145" alignment="CENTER">
-
-            </HBox>
         </VBox>
 
         <HBox fx:id="buttonContainer" alignment="CENTER" prefWidth="590">
