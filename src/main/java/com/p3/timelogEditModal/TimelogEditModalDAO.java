@@ -4,7 +4,6 @@ import com.p3.networking.ServerApi;
 import org.json.JSONArray;
 
 public class TimelogEditModalDAO {
-
     private final ServerApi api = new ServerApi();
 
     public void postUpdatedTimelogs(JSONArray timelogs) {

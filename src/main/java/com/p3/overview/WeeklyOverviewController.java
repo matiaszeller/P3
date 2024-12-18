@@ -1,13 +1,9 @@
 package com.p3.overview;
 
 import com.p3.exportModal.ExportModalController;
-import com.p3.managerDaily.ManagerDailyService;
-import com.p3.menu.MenuService;
 import com.p3.session.Session;
 import com.p3.util.ModalUtil;
 import com.p3.util.StageLoader;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -18,7 +14,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.geometry.Pos;
-import javafx.util.Duration;
 
 import java.io.IOException;
 import java.time.*;

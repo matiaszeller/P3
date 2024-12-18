@@ -5,7 +5,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.json.JSONArray;
@@ -33,8 +32,6 @@ public class TimelogEditModalController {
     @FXML
     private VBox topConfigurationContainer;
 
-
-
     @FXML
     public void initialize() {
         setActionHandlers();
@@ -52,7 +49,6 @@ public class TimelogEditModalController {
             stage.close();
         });
     }
-
 
     public void generateModal(LocalDate date, JSONArray timelogs) {
         setDate(date);

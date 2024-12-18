@@ -1,16 +1,11 @@
 package com.p3.managerDaily;
 
-import com.p3.menu.MenuService;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import org.json.JSONArray;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Map;
-import java.io.IOException;
 import java.util.List;
 import java.time.LocalDate;
 
@@ -100,20 +95,6 @@ public class ManagerDailyService {
 
     public String getUserFullName(int user_id) {
         return dao.getUserFullNameById(user_id);
-    }
-
-
-    public void loadMenuPage(Stage stage) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(ManagerDailyService.class.getResource("/com.p3.menu/MenuPage.fxml"));
-            double width = stage.getWidth();
-            double height = stage.getHeight();
-            Scene scene = new Scene(fxmlLoader.load(), width, height);
-            stage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 
     public JSONArray getDayNotes(LocalDate date, int userId) {

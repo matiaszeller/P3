@@ -1,15 +1,12 @@
 package com.p3.userEditor;
 
 import com.p3.exportModal.ExportModalController;
-import com.p3.menu.MenuService;
 import com.p3.session.Session;
-import com.p3.overview.WeeklyOverviewService;
 import com.p3.util.ModalUtil;
 import com.p3.util.StageLoader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -27,50 +24,36 @@ public class UserEditController {
 
     @FXML
     private ChoiceBox<String> choiceBox;
-
     @FXML
     private TextField nameField;
-
     @FXML
     private TextField lastNameField;
-
     @FXML
     private PasswordField passwordField;
-
     @FXML
     private PasswordField secondPasswordField;
-
     @FXML
     private Button BackButton;
-
     @FXML
     private Button editEmployeesButton;
-
     @FXML
     private Button exportDataButton;
-
     @FXML
     private Button weeklyOverviewButton;
-
     @FXML
     private Button dailyOverviewButton;
-
     @FXML
     private Button logOutButton;
-
     @FXML
     Button submitBtn;
-
     @FXML
     Button newUserBtn;
+    @FXML
+    private ChoiceBox<String> roleChoiceBox;
+    @FXML
+    private Label PassText;
 
-   @FXML
-   private ChoiceBox<String> roleChoiceBox;
-
-   @FXML
-   private Label PassText;
-
-   @FXML Label secPassText;
+    @FXML Label secPassText;
 
     private final UserEditService infoService = new UserEditService();
     private final StageLoader stageLoader = new StageLoader();

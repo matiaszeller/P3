@@ -21,4 +21,4 @@ public class AppInstanceDAO {
             throw new RuntimeException("Failed to fetch server time: " + response.statusCode());
         }
     }
-        }
+}

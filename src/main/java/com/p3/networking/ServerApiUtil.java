@@ -5,7 +5,6 @@ import java.net.http.*;
 
 
 // This class is for error handling, making it generic and non-repeating for controller classes
-// TODO should it be async?
 
 public class ServerApiUtil {
     private static final HttpClient client = HttpClient.newHttpClient();

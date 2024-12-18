@@ -1,15 +1,12 @@
 package com.p3.menu;
 
 import com.p3.event.Event;
-import com.p3.managerDaily.ManagerDailyService;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import java.io.IOException;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.time.LocalDate;

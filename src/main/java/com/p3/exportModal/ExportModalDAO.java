@@ -11,8 +11,6 @@ import java.time.LocalDate;
 public class ExportModalDAO {
     private final ServerApi api = new ServerApi();
 
-
-
     public void getTimelogsCSV(LocalDate startDate, LocalDate endDate, String savePath) {
         String url = "timelog/downloadCSV?startDate=" + startDate + "&endDate=" + endDate;
 

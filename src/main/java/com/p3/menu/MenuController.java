@@ -2,14 +2,12 @@ package com.p3.menu;
 
 import com.p3.event.Event;
 import com.p3.instance.AppInstance;
-import com.p3.overview.WeeklyOverviewService;
 import com.p3.session.Session;
 import com.p3.util.StageLoader;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -235,7 +233,7 @@ public class MenuController {
 
     private void initializeBreakButton() {
         int userId = Session.getCurrentUserId();
-        boolean onBreak = menuService.getOnBreakStatus(userId);     // TODO Overvej om det skal være sessiondata?
+        boolean onBreak = menuService.getOnBreakStatus(userId);
 
         if (onBreak) {
             breakButton.getStyleClass().add("onBreakButton");
