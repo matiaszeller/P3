@@ -5,16 +5,20 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.p3.exportModal.ExportModalController" stylesheets="@../style.css" styleClass="root" prefWidth="600" prefHeight="600" maxWidth="600" maxHeight="600">
     <VBox alignment="TOP_CENTER" fx:id="modalMainContainer" styleClass="noteModalMainContainer" style="-fx-alignment: top-center;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
-        <Label fx:id="modalMainLabel" styleClass="noteModalMainLabel"/>
+        <Label fx:id="modalMainLabel" styleClass="noteModalMainLabel" text="Vælg datoer for eksportering af CSV fil"/>
+        <Region style="-fx-pref-height: 40px"/>
         <HBox fx:id="datepickerContainer" style="-fx-alignment: center;">
             <DatePicker fx:id="startDatePicker"/>
+            <Region style="-fx-pref-width: 40px"/>
             <DatePicker fx:id="endDatePicker"/>
         </HBox>
 
         <Label fx:id="datapickerErrorLabel" visible="false" styleClass="errorText">Ugyldigt datasæt indtastet</Label>
 
+        <Region style="-fx-pref-height: 40px"/>
         <HBox fx:id="buttonContainer" style="-fx-alignment: center;">
             <Button fx:id="confirmButton" styleClass="confirmButton">Bekræft</Button>
+            <Region style="-fx-pref-width: 20px"/>
             <Button fx:id="cancelButton" styleClass="defaultButton">Annuller</Button>
         </HBox>
 

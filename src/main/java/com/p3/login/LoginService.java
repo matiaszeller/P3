@@ -40,7 +40,6 @@ public class LoginService {
     public boolean getClockedInStatus(String username) {
         String jsonResponse = loginDAO.getClockedInStatus(username);
         org.json.JSONObject json = new org.json.JSONObject(jsonResponse);
-        System.out.println(json);
         return json.getBoolean("clocked_in");
     }
 

@@ -21,7 +21,7 @@ public class StageLoader {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();        // TODO proper error handling
+            e.printStackTrace();
         }
     }
 }

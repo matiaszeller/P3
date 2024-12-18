@@ -29,7 +29,7 @@ public class UserEditDAO {
                 System.out.println("User updated successfully: " + response.body());
                 return true;
             } else {
-                System.err.println("Error up dating user: " + response.statusCode() + " - " + response.body());
+                System.err.println("Error updating user: " + response.statusCode() + " - " + response.body());
                 return false;
             }
         } catch (Exception e) {

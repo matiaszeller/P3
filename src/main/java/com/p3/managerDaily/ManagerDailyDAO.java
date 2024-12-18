@@ -27,7 +27,7 @@ public class ManagerDailyDAO {
             );
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Shit aint good cuh.. DAO gal på den..", e);
+            throw new RuntimeException(e);
         }
     }
     public String getUserFullNameById(int user_id) {

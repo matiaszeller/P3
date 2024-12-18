@@ -145,7 +145,6 @@ public class TimelogEditModalController {
 
             returnArray.put(timelog);
         }
-        System.out.println(returnArray);
     }
 
     private void setDate(LocalDate date) {

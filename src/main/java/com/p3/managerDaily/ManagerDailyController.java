@@ -524,11 +524,11 @@ public class ManagerDailyController {
         }
         switch (eventType) {
             case "check_in", "break_end":
-                return "#28a745"; // Green
+                return "#20c997"; // Green
             case "break_start":
-                return "yellow"; // Yellow
+                return "#f9d58b"; // Yellow
             case "missing_check_out":
-                return "#ff0000"; // Red
+                return "#fee7572"; // Red
             case "check_out":
                 return "#F9F6EE"; // White
             case "edited_check_in", "edited_check_out", "edited_break_start", "edited_break_end":
