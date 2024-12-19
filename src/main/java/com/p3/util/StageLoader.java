@@ -16,8 +16,10 @@ public class StageLoader {
             double width = stage.getWidth();
             double height = stage.getHeight();
 
-            Scene scene = new Scene(fxmlLoader.load(), width, height);
+            Scene scene = new Scene(fxmlLoader.load());
             stage.setScene(scene);
+            stage.setWidth(width);
+            stage.setHeight(height);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
