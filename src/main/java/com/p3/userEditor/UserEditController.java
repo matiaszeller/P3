@@ -52,6 +52,8 @@ public class UserEditController {
     private ChoiceBox<String> roleChoiceBox;
     @FXML
     private Label PassText;
+    @FXML
+    private ScrollPane rightPane;
 
     @FXML Label secPassText;
 
@@ -70,11 +72,14 @@ public class UserEditController {
         }
 
         choiceBox.setItems(userNames);
+        choiceBox.setValue("Vælg medarbejder");
 
         ObservableList<String> roles = FXCollections.observableArrayList("manager", "medarbejder", "deaktiver");
         roleChoiceBox.setItems(roles);
+
         choiceBox.getSelectionModel().selectedItemProperty().addListener((ObservableList, oldValue, newValue) -> {
             if (newValue != null) {
+                rightPane.setVisible(true);
                 updateUserDetails(newValue);
             }
         });

@@ -653,3 +653,11 @@
     -fx-focus-color: transparent;
 }
 
+.userEditChoiceBox{
+    -fx-background-color: lightgray;
+    -fx-border-color: lightgray;
+    -fx-cursor: hand;
+    -fx-pref-height: 50;
+    -fx-pref-width: 200;
+}
+
