@@ -1,12 +1,8 @@
 package com.p3.userEditor;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,20 +46,7 @@ public class UserEditService {
     public boolean updateUser(User user) {
         return userEditDAO.updateUser(user);
     }
-
     public boolean createUser(User user) {
         return userEditDAO.createUser(user);
-    }
-
-    public void loadMenuPage(Stage stage) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(UserEditService.class.getResource("/com.p3.menu/MenuPage.fxml"));
-            double width = stage.getWidth();
-            double height = stage.getHeight();
-            Scene scene = new Scene(fxmlLoader.load(), width, height);
-            stage.setScene(scene);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

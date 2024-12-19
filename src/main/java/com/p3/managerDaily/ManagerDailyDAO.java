@@ -4,12 +4,10 @@ import com.p3.networking.ServerApi;
 
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.List;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONArray;
 
 public class ManagerDailyDAO {
     private final ServerApi api = new ServerApi();
@@ -27,7 +25,7 @@ public class ManagerDailyDAO {
             );
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Shit aint good cuh.. DAO gal på den..", e);
+            throw new RuntimeException(e);
         }
     }
     public String getUserFullNameById(int user_id) {
@@ -36,8 +34,6 @@ public class ManagerDailyDAO {
 
         return (String) response.body();
     }
-
-    // TODO Fix de x kald, og lav ét kald på en periode
 
     public String getDayNotes(LocalDate date, int userId){
         String url = "note/day?date=" + date + "&userId=" + userId;

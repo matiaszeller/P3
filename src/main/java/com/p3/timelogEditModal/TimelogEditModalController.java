@@ -4,18 +4,22 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.*;
 
 public class TimelogEditModalController {
 
     private LocalDate date;
     private JSONArray timelogs;
     private JSONArray returnArray = new JSONArray();
+    private final List<Map<String, ComboBox<Integer>>> timePickerMap = new ArrayList<>();
 
     TimelogEditModalService service = new TimelogEditModalService();
 
@@ -26,20 +30,11 @@ public class TimelogEditModalController {
     @FXML
     private Button modalCancelButton;
     @FXML
-    private ComboBox<Integer> shiftStartHourPicker, shiftStartMinutePicker, shiftEndHourPicker, shiftEndMinutePicker;
-    @FXML
-    private ComboBox<Integer> breakStartHourPicker, breakStartMinutePicker, breakEndHourPicker, breakEndMinutePicker;
-
-
+    private VBox topConfigurationContainer;
 
     @FXML
     public void initialize() {
         setActionHandlers();
-
-        populateTimePickers(shiftStartHourPicker, shiftStartMinutePicker);
-        populateTimePickers(shiftEndHourPicker, shiftEndMinutePicker);
-        populateTimePickers(breakStartHourPicker, breakStartMinutePicker);
-        populateTimePickers(breakEndHourPicker, breakEndMinutePicker);
     }
 
     private void setActionHandlers() {
@@ -53,69 +48,97 @@ public class TimelogEditModalController {
             Stage stage = (Stage) modalCancelButton.getScene().getWindow();
             stage.close();
         });
-
-
     }
-
-    //TODO FIX DET HER DET VIRKELIGT LORT SKREVET MEN HAVDE IKKE NOK TID
 
     public void generateModal(LocalDate date, JSONArray timelogs) {
         setDate(date);
         setTimelogs(timelogs);
 
+        Map<String, String> eventTypeMap = Map.of(
+                "check_in", "vagt start",
+                "check_out", "vagt slut",
+                "break_start", "pause start",
+                "break_end", "pause slut"
+        );
+
+        Set<String> requiredEvents = new HashSet<>(eventTypeMap.keySet());
+        Set<String> existingEvents = new HashSet<>();
+        for (int i = 0; i < timelogs.length(); i++) {
+            existingEvents.add(timelogs.getJSONObject(i).getString("event_type"));
+        }
+
+        for (String eventType : requiredEvents) {
+            if (!existingEvents.contains(eventType)) {
+                JSONObject missingEvent = new JSONObject();
+                missingEvent.put("event_type", eventType);
+                missingEvent.put("event_time", date.atTime(0, 0).toString()); // Default time: 00:00
+                missingEvent.put("user_id", timelogs.getJSONObject(0).getInt("user_id"));
+                missingEvent.put("shift_date", timelogs.getJSONObject(0).getString("shift_date"));
+                missingEvent.put("edited_time", LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0));
+                timelogs.put(missingEvent);
+            }
+        }
+
         modalMainLabel.setText("Ændrer Registreret tid for d. " + date.toString());
 
+        for (int i = 0; i < timelogs.length(); i++) {
+            JSONObject timelog = timelogs.getJSONObject(i);
+            LocalDateTime eventTime = LocalDateTime.parse(timelog.getString("event_time"));
 
-        LocalDateTime shiftStart = LocalDateTime.parse(timelogs.getJSONObject(0).getString("event_time"));
-        shiftStartHourPicker.setValue(shiftStart.getHour());
-        shiftStartMinutePicker.setValue(shiftStart.getMinute());
+            ComboBox<Integer> hourPicker = new ComboBox<>();
+            ComboBox<Integer> minutePicker = new ComboBox<>();
 
-        LocalDateTime shiftEnd = LocalDateTime.parse(timelogs.getJSONObject(3).getString("event_time"));
-        shiftEndHourPicker.setValue(shiftEnd.getHour());
-        shiftEndMinutePicker.setValue(shiftEnd.getMinute());
+            Label eventLabel = new Label(String.format("Original %s %02d:%02d",
+                    eventTypeMap.get(timelogs.getJSONObject(i).getString("event_type")),
+                    eventTime.getHour(),
+                    eventTime.getMinute())
+            );
+            eventLabel.setStyle("-fx-font-weight: bold");
 
-        LocalDateTime breakStart = LocalDateTime.parse(timelogs.getJSONObject(1).getString("event_time"));
-        breakStartHourPicker.setValue(breakStart.getHour());
-        breakStartMinutePicker.setValue(breakStart.getMinute());
+            populateTimePickers(hourPicker, minutePicker);
+            hourPicker.setValue(eventTime.getHour());
+            minutePicker.setValue(eventTime.getMinute());
 
-        LocalDateTime breakEnd = LocalDateTime.parse(timelogs.getJSONObject(2).getString("event_time"));
-        breakEndHourPicker.setValue(breakEnd.getHour());
-        breakEndMinutePicker.setValue(breakEnd.getMinute());
+            Map<String, ComboBox<Integer>> pickers = new HashMap<>();
+            pickers.put("hour", hourPicker);
+            pickers.put("minute", minutePicker);
+            timePickerMap.add(pickers);
 
+            VBox eventBox = new VBox(eventLabel);
+            eventBox.getStyleClass().add("timelogModalConfigurationContainers");
+
+            HBox timePickerBox = new HBox(hourPicker, minutePicker);
+            eventBox.getChildren().add(timePickerBox);
+            timePickerBox.setStyle("-fx-alignment: center;");
+
+            topConfigurationContainer.getChildren().add(eventBox);
+        }
     }
 
     private void populateTimePickers(ComboBox<Integer> hourPicker, ComboBox<Integer> minutePicker) {
         for (int i = 0; i < 24; i++) {
             hourPicker.getItems().add(i);
         }
-        // only up to 58 cuz otherwise it fucks everthing up :D:D:D:D:D:D:D
         for (int i = 0; i < 59; i ++) {
             minutePicker.getItems().add(i);
         }
     }
 
-    private void updateReturnArray(){
-        for(int i = 0; i < timelogs.length(); i++){
+    private void updateReturnArray() {
+        for (int i = 0; i < timelogs.length(); i++) {
             JSONObject timelog = timelogs.getJSONObject(i);
-            LocalDateTime newTime = LocalDateTime.parse(timelog.getString("event_time"));
 
-            switch(i){
-                case 0:
-                    newTime = newTime.withHour(shiftStartHourPicker.getValue()).withMinute(shiftStartMinutePicker.getValue());
-                    break;
-                case 1:
-                    newTime = newTime.withHour(breakStartHourPicker.getValue()).withMinute(breakStartMinutePicker.getValue());
-                    break;
-                case 2:
-                    newTime = newTime.withHour(breakEndHourPicker.getValue()).withMinute(breakEndMinutePicker.getValue());
-                    break;
-                case 3:
-                    newTime = newTime.withHour(shiftEndHourPicker.getValue()).withMinute(shiftEndMinutePicker.getValue());
-                    break;
-            }
-            // TODO fix og check på at datepicker tider ikke er før og efter hinanden
+            Map<String, ComboBox<Integer>> pickers = timePickerMap.get(i);
+            int newHour = pickers.get("hour").getValue();
+            int newMinute = pickers.get("minute").getValue();
+
+            LocalDateTime newTime = LocalDateTime.parse(timelog.getString("event_time"))
+                    .withHour(newHour)
+                    .withMinute(newMinute);
+
             timelog.put("edited_time", timelog.getString("event_time"));
             timelog.put("event_time", newTime.toString());
+
             returnArray.put(timelog);
         }
     }

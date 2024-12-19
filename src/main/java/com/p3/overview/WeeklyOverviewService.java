@@ -1,11 +1,5 @@
 package com.p3.overview;
 
-import com.p3.managerDaily.ManagerDailyService;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.*;
-import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
 

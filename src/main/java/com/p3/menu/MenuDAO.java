@@ -99,7 +99,7 @@ public class MenuDAO {
         JSONObject jsonBody = new JSONObject();
         jsonBody.put("note_date", missedShiftDate.toString());
         jsonBody.put("writer_id", userId);
-        jsonBody.put("recipient_id", 1); // TODO vælg mellem modtager managers
+        jsonBody.put("recipient_id", 1);
         jsonBody.put("full_name", Session.getCurrentUserFullName());
         jsonBody.put("written_note", note);
 

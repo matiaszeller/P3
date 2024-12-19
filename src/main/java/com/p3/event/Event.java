@@ -2,7 +2,7 @@ package com.p3.event;
 
 import java.time.LocalDateTime;
 
-public class Event {     // TODO Lav class i sin egen fil
+public class Event {
     private LocalDateTime eventTime;
     private String eventType;
 

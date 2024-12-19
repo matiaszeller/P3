@@ -24,8 +24,9 @@
          <VBox fx:id="leftDailyManagerBox" alignment="TOP_CENTER" prefWidth="200" styleClass="leftDailyManagerBox">
             <!-- Calendar Section -->
             <VBox spacing="5" alignment="TOP_CENTER">
-               <Label text="Vælg medarbejder:"/>
-               <ChoiceBox fx:id="choiceBox" prefWidth="180"/>
+               <Region style="-fx-pref-height: 5;"/>
+               <ChoiceBox fx:id="choiceBox" prefWidth="180" styleClass="userEditChoiceBox"/>
+               <Label text="Eller" style="-fx-padding: 5;"/>
                <Button fx:id="newUserBtn" styleClass="confirmButton" text="Tilføj ny bruger"/>
             </VBox>
             <VBox spacing="20" alignment="CENTER" VBox.vgrow="ALWAYS">
@@ -43,7 +44,7 @@
          </VBox>
 
       <!-- Right Pane -->
-      <ScrollPane styleClass="right-pane">
+      <ScrollPane styleClass="right-pane" fx:id="rightPane" visible="false">
          <fitToWidth>true</fitToWidth>
          <fitToHeight>true</fitToHeight>
          <VBox style="-fx-background-color: linear-gradient(from 0% 0% to 0% 100%, #FFFFFF, #EAF2EF);

@@ -57,24 +57,6 @@ public class LoginDAO {
         return (String) response.body();
     }
 
-
-    /*
-     *           Set Requests
-     */
-
-
-    public void setClockedInStatus(String username, boolean status) {
-        String url = "user/clockInStatus/" + username + "?status=" + status;
-
-        try{
-            api.put(url, null, null);
-        }
-        catch(Exception e){
-            e.printStackTrace();    // Jeg er træt og forstår ikke hvorfor den kræver exception her - tror det fordi det put but idk fucksss
-        }
-    }
-
-
     /*
      *           Post Requests
      */
@@ -88,6 +70,17 @@ public class LoginDAO {
         try {
             api.post(url, null, jsonBody);
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setClockedInStatus(String username, boolean status) {
+        String url = "user/clockInStatus/" + username + "?status=" + status;
+
+        try{
+            api.put(url, null, null);
+        }
+        catch(Exception e){
             e.printStackTrace();
         }
     }

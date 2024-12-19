@@ -643,6 +643,7 @@
     -fx-border-color: lightgray;
     -fx-padding: 5;
     -fx-pref-width: 280;
+    -fx-alignment: center;
 }
 
 .modalTimePicker{
@@ -650,5 +651,13 @@
     -fx-border-color: transparent;
     -fx-cursor: hand;
     -fx-focus-color: transparent;
+}
+
+.userEditChoiceBox{
+    -fx-background-color: lightgray;
+    -fx-border-color: lightgray;
+    -fx-cursor: hand;
+    -fx-pref-height: 50;
+    -fx-pref-width: 200;
 }
 

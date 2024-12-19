@@ -23,7 +23,7 @@ public class WeeklyOverviewDAO {
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Weekly timelogs no good", e);
+            throw new RuntimeException("Error getting weekly timelogs", e);
         }
     }
 }

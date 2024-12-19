@@ -2,7 +2,6 @@ package com.p3.login;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-//todo implement networking feature, to talk with server.
 public class LoginService {
     private final LoginDAO loginDAO = new LoginDAO();
 
@@ -11,7 +10,6 @@ public class LoginService {
     }
     public String validateUser(String username){
         return loginDAO.getUserRole(username);
-
     }
 
     public boolean validateManager(String username, String password) {
@@ -40,7 +38,6 @@ public class LoginService {
     public boolean getClockedInStatus(String username) {
         String jsonResponse = loginDAO.getClockedInStatus(username);
         org.json.JSONObject json = new org.json.JSONObject(jsonResponse);
-        System.out.println(json);
         return json.getBoolean("clocked_in");
     }
 

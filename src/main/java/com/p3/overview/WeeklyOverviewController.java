@@ -1,9 +1,10 @@
 package com.p3.overview;
 
-import com.p3.managerDaily.ManagerDailyService;
-import com.p3.menu.MenuService;
+import com.p3.exportModal.ExportModalController;
 import com.p3.session.Session;
+import com.p3.util.ModalUtil;
 import com.p3.util.StageLoader;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -68,8 +69,7 @@ public class WeeklyOverviewController {
     private static final int WEEK_WIDTH = 70;
     private static final int NUM_WEEKS = 52;
     private static final int EMPLOYEE_WIDTH = 150;
-    ManagerDailyService managerService = new ManagerDailyService();
-    WeeklyOverviewService weeklyOverviewService = new WeeklyOverviewService();
+
 
     @FXML
     public void initialize() {
@@ -162,7 +162,7 @@ public class WeeklyOverviewController {
         yearMonthLabel.setText(yearMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + yearMonth.getYear());
 
         // Add day-of-week headers
-        String[] daysOfWeek = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+        String[] daysOfWeek = {"Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"};
         for (int col = 0; col < daysOfWeek.length; col++) {
             Label dayLabel = new Label(daysOfWeek[col]);
             calendarGrid.add(dayLabel, col, 0);
@@ -253,7 +253,6 @@ public class WeeklyOverviewController {
 
         // Gets data and sets up rows for each user
         List<Map<String, Object>> timelogData = WeeklyOverviewService.getWeeklyTimelogs();
-        System.out.println("Timelog Data: " + timelogData);
 
         // To avoid NullPointerException
         if (timelogData == null) {
@@ -326,6 +325,8 @@ public class WeeklyOverviewController {
                 }
             }
         }
+
+        Platform.runLater(this::focusCurrentWeekDefault);
     }
 
     // Converts string to hours
@@ -375,6 +376,12 @@ public class WeeklyOverviewController {
         }
         return null;
     }
+
+    // Scrolls to column of the current week when loading
+    private void focusCurrentWeekDefault() {
+        scrollToWeek(LocalDate.now());
+    }
+
     private void handleBackButton() throws IOException {
         Stage stage = (Stage) BackButton.getScene().getWindow();
         stageLoader.loadStage("/com.p3.menu/MenuPage.fxml", stage);
@@ -410,6 +417,11 @@ public class WeeklyOverviewController {
         stageLoader.loadStage("/com.p3.administration/EditUserPage.fxml", stage);
     }
     private void handleExportData() {
-        //Indsæt Export??   TODO fak glemte de også skulle ind der
+        Stage stage = (Stage) exportDataButton.getScene().getWindow();
+        ModalUtil.ModalResult<ExportModalController> modalResult = ModalUtil.showModal("/com.p3.global/ExportModal.fxml", stage, "Export Data");
+        if(modalResult != null){
+            Stage modalStage = modalResult.getStage();
+            modalStage.showAndWait();
+        }
     }
 }

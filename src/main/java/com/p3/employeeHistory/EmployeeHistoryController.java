@@ -9,11 +9,9 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
@@ -260,7 +258,7 @@ public class EmployeeHistoryController {
             hourBoxContainer.getChildren().add(hourLabel);
             StackPane.setAlignment(hourLabel, Pos.TOP_LEFT);
 
-            // If no breaks during day, TODO LAV SOM DEL AF MAIN SEQUENCELABEL METHOD
+            // If no breaks during day
             if(shiftSequences.size() == 3
                     && shiftSequences.get(shiftSequenceIndex).getSequenceType().equals("empty")
                     && shiftSequences.get(shiftSequenceIndex).getDuration() == remainingDuration) {

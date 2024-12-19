@@ -3,7 +3,6 @@ package com.p3.managerDaily;
 import com.p3.exportModal.ExportModalController;
 import com.p3.noteModal.NoteModalController;
 import com.p3.timelogEditModal.TimelogEditModalController;
-import com.p3.overview.WeeklyOverviewService;
 import com.p3.session.Session;
 import com.p3.util.ModalUtil;
 import com.p3.util.StageLoader;
@@ -145,7 +144,7 @@ public class ManagerDailyController {
         yearMonthLabel.setText(yearMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + yearMonth.getYear());
 
         // Add day-of-week headers
-        String[] daysOfWeek = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+        String[] daysOfWeek = {"Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"};
         for (int col = 0; col < daysOfWeek.length; col++) {
             Label dayLabel = new Label(daysOfWeek[col]);
             calendarGrid.add(dayLabel, col, 0);
@@ -208,7 +207,6 @@ public class ManagerDailyController {
 
         service.loadTimelogsForRange(startDate, daysCount);
         List<Map<String, Object>> timelogs = service.getTimelogs();
-        System.out.println(timelogs.size());
 
         for (int i = 0; i < daysCount; i++) {
             LocalDate currentDate = startDate.minusDays(i);
@@ -525,11 +523,11 @@ public class ManagerDailyController {
         }
         switch (eventType) {
             case "check_in", "break_end":
-                return "#28a745"; // Green
+                return "#20c997"; // Green
             case "break_start":
-                return "yellow"; // Yellow
+                return "#f9d58b"; // Yellow
             case "missing_check_out":
-                return "#ff0000"; // Red
+                return "#fee7572"; // Red
             case "check_out":
                 return "#F9F6EE"; // White
             case "edited_check_in", "edited_check_out", "edited_break_start", "edited_break_end":
@@ -574,9 +572,6 @@ public class ManagerDailyController {
        }
        return customMessage;
    }
-    public enum EventType {
-        check_in, check_out, break_start, break_end, missing_check_out;
-    }
 
     private void addUniqueLabel(VBox container, Label labelToAdd, Set<String> addedLabels) {
         if (labelToAdd == null || addedLabels.contains(labelToAdd.getText())) {
@@ -599,7 +594,6 @@ public class ManagerDailyController {
     private void handleDateClick(ActionEvent event) {
         Button clickedButton = (Button) event.getSource();
         String day = clickedButton.getText();
-        System.out.println("Clicked: " + day);
         try {
             int dayOfMonth = Integer.parseInt(day.trim());
             LocalDate selectedDate = currentMonth.atDay(dayOfMonth);
@@ -641,17 +635,15 @@ public class ManagerDailyController {
             System.err.println("Invalid date format: " + day);
         }
     }
-        private void scrollToBottom() {
-            // Force layout updates
-            centerPanel.applyCss();
-            centerPanel.layout();
 
-            // Defer scrolling to allow for any remaining layout adjustments
-            Platform.runLater(() -> {
-                // Apply scroll
-                scrollPane.setVvalue(1.0);
-            });
-        }
+    private void scrollToBottom() {
+        // Force layout updates
+        centerPanel.applyCss();
+        centerPanel.layout();
+
+        // Defer scrolling to allow for any remaining layout adjustments
+        Platform.runLater(() -> {scrollPane.setVvalue(1.0);});
+    }
 
     private void handleLogOut() throws IOException {
         Session.clearSession();
