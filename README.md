@@ -6,7 +6,7 @@ Prerequisites:
 Before running the program, ensure the following tools are installed on your system:
 
 - Java Development Kit (JDK):
-  - Version: Java 22 or later.
+  - Version: JDK 22 or later.
 
 - IntelliJ IDEA:
   - Community or Ultimate edition.
@@ -85,3 +85,5 @@ This will generate an executable file.
 Ensure the necessary style sheets (CSS) and icons are available in the /resources folder for proper rendering of the JavaFX application.
 
 If you encounter issues, check the logs in IntelliJ IDEA's console or Maven's output for details.
+
+For the complete program to work correctly, the server must be running before the client-side is running. 
